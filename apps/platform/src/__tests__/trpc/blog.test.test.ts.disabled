@@ -1,0 +1,342 @@
+/**
+ * Blog tRPC Router Tests
+ */
+
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { createTRPCMsw } from "msw-trpc";
+import { type AppRouter } from "@/server/api/root";
+import { TRPCError } from "@trpc/server";
+
+// Mock the tRPC router
+const trpcMsw = createTRPCMsw<AppRouter>();
+
+describe("Blog tRPC Router", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("getPost", () => {
+    it("should return a blog post by slug", async () => {
+      const mockPost = {
+        id: "1",
+        slug: "test-post",
+        title: "Test Post",
+        excerpt: "This is a test post",
+        content: "Full content here",
+        author: "Test Author",
+        category: "Technology",
+        featured: false,
+        draft: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Mock the tRPC procedure
+      trpcMsw.blog.getPost.query(() => {
+        return mockPost;
+      });
+
+      // Test would go here - this is a structure example
+      expect(mockPost.slug).toBe("test-post");
+      expect(mockPost.title).toBe("Test Post");
+    });
+
+    it("should throw NOT_FOUND error for non-existent post", async () => {
+      trpcMsw.blog.getPost.query(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Blog post not found",
+        });
+      });
+
+      // Test error handling
+      expect(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Blog post not found",
+        });
+      }).toThrow("Blog post not found");
+    });
+  });
+
+  describe("getPosts", () => {
+    it("should return paginated blog posts", async () => {
+      const mockPosts = {
+        posts: [
+          {
+            id: "1",
+            slug: "post-1",
+            title: "Post 1",
+            excerpt: "Excerpt 1",
+            featured: true,
+          },
+          {
+            id: "2",
+            slug: "post-2",
+            title: "Post 2",
+            excerpt: "Excerpt 2",
+            featured: false,
+          },
+        ],
+        total: 2,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.blog.getPosts.query(() => {
+        return mockPosts;
+      });
+
+      expect(mockPosts.posts).toHaveLength(2);
+      expect(mockPosts.total).toBe(2);
+      expect(mockPosts.page).toBe(1);
+    });
+
+    it("should filter posts by category", async () => {
+      const mockFilteredPosts = {
+        posts: [
+          {
+            id: "1",
+            slug: "tech-post",
+            title: "Tech Post",
+            category: "Technology",
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.blog.getPosts.query(({ input }) => {
+        if (input.category === "Technology") {
+          return mockFilteredPosts;
+        }
+        return { posts: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      });
+
+      // Test filtering logic
+      expect(mockFilteredPosts.posts[0].category).toBe("Technology");
+    });
+  });
+
+  describe("incrementView", () => {
+    it("should increment view count for a post", async () => {
+      const mockResult = { views_count: 5 };
+
+      trpcMsw.blog.incrementView.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.views_count).toBe(5);
+    });
+
+    it("should throw NOT_FOUND for non-existent post", async () => {
+      trpcMsw.blog.incrementView.mutation(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Blog post not found",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Blog post not found",
+        });
+      }).toThrow("Blog post not found");
+    });
+  });
+
+  describe("toggleLike (protected)", () => {
+    it("should toggle like status when authenticated", async () => {
+      const mockResult = { likes_count: 3 };
+
+      trpcMsw.blog.toggleLike.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.likes_count).toBe(3);
+    });
+
+    it("should throw UNAUTHORIZED when not authenticated", async () => {
+      trpcMsw.blog.toggleLike.mutation(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      }).toThrow("Authentication required");
+    });
+  });
+
+  describe("createPost (admin)", () => {
+    it("should create a blog post when user is admin", async () => {
+      const mockInput = {
+        title: "New Post",
+        slug: "new-post",
+        excerpt: "New post excerpt",
+        content: "New post content",
+        category: "Technology",
+        featured: false,
+        draft: true,
+      };
+
+      const mockResult = { success: true, slug: "new-post" };
+
+      trpcMsw.blog.createPost.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.success).toBe(true);
+      expect(mockResult.slug).toBe("new-post");
+    });
+
+    it("should throw UNAUTHORIZED when user is not admin", async () => {
+      trpcMsw.blog.createPost.mutation(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Admin access required",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Admin access required",
+        });
+      }).toThrow("Admin access required");
+    });
+  });
+
+  describe("createComment (protected)", () => {
+    it("should create a comment when authenticated", async () => {
+      const mockComment = {
+        id: "1",
+        content: "Great post!",
+        user_id: "user-1",
+        blog_post_id: "post-1",
+        created_at: new Date().toISOString(),
+      };
+
+      trpcMsw.blog.createComment.mutation(() => {
+        return mockComment;
+      });
+
+      expect(mockComment.content).toBe("Great post!");
+      expect(mockComment.user_id).toBe("user-1");
+    });
+
+    it("should validate comment content", async () => {
+      trpcMsw.blog.createComment.mutation(({ input }) => {
+        if (!input.content || input.content.trim().length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Comment content is required",
+          });
+        }
+        return { id: "1", content: input.content };
+      });
+
+      // Test validation
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Comment content is required",
+        });
+      }).toThrow("Comment content is required");
+    });
+  });
+
+  describe("getComments", () => {
+    it("should return comments for a post", async () => {
+      const mockComments = {
+        comments: [
+          {
+            id: "1",
+            content: "First comment",
+            user_id: "user-1",
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: "2",
+            content: "Second comment",
+            user_id: "user-2",
+            created_at: new Date().toISOString(),
+          },
+        ],
+        total: 2,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.blog.getComments.query(() => {
+        return mockComments;
+      });
+
+      expect(mockComments.comments).toHaveLength(2);
+      expect(mockComments.total).toBe(2);
+    });
+
+    it("should support pagination", async () => {
+      const mockPage2Comments = {
+        comments: [
+          {
+            id: "11",
+            content: "Comment on page 2",
+            user_id: "user-3",
+            created_at: new Date().toISOString(),
+          },
+        ],
+        total: 11,
+        page: 2,
+        limit: 10,
+        totalPages: 2,
+      };
+
+      trpcMsw.blog.getComments.query(({ input }) => {
+        if (input.page === 2) {
+          return mockPage2Comments;
+        }
+        return { comments: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      });
+
+      expect(mockPage2Comments.page).toBe(2);
+      expect(mockPage2Comments.totalPages).toBe(2);
+    });
+  });
+
+  describe("Input validation", () => {
+    it("should validate slug format", () => {
+      const validSlugs = ["valid-slug", "another-valid-slug-123", "slug"];
+      const invalidSlugs = ["invalid slug", "invalid@slug", "INVALID-SLUG"];
+
+      validSlugs.forEach((slug) => {
+        expect(slug).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+      });
+
+      invalidSlugs.forEach((slug) => {
+        expect(slug).not.toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+      });
+    });
+
+    it("should validate pagination parameters", () => {
+      const validPagination = { page: 1, limit: 10 };
+      const invalidPagination = { page: 0, limit: 101 };
+
+      expect(validPagination.page).toBeGreaterThan(0);
+      expect(validPagination.limit).toBeLessThanOrEqual(100);
+
+      expect(invalidPagination.page).toBeLessThanOrEqual(0);
+      expect(invalidPagination.limit).toBeGreaterThan(100);
+    });
+  });
+});

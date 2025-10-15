@@ -1,0 +1,148 @@
+/* Blog Post Mobile CSS - Consolidated from mobile-bottom-bar.css */
+
+/* ===== MOBILE BOTTOM BAR STYLES ===== */
+/* Mobile bottom bar styles - Monotone Theme */
+.mobile-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: hsl(var(--card));
+  border-top: 1px solid hsl(var(--border));
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 3.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dark .mobile-bottom-bar {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-primary);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-bottom-bar-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 100%;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-bottom-bar-button:active {
+  background-color: rgba(var(--muted), 0.5);
+}
+
+.mobile-bottom-bar-icon {
+  margin-bottom: 0.125rem;
+  color: var(--primary);
+}
+
+/* ===== MOBILE PANEL STYLES ===== */
+.mobile-panel {
+  position: absolute;
+  bottom: 3.5rem;
+  left: 0;
+  right: 0;
+  background-color: var(--card);
+  background-color: rgba(var(--card), 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(var(--border), 0.3);
+  padding: 1rem;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dark .mobile-panel {
+  box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mobile-panel-title {
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.mobile-panel-close {
+  padding: 0.25rem;
+  border-radius: 9999px;
+}
+
+.mobile-panel-close:hover {
+  background-color: var(--muted);
+}
+
+.mobile-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.mobile-panel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(var(--border), 0.5);
+  transition: all 0.2s ease;
+}
+
+.mobile-panel-button:active {
+  transform: translateY(1px);
+}
+
+.mobile-panel-button-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.mobile-panel-button-muted {
+  background-color: var(--muted);
+  border-color: rgba(var(--border), 0.5);
+}
+
+/* ===== MOBILE RESPONSIVE CONTROLS ===== */
+/* Only show on mobile/tablet */
+@media (min-width: 1024px) {
+  .mobile-bottom-bar,
+  .mobile-panel,
+  .mobile-bottom-spacer {
+    display: none;
+  }
+}
+
+/* Add padding to the bottom of the page on mobile */
+.mobile-bottom-spacer {
+  height: 3.5rem;
+  width: 100%;
+}
+
+/* Overlay styles */
+.mobile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 40;
+}

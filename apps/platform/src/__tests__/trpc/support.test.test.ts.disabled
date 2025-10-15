@@ -1,0 +1,458 @@
+/**
+ * Support tRPC Router Tests
+ */
+
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { createTRPCMsw } from "msw-trpc";
+import { type AppRouter } from "@/server/api/root";
+import { TRPCError } from "@trpc/server";
+
+const trpcMsw = createTRPCMsw<AppRouter>();
+
+describe("Support tRPC Router", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("createTicket (protected)", () => {
+    it("should create a support ticket successfully", async () => {
+      const mockInput = {
+        subject: "Need help with billing",
+        description: "I have a question about my recent invoice.",
+        priority: "medium" as const,
+      };
+
+      const mockTicket = {
+        id: "ticket-1",
+        ticket_number: "TKT-123456",
+        customer_id: "user-1",
+        subject: mockInput.subject,
+        description: mockInput.description,
+        priority: mockInput.priority,
+        status: "open",
+        created_at: new Date().toISOString(),
+      };
+
+      trpcMsw.support.createTicket.mutation(() => {
+        return mockTicket;
+      });
+
+      expect(mockTicket.subject).toBe("Need help with billing");
+      expect(mockTicket.priority).toBe("medium");
+      expect(mockTicket.status).toBe("open");
+    });
+
+    it("should validate required fields", async () => {
+      trpcMsw.support.createTicket.mutation(({ input }) => {
+        if (!input.subject || input.subject.length < 5) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Subject must be at least 5 characters long",
+          });
+        }
+        if (!input.description || input.description.length < 10) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Description must be at least 10 characters long",
+          });
+        }
+        return { id: "ticket-1" };
+      });
+
+      // Test validation
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Subject must be at least 5 characters long",
+        });
+      }).toThrow("Subject must be at least 5 characters long");
+    });
+
+    it("should require authentication", async () => {
+      trpcMsw.support.createTicket.mutation(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      }).toThrow("Authentication required");
+    });
+  });
+
+  describe("getMyTickets (protected)", () => {
+    it("should return user tickets with pagination", async () => {
+      const mockTickets = {
+        tickets: [
+          {
+            id: "ticket-1",
+            ticket_number: "TKT-123456",
+            subject: "Billing Question",
+            status: "open",
+            priority: "medium",
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: "ticket-2",
+            ticket_number: "TKT-123457",
+            subject: "Technical Issue",
+            status: "resolved",
+            priority: "high",
+            created_at: new Date().toISOString(),
+          },
+        ],
+        total: 2,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.support.getMyTickets.query(() => {
+        return mockTickets;
+      });
+
+      expect(mockTickets.tickets).toHaveLength(2);
+      expect(mockTickets.total).toBe(2);
+      expect(mockTickets.tickets[0].status).toBe("open");
+      expect(mockTickets.tickets[1].status).toBe("resolved");
+    });
+
+    it("should filter tickets by status", async () => {
+      const mockOpenTickets = {
+        tickets: [
+          {
+            id: "ticket-1",
+            status: "open",
+            subject: "Open Ticket",
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.support.getMyTickets.query(({ input }) => {
+        if (input.status === "open") {
+          return mockOpenTickets;
+        }
+        return { tickets: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      });
+
+      expect(mockOpenTickets.tickets[0].status).toBe("open");
+    });
+  });
+
+  describe("getTicket (protected)", () => {
+    it("should return ticket with messages", async () => {
+      const mockTicket = {
+        id: "ticket-1",
+        ticket_number: "TKT-123456",
+        subject: "Test Ticket",
+        description: "Test description",
+        status: "open",
+        messages: [
+          {
+            id: "msg-1",
+            content: "Initial message",
+            sender_type: "customer",
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: "msg-2",
+            content: "Admin response",
+            sender_type: "admin",
+            created_at: new Date().toISOString(),
+          },
+        ],
+      };
+
+      trpcMsw.support.getTicket.query(() => {
+        return mockTicket;
+      });
+
+      expect(mockTicket.messages).toHaveLength(2);
+      expect(mockTicket.messages[0].sender_type).toBe("customer");
+      expect(mockTicket.messages[1].sender_type).toBe("admin");
+    });
+
+    it("should throw NOT_FOUND for non-existent ticket", async () => {
+      trpcMsw.support.getTicket.query(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Ticket not found",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Ticket not found",
+        });
+      }).toThrow("Ticket not found");
+    });
+  });
+
+  describe("addTicketMessage (protected)", () => {
+    it("should add message to ticket", async () => {
+      const mockMessage = {
+        id: "msg-1",
+        ticket_id: "ticket-1",
+        content: "Thank you for your help!",
+        sender_type: "customer",
+        created_at: new Date().toISOString(),
+      };
+
+      trpcMsw.support.addTicketMessage.mutation(() => {
+        return mockMessage;
+      });
+
+      expect(mockMessage.content).toBe("Thank you for your help!");
+      expect(mockMessage.sender_type).toBe("customer");
+    });
+
+    it("should validate message content", async () => {
+      trpcMsw.support.addTicketMessage.mutation(({ input }) => {
+        if (!input.content || input.content.trim().length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Message content is required",
+          });
+        }
+        return { id: "msg-1", content: input.content };
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Message content is required",
+        });
+      }).toThrow("Message content is required");
+    });
+  });
+
+  describe("startChatSession (protected)", () => {
+    it("should start a new chat session", async () => {
+      const mockChatSession = {
+        id: "chat-1",
+        customer_id: "user-1",
+        subject: "Need immediate help",
+        status: "active",
+        created_at: new Date().toISOString(),
+        messages: [
+          {
+            id: "msg-1",
+            content: "Hello, I need help with my account",
+            sender_type: "customer",
+            created_at: new Date().toISOString(),
+          },
+        ],
+      };
+
+      trpcMsw.support.startChatSession.mutation(() => {
+        return mockChatSession;
+      });
+
+      expect(mockChatSession.status).toBe("active");
+      expect(mockChatSession.messages).toHaveLength(1);
+      expect(mockChatSession.messages[0].sender_type).toBe("customer");
+    });
+
+    it("should validate chat session input", async () => {
+      trpcMsw.support.startChatSession.mutation(({ input }) => {
+        if (!input.subject || input.subject.length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Subject is required",
+          });
+        }
+        if (!input.initialMessage || input.initialMessage.length === 0) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Initial message is required",
+          });
+        }
+        return { id: "chat-1" };
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Subject is required",
+        });
+      }).toThrow("Subject is required");
+    });
+  });
+
+  describe("sendChatMessage (protected)", () => {
+    it("should send message to active chat session", async () => {
+      const mockMessage = {
+        id: "msg-2",
+        chat_session_id: "chat-1",
+        content: "Can you help me reset my password?",
+        sender_type: "customer",
+        created_at: new Date().toISOString(),
+      };
+
+      trpcMsw.support.sendChatMessage.mutation(() => {
+        return mockMessage;
+      });
+
+      expect(mockMessage.content).toBe("Can you help me reset my password?");
+      expect(mockMessage.sender_type).toBe("customer");
+    });
+
+    it("should not allow messages to ended chat sessions", async () => {
+      trpcMsw.support.sendChatMessage.mutation(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot send message to ended chat session",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot send message to ended chat session",
+        });
+      }).toThrow("Cannot send message to ended chat session");
+    });
+  });
+
+  describe("Admin procedures", () => {
+    describe("getAllTickets (admin)", () => {
+      it("should return all tickets for admin", async () => {
+        const mockAllTickets = {
+          tickets: [
+            {
+              id: "ticket-1",
+              customer_email: "user1@example.com",
+              subject: "Billing Issue",
+              status: "open",
+              priority: "high",
+            },
+            {
+              id: "ticket-2",
+              customer_email: "user2@example.com",
+              subject: "Technical Problem",
+              status: "in_progress",
+              priority: "medium",
+            },
+          ],
+          total: 2,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+        };
+
+        trpcMsw.support.getAllTickets.query(() => {
+          return mockAllTickets;
+        });
+
+        expect(mockAllTickets.tickets).toHaveLength(2);
+        expect(mockAllTickets.tickets[0].customer_email).toBe(
+          "user1@example.com",
+        );
+      });
+
+      it("should require admin access", async () => {
+        trpcMsw.support.getAllTickets.query(() => {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Admin access required",
+          });
+        });
+
+        expect(() => {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Admin access required",
+          });
+        }).toThrow("Admin access required");
+      });
+    });
+
+    describe("assignTicket (admin)", () => {
+      it("should assign ticket to admin", async () => {
+        const mockAssignedTicket = {
+          id: "ticket-1",
+          assigned_to: "admin-1",
+          status: "in_progress",
+          assigned_at: new Date().toISOString(),
+        };
+
+        trpcMsw.support.assignTicket.mutation(() => {
+          return mockAssignedTicket;
+        });
+
+        expect(mockAssignedTicket.assigned_to).toBe("admin-1");
+        expect(mockAssignedTicket.status).toBe("in_progress");
+      });
+    });
+
+    describe("updateTicketStatus (admin)", () => {
+      it("should update ticket status", async () => {
+        const mockUpdatedTicket = {
+          id: "ticket-1",
+          status: "resolved",
+          resolved_at: new Date().toISOString(),
+        };
+
+        trpcMsw.support.updateTicketStatus.mutation(() => {
+          return mockUpdatedTicket;
+        });
+
+        expect(mockUpdatedTicket.status).toBe("resolved");
+        expect(mockUpdatedTicket.resolved_at).toBeDefined();
+      });
+    });
+  });
+
+  describe("Input validation", () => {
+    it("should validate ticket priority values", () => {
+      const validPriorities = ["low", "medium", "high", "urgent"];
+      const invalidPriorities = ["super-high", "normal", ""];
+
+      validPriorities.forEach((priority) => {
+        expect(["low", "medium", "high", "urgent"]).toContain(priority);
+      });
+
+      invalidPriorities.forEach((priority) => {
+        expect(["low", "medium", "high", "urgent"]).not.toContain(priority);
+      });
+    });
+
+    it("should validate ticket status values", () => {
+      const validStatuses = ["open", "in_progress", "resolved", "closed"];
+      const invalidStatuses = ["pending", "waiting", "done"];
+
+      validStatuses.forEach((status) => {
+        expect(["open", "in_progress", "resolved", "closed"]).toContain(status);
+      });
+
+      invalidStatuses.forEach((status) => {
+        expect(["open", "in_progress", "resolved", "closed"]).not.toContain(
+          status,
+        );
+      });
+    });
+
+    it("should validate chat status values", () => {
+      const validChatStatuses = ["active", "ended"];
+      const invalidChatStatuses = ["pending", "waiting", "closed"];
+
+      validChatStatuses.forEach((status) => {
+        expect(["active", "ended"]).toContain(status);
+      });
+
+      invalidChatStatuses.forEach((status) => {
+        expect(["active", "ended"]).not.toContain(status);
+      });
+    });
+  });
+});

@@ -1,0 +1,321 @@
+/**
+ * Futuristic Consciousness Evolution Theme
+ * Star Trek-inspired color system for transformative digital experience
+ */
+
+@layer base {
+  :root {
+    /* === CONSCIOUSNESS EVOLUTION COLOR SYSTEM === */
+
+    /* Primary Backgrounds - Deep Space Aesthetic */
+    --bg-cosmos: #0a0a0f; /* Deep space black - primary background */
+    --bg-void: #1a1a2e; /* Dark cosmic blue - secondary background */
+    --bg-nebula: #2d1b69; /* Deep purple nebula - tertiary background */
+    --bg-quantum: #0f1419; /* Quantum field - card backgrounds */
+
+    /* Accent Colors - Energy Signatures */
+    --accent-quantum: #00d4ff; /* Cyan quantum energy - primary accent */
+    --accent-consciousness: #7c3aed; /* Violet consciousness - secondary accent */
+    --accent-evolution: #10b981; /* Emerald evolution - success/growth */
+    --accent-energy: #f59e0b; /* Amber energy - warnings/highlights */
+    --accent-danger: #ef4444; /* Red danger - errors/alerts */
+
+    /* Text Colors - Information Hierarchy */
+    --text-primary: #ffffff; /* Pure white - primary text */
+    --text-secondary: #a0a9c0; /* Soft blue-gray - secondary text */
+    --text-tertiary: #6b7280; /* Medium gray - tertiary text */
+    --text-muted: #4b5563; /* Dark gray - muted text */
+    --text-quantum: #00d4ff; /* Quantum cyan - special text */
+    --text-consciousness: #a855f7; /* Consciousness purple - special text */
+
+    /* Border Colors - Structural Elements */
+    --border-primary: #374151; /* Primary borders */
+    --border-secondary: #4b5563; /* Secondary borders */
+    --border-quantum: #00d4ff; /* Quantum borders */
+    --border-consciousness: #7c3aed; /* Consciousness borders */
+    --border-glow: rgba(0, 212, 255, 0.3); /* Glowing borders */
+
+    /* Glow Effects - Energy Emanations */
+    --glow-quantum: 0 0 20px rgba(0, 212, 255, 0.5);
+    --glow-consciousness: 0 0 15px rgba(124, 58, 237, 0.3);
+    --glow-evolution: 0 0 10px rgba(16, 185, 129, 0.4);
+    --glow-energy: 0 0 12px rgba(245, 158, 11, 0.4);
+    --glow-soft: 0 0 8px rgba(0, 212, 255, 0.2);
+
+    /* Gradient Definitions - Consciousness Flows */
+    --gradient-consciousness: linear-gradient(
+      135deg,
+      var(--accent-quantum),
+      var(--accent-consciousness)
+    );
+    --gradient-evolution: linear-gradient(
+      135deg,
+      var(--accent-consciousness),
+      var(--accent-evolution)
+    );
+    --gradient-energy: linear-gradient(
+      135deg,
+      var(--accent-evolution),
+      var(--accent-energy)
+    );
+    --gradient-quantum-flow: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent-quantum),
+      transparent
+    );
+    --gradient-cosmic: radial-gradient(
+      circle at center,
+      var(--bg-nebula),
+      var(--bg-void),
+      var(--bg-cosmos)
+    );
+
+    /* Interactive States - Consciousness Responses */
+    --hover-quantum: rgba(0, 212, 255, 0.1);
+    --hover-consciousness: rgba(124, 58, 237, 0.1);
+    --hover-evolution: rgba(16, 185, 129, 0.1);
+    --active-quantum: rgba(0, 212, 255, 0.2);
+    --active-consciousness: rgba(124, 58, 237, 0.2);
+
+    /* Glass Morphism - Advanced UI Elements */
+    --glass-bg: rgba(26, 26, 46, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --glass-backdrop: blur(12px);
+
+    /* Animation Durations - Consciousness Timing */
+    --duration-instant: 0.1s;
+    --duration-fast: 0.2s;
+    --duration-normal: 0.3s;
+    --duration-slow: 0.5s;
+    --duration-consciousness: 0.8s;
+
+    /* Z-Index Layers - Dimensional Hierarchy */
+    --z-background: -1;
+    --z-base: 0;
+    --z-elevated: 10;
+    --z-floating: 20;
+    --z-modal: 30;
+    --z-quantum: 40;
+    --z-consciousness: 50;
+  }
+
+  /* === SEMANTIC COLOR MAPPINGS === */
+
+  /* Shadcn/UI Compatible Variables */
+  :root {
+    --background: var(--bg-cosmos);
+    --foreground: var(--text-primary);
+    --card: var(--bg-quantum);
+    --card-foreground: var(--text-primary);
+    --popover: var(--bg-void);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--accent-quantum);
+    --primary-foreground: var(--bg-cosmos);
+    --secondary: var(--bg-void);
+    --secondary-foreground: var(--text-secondary);
+    --muted: var(--bg-nebula);
+    --muted-foreground: var(--text-muted);
+    --accent: var(--accent-consciousness);
+    --accent-foreground: var(--text-primary);
+    --destructive: var(--accent-danger);
+    --destructive-foreground: var(--text-primary);
+    --border: var(--border-primary);
+    --input: var(--border-secondary);
+    --ring: var(--accent-quantum);
+    --radius: 0.5rem;
+  }
+
+  /* === BASE ELEMENT STYLING === */
+
+  html,
+  body {
+    background: var(--bg-cosmos);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    transition:
+      background-color var(--duration-normal) ease,
+      color var(--duration-normal) ease;
+    scroll-behavior: smooth;
+  }
+
+  /* Consciousness Evolution Typography */
+  h1,
+  h2,
+  h3 {
+    color: var(--text-primary);
+    font-family: var(--font-headings);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: var(--glow-soft);
+  }
+
+  h4,
+  h5,
+  h6 {
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    line-height: 1.7;
+  }
+
+  a {
+    color: var(--accent-quantum);
+    transition: color var(--duration-fast) ease;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--text-primary);
+    text-shadow: var(--glow-quantum);
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: var(--accent-quantum);
+    color: var(--bg-cosmos);
+  }
+
+  ::-moz-selection {
+    background: var(--accent-quantum);
+    color: var(--bg-cosmos);
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-void);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent-quantum);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-consciousness);
+  }
+}
+
+/* === UTILITY CLASSES === */
+
+@layer utilities {
+  /* Background Utilities */
+  .bg-cosmos {
+    background-color: var(--bg-cosmos);
+  }
+  .bg-void {
+    background-color: var(--bg-void);
+  }
+  .bg-nebula {
+    background-color: var(--bg-nebula);
+  }
+  .bg-quantum {
+    background-color: var(--bg-quantum);
+  }
+
+  /* Text Color Utilities */
+  .text-quantum {
+    color: var(--accent-quantum);
+  }
+  .text-consciousness {
+    color: var(--accent-consciousness);
+  }
+  .text-evolution {
+    color: var(--accent-evolution);
+  }
+  .text-energy {
+    color: var(--accent-energy);
+  }
+
+  /* Glow Effects */
+  .glow-quantum {
+    box-shadow: var(--glow-quantum);
+  }
+  .glow-consciousness {
+    box-shadow: var(--glow-consciousness);
+  }
+  .glow-evolution {
+    box-shadow: var(--glow-evolution);
+  }
+  .glow-energy {
+    box-shadow: var(--glow-energy);
+  }
+  .glow-soft {
+    box-shadow: var(--glow-soft);
+  }
+
+  /* Text Glow Effects */
+  .text-glow-quantum {
+    text-shadow: var(--glow-quantum);
+  }
+  .text-glow-consciousness {
+    text-shadow: var(--glow-consciousness);
+  }
+  .text-glow-soft {
+    text-shadow: var(--glow-soft);
+  }
+
+  /* Gradient Backgrounds */
+  .bg-gradient-consciousness {
+    background: var(--gradient-consciousness);
+  }
+  .bg-gradient-evolution {
+    background: var(--gradient-evolution);
+  }
+  .bg-gradient-energy {
+    background: var(--gradient-energy);
+  }
+  .bg-gradient-cosmic {
+    background: var(--gradient-cosmic);
+  }
+
+  /* Glass Morphism */
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
+  }
+
+  /* Border Utilities */
+  .border-quantum {
+    border-color: var(--border-quantum);
+  }
+  .border-consciousness {
+    border-color: var(--border-consciousness);
+  }
+  .border-glow {
+    border-color: var(--border-glow);
+  }
+
+  /* Hover States */
+  .hover-quantum:hover {
+    background-color: var(--hover-quantum);
+  }
+  .hover-consciousness:hover {
+    background-color: var(--hover-consciousness);
+  }
+  .hover-evolution:hover {
+    background-color: var(--hover-evolution);
+  }
+
+  /* Active States */
+  .active-quantum {
+    background-color: var(--active-quantum);
+  }
+  .active-consciousness {
+    background-color: var(--active-consciousness);
+  }
+}

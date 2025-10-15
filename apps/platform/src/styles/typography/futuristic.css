@@ -1,0 +1,297 @@
+/**
+ * Futuristic Typography System
+ * Consciousness Evolution Typography Classes
+ */
+
+@layer utilities {
+  /* === CONSCIOUSNESS EVOLUTION TYPOGRAPHY === */
+
+  /* Primary Heading - Hero/Main Title */
+  .text-consciousness-h1 {
+    @apply font-headings text-4xl md:text-6xl lg:text-7xl font-bold text-white;
+    letter-spacing: -0.02em;
+    text-shadow: var(--glow-quantum);
+    line-height: 1.1;
+  }
+
+  /* Secondary Heading - Section Titles */
+  .text-consciousness-h2 {
+    @apply font-headings text-2xl md:text-4xl lg:text-5xl font-semibold text-white;
+    letter-spacing: -0.01em;
+    text-shadow: var(--glow-quantum);
+    line-height: 1.2;
+  }
+
+  /* Tertiary Heading - Subsection Titles */
+  .text-consciousness-h3 {
+    @apply font-headings text-xl md:text-2xl lg:text-3xl font-medium;
+    color: var(--text-secondary);
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+  }
+
+  /* Quaternary Heading - Card Titles */
+  .text-consciousness-h4 {
+    @apply font-sans text-lg md:text-xl font-semibold text-white;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+  }
+
+  /* Evolution Body Text - Main Content */
+  .text-evolution-body {
+    @apply font-sans text-base md:text-lg;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+  }
+
+  /* Evolution Body Large - Emphasis Content */
+  .text-evolution-body-large {
+    @apply font-sans text-lg md:text-xl;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    letter-spacing: 0.005em;
+  }
+
+  /* Tech Accent Text - Technical/Code Elements */
+  .text-tech-accent {
+    @apply font-mono text-sm;
+    color: var(--accent-evolution);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+  }
+
+  /* Quantum Label - Small Labels/Tags */
+  .text-quantum-label {
+    @apply font-sans text-xs md:text-sm font-medium;
+    color: var(--accent-quantum);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Consciousness Quote - Special Quotes/Testimonials */
+  .text-consciousness-quote {
+    @apply font-sans text-lg md:text-xl text-white italic;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    position: relative;
+  }
+
+  .text-consciousness-quote::before {
+    content: '"';
+    @apply text-4xl font-headings;
+    color: var(--accent-quantum);
+    position: absolute;
+    left: -1rem;
+    top: -0.5rem;
+    text-shadow: var(--glow-quantum);
+  }
+
+  /* Evolution Caption - Image/Media Captions */
+  .text-evolution-caption {
+    @apply font-sans text-sm;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+
+  /* Quantum Button Text - CTA Buttons */
+  .text-quantum-button {
+    @apply font-sans text-sm md:text-base font-semibold;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Consciousness Navigation - Menu Items */
+  .text-consciousness-nav {
+    @apply font-sans text-sm md:text-base font-medium;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+    transition: all 0.2s ease;
+  }
+
+  .text-consciousness-nav:hover {
+    color: var(--accent-quantum);
+    text-shadow: var(--glow-quantum);
+  }
+
+  /* Evolution Link - Content Links */
+  .text-evolution-link {
+    @apply font-sans;
+    color: var(--accent-quantum);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .text-evolution-link:hover {
+    @apply text-white;
+    border-bottom-color: currentColor;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+  }
+
+  /* Quantum Badge - Status/Achievement Badges */
+  .text-quantum-badge {
+    @apply font-sans text-xs font-bold;
+    color: var(--background-color);
+    background: linear-gradient(
+      135deg,
+      var(--accent-quantum),
+      var(--accent-consciousness)
+    );
+    padding: 0.25rem 0.5rem;
+    border-radius: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Consciousness Stats - Numbers/Metrics */
+  .text-consciousness-stats {
+    @apply font-headings text-2xl md:text-3xl lg:text-4xl font-bold;
+    color: var(--accent-quantum);
+    letter-spacing: -0.01em;
+    text-shadow: var(--glow-quantum);
+  }
+
+  /* Evolution Subtitle - Supporting Text */
+  .text-evolution-subtitle {
+    @apply font-sans text-base md:text-lg;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+
+  /* Quantum Code - Code Snippets */
+  .text-quantum-code {
+    @apply font-mono text-sm;
+    color: var(--accent-evolution);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* Consciousness Error - Error Messages */
+  .text-consciousness-error {
+    @apply font-sans text-sm text-red-400;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  /* Evolution Success - Success Messages */
+  .text-evolution-success {
+    @apply font-sans text-sm;
+    color: var(--accent-evolution);
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.5rem;
+    border-radius: 0;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  /* Quantum Warning - Warning Messages */
+  .text-quantum-warning {
+    @apply font-sans text-sm;
+    color: #f59e0b; /* energy amber */
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0.5rem;
+    border-radius: 0;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* === RESPONSIVE TYPOGRAPHY ADJUSTMENTS === */
+
+@layer utilities {
+  /* Mobile-first responsive adjustments */
+  @media (max-width: 640px) {
+    .text-consciousness-h1 {
+      @apply text-3xl;
+      line-height: 1.2;
+    }
+
+    .text-consciousness-h2 {
+      @apply text-xl;
+    }
+
+    .text-consciousness-h3 {
+      @apply text-lg;
+    }
+
+    .text-evolution-body {
+      @apply text-sm;
+      line-height: 1.6;
+    }
+  }
+
+  /* Large screen optimizations */
+  @media (min-width: 1280px) {
+    .text-consciousness-h1 {
+      @apply text-8xl;
+    }
+
+    .text-consciousness-h2 {
+      @apply text-6xl;
+    }
+
+    .text-evolution-body {
+      @apply text-xl;
+    }
+  }
+}
+
+/* === ANIMATION UTILITIES === */
+
+@layer utilities {
+  /* Text reveal animation */
+  .text-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: textReveal 0.8s ease-out forwards;
+  }
+
+  @keyframes textReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glow pulse animation */
+  .text-glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%,
+    100% {
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+    }
+    50% {
+      text-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    }
+  }
+
+  /* Quantum shimmer effect */
+  .text-quantum-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(0, 212, 255, 0.4),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}

@@ -1,0 +1,502 @@
+/* MDX Styles - Matching Admin Editor */
+
+/* Import Radix UI colors for both dark and light modes */
+/* Note: blue and blue-dark removed as they are not used in this stylesheet */
+@import url("@radix-ui/colors/slate.css");
+@import url("@radix-ui/colors/slate-dark.css");
+@import url("@radix-ui/colors/mauve.css");
+@import url("@radix-ui/colors/mauve-dark.css");
+@import url("@radix-ui/colors/cyan.css");
+@import url("@radix-ui/colors/cyan-dark.css");
+@import url("@radix-ui/colors/grass.css");
+@import url("@radix-ui/colors/grass-dark.css");
+@import url("@radix-ui/colors/amber.css");
+@import url("@radix-ui/colors/amber-dark.css");
+@import url("@radix-ui/colors/red.css");
+@import url("@radix-ui/colors/red-dark.css");
+
+/* Common variables */
+:root {
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+/* General MDX content styling */
+.mdx-clean-content {
+  font-family: var(--font-ui);
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+  padding: 1rem;
+}
+
+/* Heading styles - New brand typography */
+.mdx-clean-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  border-bottom: none;
+  font-style: normal;
+  font-family: var(--font-headings);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.mdx-clean-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+  border-bottom: none;
+  font-style: normal;
+  font-family: var(--font-headings);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.mdx-clean-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-family: var(--font-headings);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.mdx-clean-content h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.mdx-clean-content h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.mdx-clean-content h6 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  font-style: normal;
+  font-family: var(--font-ui);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* Paragraph styling - Ensure UI font is applied */
+.mdx-clean-content p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+/* Section content styling */
+.mdx-clean-content .ml-4 {
+  margin-left: 1rem;
+}
+
+/* List styles - Ensure UI font is applied */
+.mdx-clean-content ul,
+.mdx-clean-content ol {
+  margin-bottom: 1rem;
+  margin-top: 0.75rem;
+  padding-left: 1.75rem;
+  color: var(--text-primary);
+  list-style-position: outside;
+  line-height: 1.5;
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+.mdx-clean-content ul {
+  list-style-type: disc;
+}
+
+.mdx-clean-content ol {
+  list-style-type: decimal;
+}
+
+.mdx-clean-content li {
+  margin-bottom: 0.5rem;
+  display: list-item;
+  padding-left: 0.25rem;
+  letter-spacing: 0.01em;
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+.mdx-clean-content li strong {
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.mdx-clean-content li em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Ensure italic text is visible in dark mode */
+.dark .mdx-clean-content li em {
+  color: var(--text-secondary); /* Will use the updated lighter color */
+}
+
+/* Nested lists */
+.mdx-clean-content ul ul,
+.mdx-clean-content ol ol,
+.mdx-clean-content ul ol,
+.mdx-clean-content ol ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.mdx-clean-content ul ul {
+  list-style-type: circle;
+}
+
+.mdx-clean-content ul ul ul {
+  list-style-type: square;
+}
+
+/* Blockquote styling - Ensure UI font is applied */
+.mdx-clean-content blockquote {
+  border-left: 3px solid var(--border-primary);
+  padding: 0.75rem 1rem 0.75rem 1.5rem;
+  font-style: italic;
+  margin: 1rem 0;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border-radius: 0;
+  letter-spacing: 0.01em;
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+.dark .mdx-clean-content blockquote {
+  background-color: var(--bg-secondary);
+}
+
+.mdx-clean-content blockquote p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.mdx-clean-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.mdx-clean-content blockquote strong {
+  color: var(--text-primary);
+}
+
+.mdx-clean-content blockquote em {
+  color: var(--text-secondary);
+}
+
+/* Ensure blockquote italic text is visible in dark mode */
+.dark .mdx-clean-content blockquote em {
+  color: var(--text-secondary); /* Will use the updated lighter color */
+}
+
+/* Code blocks */
+.mdx-clean-content pre {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border-secondary);
+  padding: 0.75rem;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow: auto;
+  white-space: pre;
+}
+
+.mdx-clean-content code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.mdx-clean-content :not(pre) > code {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0;
+  font-size: 0.875rem;
+  border: 1px solid var(--border-secondary);
+}
+
+.dark .mdx-clean-content pre,
+.dark .mdx-clean-content :not(pre) > code {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  border-color: var(--code-border);
+}
+
+/* Inline text element styling */
+.mdx-clean-content strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.mdx-clean-content em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Ensure all italic text is visible in dark mode */
+.dark .mdx-clean-content em {
+  color: var(--text-secondary); /* Will use the updated lighter color */
+}
+
+.mdx-clean-content u {
+  text-decoration: underline;
+  text-decoration-color: var(--border-hover);
+}
+
+.mdx-clean-content del {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.mdx-clean-content mark {
+  background-color: var(--brand-secondary);
+  color: var(--text-primary);
+  padding: 0.1rem;
+}
+
+.mdx-clean-content sup {
+  vertical-align: super;
+  font-size: smaller;
+}
+
+.mdx-clean-content sub {
+  vertical-align: sub;
+  font-size: smaller;
+}
+
+/* Dark mode overrides for specific elements */
+.dark .mdx-clean-content mark {
+  background-color: var(--brand-primary);
+}
+
+.mdx-clean-content a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid var(--brand-secondary);
+}
+
+.mdx-clean-content a:hover {
+  color: var(--brand-primary);
+  border-bottom: 1px solid var(--brand-primary);
+}
+
+/* Image styling */
+.mdx-clean-content img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: 0;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.dark .mdx-clean-content img {
+  border-color: var(--border-hover);
+}
+
+.mdx-clean-content img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table styling */
+.mdx-clean-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-secondary);
+  border-radius: 0;
+}
+
+.mdx-clean-content th {
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid var(--border-hover);
+  color: var(--text-primary);
+}
+
+.light .mdx-clean-content th {
+  background-color: var(--bg-secondary);
+}
+
+.dark .mdx-clean-content th {
+  background-color: var(--bg-tertiary);
+}
+
+.mdx-clean-content td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+}
+
+.light .mdx-clean-content td {
+  color: var(--text-primary);
+}
+.dark .mdx-clean-content td {
+  color: var(--text-primary);
+}
+.mdx-clean-content tr:nth-child(even) {
+  background-color: transparent;
+}
+.light .mdx-clean-content tr:nth-child(even) {
+  background-color: var(--bg-secondary);
+}
+
+.mdx-clean-content tr:hover {
+  background-color: var(--bg-hover);
+}
+.light .mdx-clean-content tr:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Horizontal Rule */
+.mdx-clean-content hr {
+  border: none;
+  height: 1px;
+  margin: 2rem 0;
+  background-color: var(--border-secondary);
+  background-image: none; /* Ensure no gradient */
+}
+
+.light .mdx-clean-content hr {
+  background-color: var(--border-secondary);
+}
+
+.dark .mdx-clean-content hr {
+  background-color: var(--border-hover);
+}
+
+/* Selection styling */
+.mdx-clean-content *::selection {
+  background-color: var(--brand-secondary);
+  color: var(--text-primary);
+}
+
+.light .mdx-clean-content *::selection {
+  background-color: var(--brand-secondary);
+  color: var(--text-primary);
+}
+
+.dark .mdx-clean-content *::selection {
+  background-color: var(--brand-primary);
+  color: var(--bg-primary);
+}
+
+/* Keyboard input styling */
+.mdx-clean-content kbd {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-secondary);
+  border-bottom: 2px solid var(--border-hover);
+  color: var(--text-primary);
+  border-radius: 0;
+  padding: 0.2rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.light .mdx-clean-content kbd {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-secondary);
+  border-bottom-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.dark .mdx-clean-content kbd {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-hover);
+  border-bottom-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+/* Admonition styles (Note, Tip, Info, Caution, Danger) */
+.mdx-clean-content .admonition {
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border-left-width: 5px;
+  border-left-style: solid;
+  border-radius: 0;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+.mdx-clean-content .admonition-heading {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mdx-clean-content .admonition-content > :last-child {
+  margin-bottom: 0;
+}
+
+.mdx-clean-content .admonition.note {
+  background-color: var(--admonition-note-bg);
+  border-left-color: var(--admonition-note-border);
+}
+
+.mdx-clean-content .admonition.tip {
+  background-color: var(--admonition-tip-bg);
+  border-left-color: var(--admonition-tip-border);
+}
+
+.mdx-clean-content .admonition.info {
+  background-color: var(--admonition-info-bg);
+  border-left-color: var(--admonition-info-border);
+}
+
+.mdx-clean-content .admonition.caution {
+  background-color: var(--admonition-caution-bg);
+  border-left-color: var(--admonition-caution-border);
+}
+
+.mdx-clean-content .admonition.danger {
+  background-color: var(--admonition-danger-bg);
+  border-left-color: var(--admonition-danger-border);
+}

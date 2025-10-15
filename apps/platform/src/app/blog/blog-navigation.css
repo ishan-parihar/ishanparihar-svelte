@@ -1,0 +1,78 @@
+/* Blog navigation styling - PERSISTENT NAVIGATION (Medium-style) */
+
+/* Navigation container - Sticky positioning for persistent navigation */
+.blog-navigation {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 70px; /* Default fallback - will be dynamically updated by JS */
+  z-index: 40; /* Lower than main header (z-50 = 1000) but higher than content */
+  width: 100%;
+  height: 150px;
+  background-color: white;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  /* Smooth transitions for theme and styling changes AND positioning */
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    top 0.3s ease;
+  will-change: background-color, top; /* Optimize for theme and position transitions */
+  backface-visibility: hidden; /* Prevent flickering during animations */
+
+  /* Ensure persistent positioning on desktop */
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Dark mode styles */
+.dark .blog-navigation {
+  background-color: var(--bg-primary, #000000);
+  border-bottom: 1px solid var(--border-primary, #333333);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced mobile responsiveness - maintain sticky positioning */
+@media (max-width: 768px) {
+  .blog-navigation {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    /* top value will be dynamically set by JS to match actual header height */
+    height: auto;
+    min-height: 150px;
+    /* Ensure no gap by removing any potential margin/padding issues */
+    margin-top: 0;
+    padding-top: 0;
+    /* Force the navigation to start immediately after header */
+    transform: translateY(0);
+  }
+}
+
+/* Additional mobile-specific fixes for gap issues */
+@media (max-width: 768px) {
+  /* Ensure the blog navigation connects seamlessly with the header */
+  .blog-navigation {
+    /* Remove any potential spacing that could create gaps */
+    border-top: none;
+    /* Ensure consistent positioning across different mobile browsers */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Ensure blog navigation works well with header during scroll */
+.blog-navigation.scrolled {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Prevent layout shift during scroll animations */
+.blog-navigation * {
+  will-change: auto; /* Reset will-change for child elements */
+}
+
+/* Smooth transitions for search and category elements */
+.blog-navigation .relative input,
+.blog-navigation .flex.items-center {
+  transition: all 0.2s ease;
+}

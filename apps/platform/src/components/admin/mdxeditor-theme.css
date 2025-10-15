@@ -1,0 +1,1380 @@
+/**
+ * MDXEditor Theme - Minimal UI fixes only
+ * Content styling is handled by prose classes in contentEditableClassName
+ */
+
+/* Import required Radix UI colors for UI elements only */
+@import "@radix-ui/colors/gray.css";
+@import "@radix-ui/colors/gray-dark.css";
+@import "@radix-ui/colors/blue.css";
+@import "@radix-ui/colors/blue-dark.css";
+
+/* ENHANCED: Container for the entire MDX Editor with improved dimensions */
+.mdx-editor-container {
+  border: 1px solid var(--border-secondary, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--bg-primary, white);
+  /* Enhanced container dimensions */
+  width: 100% ;
+  min-height: 600px ; /* Ensure adequate container height */
+  max-width: none ; /* Allow full width usage */
+  /* Improved layout */
+  display: flex ;
+  flex-direction: column ;
+}
+
+.dark .mdx-editor-container {
+  border-color: var(--border-secondary, #374151);
+  background-color: var(--bg-primary, #1f2937);
+}
+
+/* COMPLETE Radix UI semantic aliasing system as per official MDX Editor documentation */
+.mdx-editor-wrapper {
+  /* Base (neutral) color scale - Light mode */
+  --baseBase: var(--gray-1);
+  --baseBgSubtle: var(--gray-2);
+  --baseBg: var(--gray-3);
+  --baseBgHover: var(--gray-4);
+  --baseBgActive: var(--gray-5);
+  --baseLine: var(--gray-6);
+  --baseBorder: var(--gray-7);
+  --baseBorderHover: var(--gray-8);
+  --baseSolid: var(--gray-9);
+  --baseSolidHover: var(--gray-10);
+  --baseText: var(--gray-11);
+  --baseTextContrast: var(--gray-12);
+
+  /* Accent color scale - Light mode */
+  --accentBase: var(--blue-1);
+  --accentBgSubtle: var(--blue-2);
+  --accentBg: var(--blue-3);
+  --accentBgHover: var(--blue-4);
+  --accentBgActive: var(--blue-5);
+  --accentLine: var(--blue-6);
+  --accentBorder: var(--blue-7);
+  --accentBorderHover: var(--blue-8);
+  --accentSolid: var(--blue-9);
+  --accentSolidHover: var(--blue-10);
+  --accentText: var(--blue-11);
+  --accentTextContrast: var(--blue-12);
+
+  /* Font family */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
+  /* Text color */
+  color: var(--baseText);
+}
+
+.mdx-editor-wrapper.dark-theme {
+  /* Base (neutral) color scale - Dark mode */
+  --baseBase: var(--gray-dark-1);
+  --baseBgSubtle: var(--gray-dark-2);
+  --baseBg: var(--gray-dark-3);
+  --baseBgHover: var(--gray-dark-4);
+  --baseBgActive: var(--gray-dark-5);
+  --baseLine: var(--gray-dark-6);
+  --baseBorder: var(--gray-dark-7);
+  --baseBorderHover: var(--gray-dark-8);
+  --baseSolid: var(--gray-dark-9);
+  --baseSolidHover: var(--gray-dark-10);
+  --baseText: var(--gray-dark-11);
+  --baseTextContrast: var(--gray-dark-12);
+
+  /* Accent color scale - Dark mode */
+  --accentBase: var(--blue-dark-1);
+  --accentBgSubtle: var(--blue-dark-2);
+  --accentBg: var(--blue-dark-3);
+  --accentBgHover: var(--blue-dark-4);
+  --accentBgActive: var(--blue-dark-5);
+  --accentLine: var(--blue-dark-6);
+  --accentBorder: var(--blue-dark-7);
+  --accentBorderHover: var(--blue-dark-8);
+  --accentSolid: var(--blue-dark-9);
+  --accentSolidHover: var(--blue-dark-10);
+  --accentText: var(--blue-dark-11);
+  --accentTextContrast: var(--blue-dark-12);
+
+  /* Text color */
+  color: var(--baseText);
+}
+
+/* Toolbar styling using proper semantic variables */
+.mdxeditor-toolbar {
+  background-color: var(--baseBg) ;
+  border-bottom: 1px solid var(--baseBorder) ;
+  z-index: 10 ;
+  padding: 8px 12px ;
+  display: flex ;
+  align-items: center ;
+  gap: 8px ;
+}
+
+/* CRITICAL FIX: Prevent body style conflicts with Radix UI (as per GitHub issue #612) */
+/* This prevents unwanted scrolling behavior when dropdowns are activated */
+.mdx-editor-wrapper {
+  /* Isolate the editor from global body styles that can break Radix UI */
+  isolation: isolate;
+  position: relative;
+  /* Create a new stacking context to prevent z-index issues */
+  z-index: 0;
+  /* Ensure proper font inheritance within the editor */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+/* ENHANCED: Comprehensive Radix UI portal styling to prevent body style interference */
+[data-radix-portal] {
+  /* Override any global body styles that might interfere */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif ;
+  line-height: 1.5 ;
+  letter-spacing: normal ;
+  /* Reset any inherited styles that might cause issues */
+  color: inherit ;
+  background: transparent ;
+  /* Ensure proper box model */
+  box-sizing: border-box ;
+  /* Reset any transforms or filters that might interfere */
+  transform: none ;
+  filter: none ;
+  /* Ensure proper positioning context */
+  position: relative ;
+}
+
+/* ENHANCED: Specific portal styling for MDX Editor components */
+.mdxeditor [data-radix-portal],
+.mdx-editor-wrapper [data-radix-portal] {
+  /* Ensure MDX Editor portals use the correct semantic variables */
+  color: var(--baseText) ;
+  font-family: inherit ;
+  /* Prevent any backdrop filters or effects from interfering */
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+}
+
+/* FIXED: BlockTypeSelect dropdown styling with correct positioning */
+/* Ensure dropdown portal renders properly with correct z-index and positioning */
+.mdxeditor-select-content,
+[data-radix-select-content],
+[data-radix-popper-content-wrapper] {
+  /* Core styling with semantic variables */
+  background-color: var(--baseBase) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 6px ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) ;
+  /* Enhanced z-index management */
+  z-index: 50000 ;
+  /* Layout and sizing */
+  padding: 4px ;
+  min-width: 160px ;
+  max-height: 300px ;
+  overflow-y: auto ;
+  /* CRITICAL FIX: Use absolute positioning for proper dropdown placement */
+  position: absolute ; /* Changed from fixed to absolute for correct positioning relative to trigger */
+  /* Typography */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif ;
+  font-size: 14px ;
+  line-height: 1.4 ;
+  color: var(--baseText) ;
+  /* Reset any inherited styles that might interfere */
+  transform: none ;
+  filter: none ;
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+  /* Ensure proper interaction */
+  pointer-events: auto ;
+  user-select: none ;
+}
+
+.dark-theme .mdxeditor-select-content,
+.dark-theme [data-radix-select-content],
+.dark-theme [data-radix-popper-content-wrapper] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) ;
+}
+
+/* ENHANCED: Ensure select viewport is properly styled */
+[data-radix-select-viewport] {
+  padding: 4px ;
+  background-color: transparent ;
+  /* Reset any inherited styles */
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+}
+
+/* ENHANCED BlockTypeSelect dropdown items with proper visibility and semantic styling */
+.mdxeditor-select-content [data-radix-select-item],
+[data-radix-select-content] [data-radix-select-item],
+[data-radix-popper-content-wrapper] [data-radix-select-item] {
+  color: var(--baseText) ;
+  padding: 8px 12px ;
+  border-radius: 4px ;
+  cursor: pointer ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  background-color: transparent ;
+  display: flex ;
+  align-items: center ;
+  white-space: nowrap ;
+  user-select: none ;
+  outline: none ;
+  position: relative ;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease ;
+  /* Ensure proper font inheritance */
+  font-family: inherit ;
+  line-height: 1.4 ;
+  min-height: 32px ;
+}
+
+/* Hover and focus states for dropdown items */
+.mdxeditor-select-content [data-radix-select-item]:hover,
+[data-radix-select-content] [data-radix-select-item]:hover,
+[data-radix-popper-content-wrapper] [data-radix-select-item]:hover,
+.mdxeditor-select-content [data-radix-select-item][data-highlighted],
+[data-radix-select-content] [data-radix-select-item][data-highlighted],
+[data-radix-popper-content-wrapper] [data-radix-select-item][data-highlighted] {
+  background-color: var(--baseBgHover) ;
+  color: var(--baseText) ;
+  outline: none ;
+}
+
+/* Selected/checked state for dropdown items */
+.mdxeditor-select-content [data-radix-select-item][data-state="checked"],
+[data-radix-select-content] [data-radix-select-item][data-state="checked"],
+[data-radix-popper-content-wrapper]
+  [data-radix-select-item][data-state="checked"] {
+  background-color: var(--accentBgSubtle) ;
+  color: var(--accentText) ;
+  font-weight: 500 ;
+}
+
+/* Disabled state for dropdown items */
+.mdxeditor-select-content [data-radix-select-item][data-disabled],
+[data-radix-select-content] [data-radix-select-item][data-disabled],
+[data-radix-popper-content-wrapper] [data-radix-select-item][data-disabled] {
+  color: var(--baseText) ;
+  opacity: 0.5 ;
+  cursor: not-allowed ;
+}
+
+/* Item text styling */
+.mdxeditor-select-content [data-radix-select-item-text],
+[data-radix-select-content] [data-radix-select-item-text],
+[data-radix-popper-content-wrapper] [data-radix-select-item-text] {
+  color: inherit ;
+  font-size: inherit ;
+  font-weight: inherit ;
+}
+
+/* ENHANCED FIX: BlockTypeSelect trigger button with proper semantic styling */
+.mdxeditor-toolbar [data-radix-select-trigger],
+.mdxeditor-toolbar button[data-radix-select-trigger] {
+  background-color: var(--baseBg) ;
+  color: var(--baseText) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 4px ;
+  padding: 6px 12px ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  min-width: 140px ;
+  height: 32px ;
+  display: inline-flex ;
+  align-items: center ;
+  justify-content: space-between ;
+  cursor: pointer ;
+  user-select: none ;
+  outline: none ;
+  transition: all 0.2s ease ;
+  /* Ensure proper font inheritance */
+  font-family: inherit ;
+  line-height: 1.4 ;
+  text-align: left ;
+}
+
+.mdxeditor-toolbar [data-radix-select-trigger]:hover,
+.mdxeditor-toolbar button[data-radix-select-trigger]:hover {
+  background-color: var(--baseBgHover) ;
+  border-color: var(--baseBorderHover) ;
+}
+
+.mdxeditor-toolbar [data-radix-select-trigger]:focus,
+.mdxeditor-toolbar button[data-radix-select-trigger]:focus,
+.mdxeditor-toolbar [data-radix-select-trigger][data-state="open"],
+.mdxeditor-toolbar button[data-radix-select-trigger][data-state="open"] {
+  border-color: var(--accentBorderHover) ;
+  box-shadow: 0 0 0 2px var(--accentBgActive) ;
+  background-color: var(--baseBgActive) ;
+}
+
+/* Ensure select value text is visible and properly styled */
+.mdxeditor-toolbar [data-radix-select-value],
+.mdxeditor-toolbar [data-radix-select-trigger] [data-radix-select-value] {
+  color: var(--baseText) ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  flex: 1 ;
+  text-align: left ;
+  white-space: nowrap ;
+  overflow: hidden ;
+  text-overflow: ellipsis ;
+}
+
+/* Select icon styling */
+.mdxeditor-toolbar [data-radix-select-icon],
+.mdxeditor-toolbar [data-radix-select-trigger] [data-radix-select-icon] {
+  color: var(--baseText) ;
+  width: 16px ;
+  height: 16px ;
+  flex-shrink: 0 ;
+  margin-left: 8px ;
+  transition: transform 0.2s ease ;
+}
+
+/* Rotate icon when dropdown is open */
+.mdxeditor-toolbar
+  [data-radix-select-trigger][data-state="open"]
+  [data-radix-select-icon] {
+  transform: rotate(180deg) ;
+}
+
+/* ENHANCED FIX: Rich text content area styling with improved dimensions */
+.mdxeditor-root-contenteditable {
+  background-color: transparent ;
+  /* SCROLLBAR FIX: Ensure scrollbar is always visible for long content */
+  overflow-y: auto ;
+  /* IMPROVED DIMENSIONS: Provide adequate space for blog content editing */
+  max-height: 800px ; /* Increased from 500px for better editing experience */
+  min-height: 500px ; /* Increased from 300px for adequate preview space */
+  padding: 24px 32px ; /* Increased padding for better content spacing */
+  border: none ;
+  outline: none ;
+  /* Ensure content can scroll properly */
+  position: relative ;
+  /* Enhanced width management */
+  width: 100% ;
+  box-sizing: border-box ;
+}
+
+/* HEADING HIERARCHY FIX: Ensure headings display with proper visual hierarchy in editor */
+.mdxeditor-root-contenteditable h1 {
+  font-size: 2rem ;
+  font-weight: 700 ;
+  line-height: 1.2 ;
+  margin-top: 2rem ;
+  margin-bottom: 1rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-headings, inherit) ;
+  letter-spacing: -0.02em ;
+}
+
+.mdxeditor-root-contenteditable h2 {
+  font-size: 1.5rem ;
+  font-weight: 700 ;
+  line-height: 1.3 ;
+  margin-top: 1.75rem ;
+  margin-bottom: 0.75rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-headings, inherit) ;
+  letter-spacing: -0.02em ;
+}
+
+.mdxeditor-root-contenteditable h3 {
+  font-size: 1.25rem ;
+  font-weight: 700 ;
+  line-height: 1.4 ;
+  margin-top: 1.5rem ;
+  margin-bottom: 0.5rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-headings, inherit) ;
+  letter-spacing: -0.02em ;
+}
+
+.mdxeditor-root-contenteditable h4 {
+  font-size: 1.125rem ;
+  font-weight: 600 ;
+  line-height: 1.4 ;
+  margin-top: 1.25rem ;
+  margin-bottom: 0.5rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-ui, inherit) ;
+  letter-spacing: -0.01em ;
+}
+
+.mdxeditor-root-contenteditable h5 {
+  font-size: 1rem ;
+  font-weight: 600 ;
+  line-height: 1.4 ;
+  margin-top: 1rem ;
+  margin-bottom: 0.5rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-ui, inherit) ;
+  letter-spacing: -0.01em ;
+}
+
+.mdxeditor-root-contenteditable h6 {
+  font-size: 0.875rem ;
+  font-weight: 600 ;
+  line-height: 1.4 ;
+  margin-top: 1rem ;
+  margin-bottom: 0.5rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-ui, inherit) ;
+  letter-spacing: -0.01em ;
+}
+
+/* Paragraph styling to match blog posts */
+.mdxeditor-root-contenteditable p {
+  font-size: 1rem ;
+  font-weight: 400 ;
+  line-height: 1.6 ;
+  margin-bottom: 1rem ;
+  color: var(--baseText) ;
+  font-family: var(--font-ui, inherit) ;
+  letter-spacing: 0.01em ;
+}
+
+/* Ensure prose styles work properly in editor */
+.prose {
+  color: inherit ;
+  max-width: none ; /* Remove prose max-width constraint */
+}
+
+/* Override any conflicting prose styles that might interfere with editor functionality */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: var(--baseText) ;
+}
+
+.prose p {
+  color: var(--baseText) ;
+}
+
+/* CRITICAL FIX: Complete popup and modal styling using semantic variables */
+.mdxeditor-popup-container {
+  background-color: var(--baseBase) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 6px ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) ;
+  z-index: 50000 ;
+  padding: 16px ;
+  color: var(--baseText) ;
+}
+
+.dark-theme .mdxeditor-popup-container {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) ;
+}
+
+/* Input and textarea styling in popups */
+.mdxeditor-popup-container input,
+.mdxeditor-popup-container textarea {
+  background-color: var(--baseBg) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 4px ;
+  padding: 8px 12px ;
+  color: var(--baseText) ;
+  font-size: 14px ;
+  width: 100% ;
+}
+
+.mdxeditor-popup-container input:focus,
+.mdxeditor-popup-container textarea:focus {
+  border-color: var(--accentBorderHover) ;
+  outline: none ;
+  box-shadow: 0 0 0 2px var(--accentBgActive) ;
+}
+
+/* Button styling in popups */
+.mdxeditor-popup-container button {
+  background-color: var(--accentSolid) ;
+  color: var(--accentTextContrast) ;
+  border: none ;
+  border-radius: 4px ;
+  padding: 8px 16px ;
+  font-size: 14px ;
+  font-weight: 500 ;
+  cursor: pointer ;
+  transition: background-color 0.2s ease ;
+}
+
+.mdxeditor-popup-container button:hover {
+  background-color: var(--accentSolidHover) ;
+}
+
+.mdxeditor-popup-container button:disabled {
+  background-color: var(--baseBgActive) ;
+  color: var(--baseText) ;
+  cursor: not-allowed ;
+  opacity: 0.6 ;
+}
+
+/* Label styling in popups */
+.mdxeditor-popup-container label {
+  color: var(--baseText) ;
+  font-size: 14px ;
+  font-weight: 500 ;
+  margin-bottom: 4px ;
+  display: block ;
+}
+
+/* Source editor basic styling */
+.mdxeditor-source-editor {
+  background-color: var(--baseBg);
+  border: 1px solid var(--baseBorder);
+}
+
+/* ENHANCED FIX: Comprehensive portal and dropdown rendering */
+/* Fix for Radix UI portals that might be rendered outside the editor */
+[data-radix-portal] {
+  z-index: 50000 ;
+  /* Ensure portals are not affected by parent transforms */
+  transform: none ;
+  /* Reset any inherited filters */
+  filter: none ;
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+}
+
+/* ENHANCED: Select dropdown viewport styling */
+[data-radix-select-viewport] {
+  padding: 4px ;
+  background-color: transparent ;
+  /* Ensure proper scrolling */
+  overflow-y: auto ;
+  max-height: inherit ;
+}
+
+/* ENHANCED: Editor wrapper with improved overflow handling */
+.mdx-editor-wrapper {
+  position: relative ;
+  overflow: visible ; /* Allow dropdowns to overflow */
+  /* Create proper stacking context */
+  z-index: 0 ;
+  /* Ensure proper isolation */
+  isolation: isolate ;
+}
+
+/* ENHANCED: Editor scrolling and overflow behavior */
+.mdx-editor-wrapper .mdxeditor {
+  position: relative ;
+  overflow: visible ; /* Allow toolbar dropdowns to show */
+  /* Ensure proper stacking */
+  z-index: 1 ;
+}
+
+/* CRITICAL FIX: Prevent body scroll lock issues (GitHub issue #612 solution) */
+/* This prevents the unwanted scrolling behavior when dropdowns are activated */
+body[data-scroll-locked] {
+  /* Override any scroll locking that might interfere with MDX Editor */
+  overflow: visible ;
+  position: static ;
+  /* Prevent any transforms that might break portal positioning */
+  transform: none ;
+}
+
+/* FIXED: Ensure proper portal positioning for all Radix UI components */
+[data-radix-popper-content-wrapper] {
+  z-index: 50000 ;
+  /* CRITICAL FIX: Use absolute positioning for proper dropdown placement */
+  position: absolute ; /* Changed from fixed to absolute for correct positioning */
+  /* Allow transforms for proper positioning calculations */
+  /* transform: none ; */ /* Commented out to allow Radix UI positioning */
+  filter: none ;
+}
+
+/* CRITICAL FIX: Image dialog and all modal dialogs styling with enhanced functionality */
+.mdxeditor [role="dialog"],
+.mdxeditor [data-testid="image-upload-dialog"],
+[role="dialog"][data-radix-dialog-content],
+[data-radix-dialog-content] {
+  /* Enhanced z-index management */
+  z-index: 50001 ;
+  /* Core styling with semantic variables */
+  background-color: var(--baseBase) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 8px ;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) ;
+  color: var(--baseText) ;
+  /* Layout and sizing */
+  padding: 24px ;
+  min-width: 400px ;
+  max-width: 90vw ;
+  max-height: 90vh ;
+  /* Positioning */
+  position: fixed ;
+  top: 50% ;
+  left: 50% ;
+  transform: translate(-50%, -50%) ;
+  /* Typography */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif ;
+  font-size: 14px ;
+  line-height: 1.5 ;
+  /* Reset any inherited styles that might interfere */
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+  filter: none ;
+  /* CRITICAL: Ensure proper interaction and visibility */
+  pointer-events: auto ;
+  opacity: 1 ;
+  visibility: visible ;
+  display: block ;
+  /* Scrolling for long content */
+  overflow-y: auto ;
+}
+
+.dark-theme .mdxeditor [role="dialog"],
+.dark-theme .mdxeditor [data-testid="image-upload-dialog"],
+.dark-theme [role="dialog"][data-radix-dialog-content],
+.dark-theme [data-radix-dialog-content] {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) ;
+}
+
+/* CRITICAL FIX: Dialog overlay with enhanced functionality */
+[data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.5) ;
+  position: fixed ;
+  inset: 0 ;
+  z-index: 50000 ;
+  /* Ensure proper backdrop behavior */
+  backdrop-filter: blur(4px) ;
+  -webkit-backdrop-filter: blur(4px) ;
+  /* CRITICAL: Ensure overlay is visible and functional */
+  opacity: 1 ;
+  visibility: visible ;
+  display: block ;
+  pointer-events: auto ;
+  /* Reset any inherited styles that might interfere */
+  transform: none ;
+  filter: none ;
+}
+
+/* ENHANCED: Ensure dialog portals are properly rendered */
+[data-radix-portal]:has([role="dialog"]),
+[data-radix-portal]:has([data-radix-dialog-content]) {
+  /* Ensure dialog portals are visible and functional */
+  z-index: 50000 ;
+  position: fixed ;
+  inset: 0 ;
+  pointer-events: none ; /* Allow clicks to pass through to overlay and content */
+}
+
+/* ENHANCED: Ensure dialog content receives pointer events */
+[data-radix-portal] [role="dialog"],
+[data-radix-portal] [data-radix-dialog-content] {
+  pointer-events: auto ;
+}
+
+/* Dialog title styling */
+.mdxeditor [role="dialog"] h2,
+.mdxeditor [role="dialog"] h3,
+.mdxeditor [data-testid="image-upload-dialog"] h2,
+.mdxeditor [data-testid="image-upload-dialog"] h3 {
+  color: var(--baseText) ;
+  font-size: 18px ;
+  font-weight: 600 ;
+  margin-bottom: 16px ;
+  margin-top: 0 ;
+}
+
+/* ENHANCED: Dialog form elements with improved visibility and interaction */
+.mdxeditor [role="dialog"] input,
+.mdxeditor [role="dialog"] textarea,
+.mdxeditor [data-testid="image-upload-dialog"] input,
+.mdxeditor [data-testid="image-upload-dialog"] textarea,
+[data-radix-dialog-content] input,
+[data-radix-dialog-content] textarea {
+  /* Core styling */
+  background-color: var(--baseBg) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 4px ;
+  padding: 8px 12px ;
+  color: var(--baseText) ;
+  /* Typography */
+  font-size: 14px ;
+  font-family: inherit ;
+  line-height: 1.4 ;
+  /* Layout */
+  width: 100% ;
+  margin-bottom: 12px ;
+  box-sizing: border-box ;
+  /* Reset any inherited styles */
+  appearance: none ;
+  -webkit-appearance: none ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+.mdxeditor [role="dialog"] input:focus,
+.mdxeditor [role="dialog"] textarea:focus,
+.mdxeditor [data-testid="image-upload-dialog"] input:focus,
+.mdxeditor [data-testid="image-upload-dialog"] textarea:focus,
+[data-radix-dialog-content] input:focus,
+[data-radix-dialog-content] textarea:focus {
+  border-color: var(--accentBorderHover) ;
+  outline: none ;
+  box-shadow: 0 0 0 2px var(--accentBgActive) ;
+}
+
+/* ENHANCED: Dialog labels for better form accessibility */
+.mdxeditor [role="dialog"] label,
+.mdxeditor [data-testid="image-upload-dialog"] label,
+[data-radix-dialog-content] label {
+  color: var(--baseText) ;
+  font-size: 14px ;
+  font-weight: 500 ;
+  margin-bottom: 4px ;
+  display: block ;
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Dialog buttons with improved visibility and interaction */
+.mdxeditor [role="dialog"] button,
+.mdxeditor [data-testid="image-upload-dialog"] button,
+[data-radix-dialog-content] button {
+  /* Core styling */
+  background-color: var(--accentSolid) ;
+  color: var(--accentTextContrast) ;
+  border: none ;
+  border-radius: 4px ;
+  padding: 8px 16px ;
+  /* Typography */
+  font-size: 14px ;
+  font-weight: 500 ;
+  font-family: inherit ;
+  line-height: 1.4 ;
+  /* Interaction */
+  cursor: pointer ;
+  margin-right: 8px ;
+  transition: background-color 0.2s ease ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+  /* Reset any inherited styles */
+  appearance: none ;
+  -webkit-appearance: none ;
+  text-decoration: none ;
+  /* Ensure proper sizing */
+  min-height: 36px ;
+  display: inline-flex ;
+  align-items: center ;
+  justify-content: center ;
+}
+
+.mdxeditor [role="dialog"] button:hover,
+.mdxeditor [data-testid="image-upload-dialog"] button:hover,
+[data-radix-dialog-content] button:hover {
+  background-color: var(--accentSolidHover) ;
+}
+
+/* ENHANCED: Secondary/cancel buttons with better contrast */
+.mdxeditor [role="dialog"] button[data-variant="secondary"],
+.mdxeditor [role="dialog"] button:last-child:not([type="submit"]),
+.mdxeditor [data-testid="image-upload-dialog"] button[data-variant="secondary"],
+.mdxeditor
+  [data-testid="image-upload-dialog"]
+  button:last-child:not([type="submit"]),
+[data-radix-dialog-content] button[data-variant="secondary"] {
+  background-color: var(--baseBg) ;
+  color: var(--baseText) ;
+  border: 1px solid var(--baseBorder) ;
+}
+
+.mdxeditor [role="dialog"] button[data-variant="secondary"]:hover,
+.mdxeditor [role="dialog"] button:last-child:not([type="submit"]):hover,
+.mdxeditor
+  [data-testid="image-upload-dialog"]
+  button[data-variant="secondary"]:hover,
+.mdxeditor
+  [data-testid="image-upload-dialog"]
+  button:last-child:not([type="submit"]):hover,
+[data-radix-dialog-content] button[data-variant="secondary"]:hover {
+  background-color: var(--baseBgHover) ;
+}
+
+/* ENHANCED: File input styling for image upload */
+.mdxeditor [role="dialog"] input[type="file"],
+.mdxeditor [data-testid="image-upload-dialog"] input[type="file"],
+[data-radix-dialog-content] input[type="file"] {
+  padding: 12px ;
+  border: 2px dashed var(--baseBorder) ;
+  border-radius: 6px ;
+  background-color: var(--baseBgSubtle) ;
+  cursor: pointer ;
+}
+
+.mdxeditor [role="dialog"] input[type="file"]:hover,
+.mdxeditor [data-testid="image-upload-dialog"] input[type="file"]:hover,
+[data-radix-dialog-content] input[type="file"]:hover {
+  border-color: var(--accentBorder) ;
+  background-color: var(--baseBg) ;
+}
+
+/* Additional scrollbar styling for webkit browsers */
+.mdxeditor-root-contenteditable::-webkit-scrollbar {
+  width: 8px ;
+}
+
+.mdxeditor-root-contenteditable::-webkit-scrollbar-track {
+  background: var(--baseBg) ;
+  border-radius: 4px ;
+}
+
+.mdxeditor-root-contenteditable::-webkit-scrollbar-thumb {
+  background: var(--baseBorder) ;
+  border-radius: 4px ;
+}
+
+.mdxeditor-root-contenteditable::-webkit-scrollbar-thumb:hover {
+  background: var(--baseBorderHover) ;
+}
+
+/* ===== ENHANCED IMAGE MODAL SPECIFIC FIXES ===== */
+/* These fixes specifically target the image upload/settings modal that was appearing white */
+
+/* CRITICAL FIX: Image modal container and wrapper */
+.mdxeditor [data-testid="image-upload-dialog"],
+.mdxeditor [data-testid="image-edit-dialog"],
+.mdxeditor [aria-label*="image" i][role="dialog"],
+.mdxeditor [aria-labelledby*="image" i][role="dialog"] {
+  /* Ensure modal is visible and properly styled */
+  background-color: var(--baseBase) ;
+  color: var(--baseText) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 8px ;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) ;
+  /* Positioning and sizing */
+  position: fixed ;
+  top: 50% ;
+  left: 50% ;
+  transform: translate(-50%, -50%) ;
+  min-width: 400px ;
+  max-width: 90vw ;
+  max-height: 90vh ;
+  padding: 24px ;
+  /* Z-index management */
+  z-index: 50001 ;
+  /* Typography */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif ;
+  font-size: 14px ;
+  line-height: 1.5 ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+  /* Reset any inherited styles */
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+  filter: none ;
+  /* Scrolling */
+  overflow-y: auto ;
+}
+
+.dark-theme .mdxeditor [data-testid="image-upload-dialog"],
+.dark-theme .mdxeditor [data-testid="image-edit-dialog"],
+.dark-theme .mdxeditor [aria-label*="image" i][role="dialog"],
+.dark-theme .mdxeditor [aria-labelledby*="image" i][role="dialog"] {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) ;
+}
+
+/* ENHANCED: Image modal form container */
+.mdxeditor [data-testid="image-upload-dialog"] form,
+.mdxeditor [data-testid="image-edit-dialog"] form,
+.mdxeditor [aria-label*="image" i][role="dialog"] form,
+.mdxeditor [aria-labelledby*="image" i][role="dialog"] form {
+  background-color: transparent ;
+  color: inherit ;
+  padding: 0 ;
+  margin: 0 ;
+  /* Ensure form is visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Image modal field groups and containers */
+.mdxeditor [data-testid="image-upload-dialog"] .field-group,
+.mdxeditor [data-testid="image-upload-dialog"] .form-group,
+.mdxeditor [data-testid="image-upload-dialog"] div:has(input),
+.mdxeditor [data-testid="image-upload-dialog"] div:has(textarea) {
+  margin-bottom: 16px ;
+  /* Ensure containers are visible */
+  opacity: 1 ;
+  visibility: visible ;
+  background-color: transparent ;
+}
+
+/* ENHANCED: Image modal titles and headings */
+.mdxeditor [data-testid="image-upload-dialog"] h1,
+.mdxeditor [data-testid="image-upload-dialog"] h2,
+.mdxeditor [data-testid="image-upload-dialog"] h3,
+.mdxeditor [data-testid="image-edit-dialog"] h1,
+.mdxeditor [data-testid="image-edit-dialog"] h2,
+.mdxeditor [data-testid="image-edit-dialog"] h3 {
+  color: var(--baseText) ;
+  font-size: 18px ;
+  font-weight: 600 ;
+  margin-bottom: 16px ;
+  margin-top: 0 ;
+  /* Ensure headings are visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Image modal button containers and actions */
+.mdxeditor [data-testid="image-upload-dialog"] .button-group,
+.mdxeditor [data-testid="image-upload-dialog"] .actions,
+.mdxeditor [data-testid="image-upload-dialog"] .modal-actions,
+.mdxeditor [data-testid="image-edit-dialog"] .button-group,
+.mdxeditor [data-testid="image-edit-dialog"] .actions,
+.mdxeditor [data-testid="image-edit-dialog"] .modal-actions {
+  display: flex ;
+  gap: 8px ;
+  justify-content: flex-end ;
+  margin-top: 20px ;
+  padding-top: 16px ;
+  border-top: 1px solid var(--baseBorder) ;
+  /* Ensure button containers are visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Image modal close button (X button) */
+.mdxeditor [data-testid="image-upload-dialog"] [data-radix-dialog-close],
+.mdxeditor [data-testid="image-edit-dialog"] [data-radix-dialog-close],
+.mdxeditor [aria-label*="image" i][role="dialog"] [data-radix-dialog-close] {
+  position: absolute ;
+  top: 12px ;
+  right: 12px ;
+  width: 24px ;
+  height: 24px ;
+  border-radius: 4px ;
+  border: none ;
+  background-color: var(--baseBgHover) ;
+  color: var(--baseText) ;
+  cursor: pointer ;
+  display: flex ;
+  align-items: center ;
+  justify-content: center ;
+  /* Ensure close button is visible */
+  opacity: 1 ;
+  visibility: visible ;
+  z-index: 1 ;
+}
+
+.mdxeditor [data-testid="image-upload-dialog"] [data-radix-dialog-close]:hover,
+.mdxeditor [data-testid="image-edit-dialog"] [data-radix-dialog-close]:hover,
+.mdxeditor
+  [aria-label*="image" i][role="dialog"]
+  [data-radix-dialog-close]:hover {
+  background-color: var(--baseBgActive) ;
+}
+
+/* ENHANCED: Image preview container */
+.mdxeditor [data-testid="image-upload-dialog"] .image-preview,
+.mdxeditor [data-testid="image-edit-dialog"] .image-preview,
+.mdxeditor [data-testid="image-upload-dialog"] img,
+.mdxeditor [data-testid="image-edit-dialog"] img {
+  max-width: 100% ;
+  max-height: 200px ;
+  border-radius: 4px ;
+  border: 1px solid var(--baseBorder) ;
+  margin: 12px 0 ;
+  /* Ensure image previews are visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Image modal error messages and validation */
+.mdxeditor [data-testid="image-upload-dialog"] .error,
+.mdxeditor [data-testid="image-upload-dialog"] .error-message,
+.mdxeditor [data-testid="image-edit-dialog"] .error,
+.mdxeditor [data-testid="image-edit-dialog"] .error-message {
+  color: var(--destructive) ;
+  font-size: 12px ;
+  margin-top: 4px ;
+  /* Ensure error messages are visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Image modal help text and descriptions */
+.mdxeditor [data-testid="image-upload-dialog"] .help-text,
+.mdxeditor [data-testid="image-upload-dialog"] .description,
+.mdxeditor [data-testid="image-edit-dialog"] .help-text,
+.mdxeditor [data-testid="image-edit-dialog"] .description {
+  color: var(--muted-foreground) ;
+  font-size: 12px ;
+  margin-top: 4px ;
+  /* Ensure help text is visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ===== CRITICAL FIX: INSERT IMAGE BUTTON FUNCTIONALITY ===== */
+/* Ensure the Insert Image button in the toolbar is properly clickable and functional */
+
+/* ENHANCED: Insert Image button styling and functionality */
+.mdxeditor-toolbar button[title*="image" i],
+.mdxeditor-toolbar button[aria-label*="image" i],
+.mdxeditor-toolbar [data-testid*="image"],
+.mdxeditor-toolbar button:has(svg[data-icon="image"]),
+.mdxeditor-toolbar button:has([data-icon="image"]) {
+  /* Ensure button is visible and clickable */
+  background-color: var(--baseBg) ;
+  color: var(--baseText) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 4px ;
+  padding: 6px 8px ;
+  cursor: pointer ;
+  /* Ensure proper interaction */
+  pointer-events: auto ;
+  opacity: 1 ;
+  visibility: visible ;
+  /* Reset any inherited styles that might block interaction */
+  transform: none ;
+  filter: none ;
+  /* Ensure proper stacking */
+  position: relative ;
+  z-index: 1 ;
+}
+
+.mdxeditor-toolbar button[title*="image" i]:hover,
+.mdxeditor-toolbar button[aria-label*="image" i]:hover,
+.mdxeditor-toolbar [data-testid*="image"]:hover,
+.mdxeditor-toolbar button:has(svg[data-icon="image"]):hover,
+.mdxeditor-toolbar button:has([data-icon="image"]):hover {
+  background-color: var(--baseBgHover) ;
+  border-color: var(--baseBorderHover) ;
+}
+
+/* ENHANCED: Ensure all toolbar buttons are properly functional */
+.mdxeditor-toolbar button {
+  /* Ensure all toolbar buttons are clickable */
+  pointer-events: auto ;
+  cursor: pointer ;
+  /* Reset any inherited styles that might interfere */
+  transform: none ;
+  filter: none ;
+  /* Ensure proper visibility */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ===== ENHANCED BLOCKTYPESELECT DROPDOWN FIXES ===== */
+/* These fixes specifically target the BlockTypeSelect dropdown that wasn't functioning properly */
+
+/* CRITICAL FIX: BlockTypeSelect trigger button enhancement */
+.mdxeditor-toolbar [data-radix-select-trigger][aria-expanded="false"],
+.mdxeditor-toolbar [data-radix-select-trigger][aria-expanded="true"] {
+  /* Ensure trigger is always visible and interactive */
+  background-color: var(--baseBg) ;
+  color: var(--baseText) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 4px ;
+  padding: 6px 12px ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  min-width: 140px ;
+  height: 32px ;
+  display: inline-flex ;
+  align-items: center ;
+  justify-content: space-between ;
+  cursor: pointer ;
+  user-select: none ;
+  outline: none ;
+  transition: all 0.2s ease ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+  /* Reset any inherited styles */
+  transform: none ;
+  filter: none ;
+  /* Ensure proper stacking */
+  position: relative ;
+  z-index: 1 ;
+}
+
+/* FIXED: BlockTypeSelect dropdown content with correct positioning */
+.mdxeditor [data-radix-select-content],
+.mdxeditor-select-content {
+  /* Core styling */
+  background-color: var(--baseBase) ;
+  border: 1px solid var(--baseBorder) ;
+  border-radius: 6px ;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) ;
+  /* CRITICAL FIX: Use absolute positioning for proper dropdown placement */
+  position: absolute ; /* Changed from fixed to absolute for correct positioning */
+  z-index: 50000 ;
+  /* Layout */
+  padding: 4px ;
+  min-width: 160px ;
+  max-height: 300px ;
+  overflow-y: auto ;
+  /* Typography */
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif ;
+  font-size: 14px ;
+  line-height: 1.4 ;
+  color: var(--baseText) ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+  /* Allow transforms for proper positioning calculations */
+  /* transform: none ; */ /* Commented out to allow Radix UI positioning */
+  filter: none ;
+  backdrop-filter: none ;
+  -webkit-backdrop-filter: none ;
+  /* Interaction */
+  pointer-events: auto ;
+  user-select: none ;
+}
+
+.dark-theme .mdxeditor [data-radix-select-content],
+.dark-theme .mdxeditor-select-content {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) ;
+}
+
+/* ENHANCED: BlockTypeSelect dropdown items with comprehensive styling */
+.mdxeditor [data-radix-select-content] [data-radix-select-item],
+.mdxeditor-select-content [data-radix-select-item] {
+  /* Core styling */
+  color: var(--baseText) ;
+  background-color: transparent ;
+  padding: 8px 12px ;
+  border-radius: 4px ;
+  cursor: pointer ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  /* Layout */
+  display: flex ;
+  align-items: center ;
+  white-space: nowrap ;
+  user-select: none ;
+  outline: none ;
+  position: relative ;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease ;
+  /* Typography */
+  font-family: inherit ;
+  line-height: 1.4 ;
+  min-height: 32px ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+  /* Reset any inherited styles */
+  transform: none ;
+  filter: none ;
+}
+
+/* ENHANCED: BlockTypeSelect dropdown item states */
+.mdxeditor [data-radix-select-content] [data-radix-select-item]:hover,
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-highlighted],
+.mdxeditor-select-content [data-radix-select-item]:hover,
+.mdxeditor-select-content [data-radix-select-item][data-highlighted] {
+  background-color: var(--baseBgHover) ;
+  color: var(--baseText) ;
+  outline: none ;
+}
+
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-state="checked"],
+.mdxeditor-select-content [data-radix-select-item][data-state="checked"] {
+  background-color: var(--accentBgSubtle) ;
+  color: var(--accentText) ;
+  font-weight: 500 ;
+}
+
+.mdxeditor [data-radix-select-content] [data-radix-select-item][data-disabled],
+.mdxeditor-select-content [data-radix-select-item][data-disabled] {
+  color: var(--baseText) ;
+  opacity: 0.5 ;
+  cursor: not-allowed ;
+}
+
+/* ENHANCED: BlockTypeSelect item text styling */
+.mdxeditor [data-radix-select-content] [data-radix-select-item-text],
+.mdxeditor-select-content [data-radix-select-item-text] {
+  color: inherit ;
+  font-size: inherit ;
+  font-weight: inherit ;
+  /* Ensure text is visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: BlockTypeSelect value display in trigger */
+.mdxeditor-toolbar [data-radix-select-value] {
+  color: var(--baseText) ;
+  font-size: 14px ;
+  font-weight: 400 ;
+  flex: 1 ;
+  text-align: left ;
+  white-space: nowrap ;
+  overflow: hidden ;
+  text-overflow: ellipsis ;
+  /* Ensure value text is visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: BlockTypeSelect icon styling */
+.mdxeditor-toolbar [data-radix-select-icon] {
+  color: var(--baseText) ;
+  width: 16px ;
+  height: 16px ;
+  flex-shrink: 0 ;
+  margin-left: 8px ;
+  transition: transform 0.2s ease ;
+  /* Ensure icon is visible */
+  opacity: 1 ;
+  visibility: visible ;
+}
+
+/* ENHANCED: Icon rotation when dropdown is open */
+.mdxeditor-toolbar
+  [data-radix-select-trigger][data-state="open"]
+  [data-radix-select-icon] {
+  transform: rotate(180deg) ;
+}
+
+/* FIXED: Ensure BlockTypeSelect dropdown appears above other elements with correct positioning */
+[data-radix-popper-content-wrapper]:has([data-radix-select-content]) {
+  z-index: 50000 ;
+  /* CRITICAL FIX: Use absolute positioning for proper dropdown placement */
+  position: absolute ; /* Changed from fixed to absolute for correct positioning */
+  /* Allow transforms for proper positioning calculations */
+  /* transform: none ; */ /* Commented out to allow Radix UI positioning */
+  filter: none ;
+}
+
+/* ENHANCED: BlockTypeSelect scroll area styling */
+.mdxeditor [data-radix-select-content] [data-radix-scroll-area-viewport],
+.mdxeditor-select-content [data-radix-scroll-area-viewport] {
+  background-color: transparent ;
+  /* Ensure scrolling works properly */
+  overflow-y: auto ;
+  max-height: inherit ;
+}
+
+/* ENHANCED: BlockTypeSelect specific option styling for better UX */
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="paragraph"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading1"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading2"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading3"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading4"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading5"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="heading6"],
+.mdxeditor
+  [data-radix-select-content]
+  [data-radix-select-item][data-value="blockquote"] {
+  /* Ensure all block type options are properly styled and visible */
+  min-height: 36px ;
+  display: flex ;
+  align-items: center ;
+  padding: 8px 12px ;
+  /* Ensure visibility */
+  opacity: 1 ;
+  visibility: visible ;
+}

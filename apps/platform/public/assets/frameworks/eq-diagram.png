@@ -1,0 +1,45 @@
+<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<svg width="500" height="400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+   .title { font: bold 24px sans-serif; fill: #2c3e50; }
+    .label { font: 16px sans-serif; fill: #34495e; }
+   .component { font: 14px sans-serif; fill: #2c3e50; }
+   .center-circle { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+   .component-circle { fill: #2ecc71; stroke: #27ae60; stroke-width: 2; }
+   .connector { stroke: #95a5a6; stroke-width: 2; stroke-dasharray: 5,5; }
+  </style>
+  
+  <!-- Title -->
+  <text x="250" y="30" text-anchor="middle" class="title">Emotional Intelligence Framework</text>
+  
+  <!-- Central EQ concept -->
+  <circle cx="250" cy="200" r="50" class="center-circle"/>
+  <text x="250" y="205" text-anchor="middle" class="label">EQ</text>
+  
+  <!-- Four components of EQ -->
+  <circle cx="250" cy="100" r="35" class="component-circle"/>
+  <text x="250" y="95" text-anchor="middle" class="component">Self-</text>
+  <text x="250" y="110" text-anchor="middle" class="component">Awareness</text>
+  
+  <circle cx="350" cy="200" r="35" class="component-circle"/>
+  <text x="350" y="195" text-anchor="middle" class="component">Social</text>
+  <text x="350" y="210" text-anchor="middle" class="component">Skills</text>
+  
+  <circle cx="250" cy="300" r="35" class="component-circle"/>
+  <text x="250" y="295" text-anchor="middle" class="component">Self-</text>
+  <text x="250" y="310" text-anchor="middle" class="component">Management</text>
+  
+  <circle cx="150" cy="200" r="35" class="component-circle"/>
+  <text x="150" y="195" text-anchor="middle" class="component">Social</text>
+  <text x="150" y="210" text-anchor="middle" class="component">Awareness</text>
+  
+  <!-- Connecting lines -->
+  <line x1="250" y1="150" x2="250" y2="100" class="connector"/>
+  <line x1="290" y1="180" x2="340" y2="180" class="connector"/>
+  <line x1="250" y1="250" x2="250" y2="300" class="connector"/>
+  <line x1="210" y1="180" x2="160" y2="180" class="connector"/>
+  
+  <!-- Additional labels -->
+  <text x="50" y="350" class="component">Placeholder for actual EQ framework diagram</text>
+  <text x="50" y="370" class="component">To be replaced with high-quality diagram</text>
+</svg>]]>

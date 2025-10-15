@@ -1,0 +1,432 @@
+/* Blog Post Layout CSS - Self-contained styles for blog post sidebar */
+
+/* ===== CSS CUSTOM PROPERTIES AND VARIABLES ===== */
+/* Variables for Vectura Labs theming consistency */
+:root {
+  --sidebar-border-color: var(--ui-border);
+  --sidebar-bg-light: var(--surface-background);
+  --scrollbar-thumb-color: var(--text-tertiary);
+  --text-color-light: var(--text-primary);
+  --transition-standard: all 0.3s ease;
+  --transition-hover: all 0.2s ease;
+  --transition-button: all 0.25s ease;
+  --primary-color: var(--text-primary);
+  --primary-hover: var(--text-secondary);
+  --accent-color: var(--brand-accent);
+  --button-transform-hover: none;
+  --button-transform-active: none;
+  --header-bg-light: var(--surface-background);
+  --card-padding: 1rem 1.25rem;
+  --card-header-padding: 0.8rem 1.25rem;
+  --tooltip-bg-light: var(--surface-background);
+}
+
+/* ===== LAYOUT AND GRID SYSTEMS ===== */
+/* Layout styling */
+.blog-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  position: relative; /* Critical for absolute positioning of children */
+}
+
+/* Scrollbar styling - specific to this layout */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 0;
+}
+
+/* ===== SIDEBAR CONTAINER AND CARD STYLING ===== */
+/* Blog sidebar styles - specific to blog post layout */
+.blog-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: transparent;
+  position: -webkit-sticky;
+  position: sticky;
+  align-self: flex-start;
+  z-index: 30;
+  top: 94px; /* Height of main header (70px) + desired gap (24px) - blog posts don't have fixed navigation */
+  gap: 0.8rem;
+  transition: var(--transition-standard);
+  height: fit-content; /* Allow it to be as tall as its content */
+  height: -moz-fit-content; /* Firefox support */
+  will-change: position, top; /* Optimize for position changes */
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Sidebar card styling - specific to blog post layout */
+.sidebar-card,
+.share-container {
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  transition: var(--transition-hover);
+  margin-top: 0;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Dark mode sidebar components using global variables */
+.dark .sidebar-card,
+.dark .share-container {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+}
+
+/* Apply card styling to sidebar children */
+.blog-sidebar > div {
+  /* Using sidebar-card class directly */
+  border-radius: 0;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+}
+
+/* ===== DESKTOP LAYOUT ===== */
+/* Desktop layout */
+@media (min-width: 1024px) {
+  .blog-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    position: relative;
+    width: 100%;
+    height: auto;
+    align-items: start;
+  }
+
+  .blog-layout-sidebar-right {
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+  }
+
+  .blog-layout-sidebar-left {
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  }
+
+  .article-container {
+    grid-column: 2;
+    min-height: auto;
+    width: 100%;
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .sidebar-container {
+    grid-column: 1;
+    position: relative; /* Critical for absolute positioning of children */
+    width: 100%;
+    height: 100%;
+    padding-right: 1rem;
+    min-height: auto;
+    z-index: 20; /* Lower z-index to ensure it stays below the header (50), blog nav (40), and sidebar (30) */
+    /* Add isolation to create a new stacking context */
+    isolation: isolate;
+    overflow: visible; /* Critical for sticky positioning */
+    contain: layout; /* Improve performance */
+  }
+
+  /* Force position relative on sidebar container to ensure proper absolute positioning */
+  .blog-layout-sidebar-left .sidebar-container {
+    position: relative; /* Temporarily removed  for diagnostic purposes */
+  }
+
+  .blog-layout-sidebar-left .article-container {
+    grid-column: 2;
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+
+  .blog-layout-sidebar-left .sidebar-container {
+    grid-column: 1;
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+
+  .blog-layout-sidebar-right .article-container {
+    grid-column: 1;
+    padding-right: 1rem;
+    padding-left: 0;
+  }
+
+  .blog-layout-sidebar-right .sidebar-container {
+    grid-column: 2;
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+
+  .blog-sidebar {
+    overflow-y: visible; /* Changed from auto to visible for proper sticky behavior */
+    padding-right: 10px;
+    max-height: none; /* Remove max-height constraint to allow full content display */
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 400px;
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  .blog-sidebar > * {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .blog-layout article {
+    max-width: 100%;
+    padding-bottom: 2rem;
+  }
+}
+
+/* ===== MOBILE SIDEBAR STYLES ===== */
+/* Mobile sidebar styles - specific to blog post layout */
+@media (max-width: 1023px) {
+  .blog-sidebar {
+    position: static;
+    height: auto;
+    max-height: none;
+    padding: 0;
+    border: none;
+    margin-top: 2rem;
+    gap: 1.5rem;
+  }
+
+  /* Mobile sidebar cards styling - specific to blog post layout */
+  .blog-sidebar .sidebar-card {
+    border: 1px solid hsl(var(--border));
+    background-color: hsl(var(--card));
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 1rem;
+  }
+
+  .dark .blog-sidebar .sidebar-card {
+    border-color: hsl(var(--border));
+    background-color: hsl(var(--card));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+.blog-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.blog-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.blog-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.dark .blog-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== POSITIONING FIXES ===== */
+/* Ensure parent containers don't have overflow properties that would break sticky positioning */
+.sidebar-container,
+.blog-layout,
+.article-container,
+main,
+section,
+.content-wrapper,
+.blog-layout-sidebar-left,
+.blog-layout-sidebar-right {
+  overflow: visible;
+}
+
+/* Critical positioning for sidebar container to ensure proper absolute positioning */
+.sidebar-container {
+  position: relative; /* Restored  to ensure it's not overridden */
+  overflow: visible; /* Explicitly set overflow to visible */
+}
+
+/* Social share buttons styling */
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: #333;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+}
+
+.dark .share-btn {
+  background-color: transparent;
+  color: #e5e5e5;
+  border: 1px solid #333333;
+}
+
+.share-btn:hover {
+  background-color: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.dark .share-btn:hover {
+  background-color: #111111;
+  transform: translateY(-1px);
+}
+
+.share-btn.copied {
+  background-color: #f0f9ff;
+  color: #0284c7;
+  border-color: #0284c7;
+}
+
+.dark .share-btn.copied {
+  background-color: #082f49;
+  color: #38bdf8;
+  border-color: #0284c7;
+}
+
+/* ===== BLOG CARD CONTAINER AND STYLING ===== */
+/* Blog card styling for individual blog posts - Monotone Theme */
+
+/* Main blog card container */
+.blog-card {
+  position: relative;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.dark .blog-card {
+  background-color: black;
+  border: 1px solid #333333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Blog card title - Enhanced for better hierarchy with consistent font weights */
+.blog-card-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: #171717;
+  font-family: var(--font-headings);
+  letter-spacing: -0.02em;
+}
+
+.dark .blog-card-title {
+  color: white;
+}
+
+/* Blog card description - Enhanced readability with UI font */
+.blog-card-description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #525252;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  max-width: 65ch; /* Optimal reading width */
+  margin-left: auto; /* Center the description when constrained by max-width */
+  margin-right: auto;
+}
+
+.dark .blog-card-description {
+  color: #a3a3a3;
+}
+
+/* Blog card divider */
+.blog-card-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #e5e5e5;
+  margin: 1.5rem 0;
+}
+
+.dark .blog-card-divider {
+  background-color: #333333;
+}
+
+/* Remove shimmer effect */
+.blog-card-shimmer-border {
+  display: none;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .blog-card-title {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+
+  .blog-card-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    max-width: none; /* Full width on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .blog-card-title {
+    font-size: 1.5rem;
+  }
+
+  .blog-card-description {
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== ANIMATION DEFINITIONS ===== */
+/* Performance-optimized animations for blog posts */
+/* Note: fade-in and fade-up keyframes are defined globally in src/app/globals.css */
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s ease-out;
+}
+
+/* Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-up {
+    animation: none;
+  }
+}
+
+/* Additional animations for blog post - more subtle versions */
+@keyframes slow-pulse {
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+.animate-slow-pulse {
+  animation: slow-pulse 10s ease-in-out infinite;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}

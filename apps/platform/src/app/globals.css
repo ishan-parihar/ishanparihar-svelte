@@ -1,0 +1,503 @@
+@import "tailwindcss";
+
+/* Define custom dark variant for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Theme variables */
+@theme {
+  /* Font definitions - integrative clarity brand identity */
+  --font-ui: var(--font-inter);
+  --font-body: var(--font-inter);
+  --font-headings: var(--font-playfair-display);
+  --font-logo: "Agraham", serif;
+
+  /* Performance-optimized animations */
+  --animation-fade-in: fade-in 0.5s ease-out;
+  --animation-fade-up: fade-up 0.6s ease-out;
+  --animation-slide-in: slide-in 0.4s ease-out;
+}
+
+/* Critical CSS animations for performance - optimized for 60fps */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateZ(0); /* Force hardware acceleration */
+  }
+  to {
+    opacity: 1;
+    transform: translateZ(0);
+  }
+}
+
+@keyframes wave {
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.4) translateZ(0);
+    opacity: 0.7;
+  }
+  20% {
+    transform: scaleY(1) translateZ(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-dots {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(
+      0,
+      20px,
+      0
+    ); /* Use translate3d for better performance */
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale3d(0.95, 0.95, 1);
+  }
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Utility classes for critical animations - optimized for performance */
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+  will-change: opacity;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.animate-wave {
+  animation: wave 1.2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-pulse-dots {
+  animation: pulse-dots 1.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Fallback animations for loading components */
+.loading-dots {
+  display: inline-block;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-wave {
+  display: inline-block;
+  animation: wave 1.2s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+/* Performance optimization utilities */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reading progress bar optimizations for smooth animation */
+.reading-progress-bar {
+  /* Force hardware acceleration for smooth animations */
+  transform: translate3d(-100%, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* Optimize for 60fps animations */
+  transition: transform 0.1s ease-out;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-up,
+  .animate-slide-in,
+  .animate-scale-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  * {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Base elements */
+@layer base {
+  /* Root element theme variables - Integrative Clarity System */
+  :root {
+    /* Integrative Clarity Dark Theme - Approved Palette */
+    --background: 0 0% 6.7%; /* #111111 */
+    --foreground: 0 0% 91.8%; /* #EAEAEA */
+    --card: 0 0% 9.4%; /* #181818 */
+    --card-foreground: 0 0% 91.8%; /* #EAEAEA */
+    --popover: 0 0% 9.4%; /* #181818 */
+    --popover-foreground: 0 0% 91.8%; /* #EAEAEA */
+    --primary: 44 100% 50%; /* #FFB800 - Energetic Gold */
+    --primary-foreground: 0 0% 6.7%; /* #111111 */
+    --secondary: 0 0% 16.5%; /* #2A2A2A */
+    --secondary-foreground: 0 0% 91.8%; /* #EAEAEA */
+    --muted: 0 0% 16.5%; /* #2A2A2A */
+    --muted-foreground: 0 0% 53.3%; /* #888888 */
+    --accent: 0 0% 16.5%; /* #2A2A2A */
+    --accent-foreground: 0 0% 91.8%; /* #EAEAEA */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 91.8%; /* #EAEAEA */
+    --border: 0 0% 16.5%; /* #2A2A2A */
+    --input: 0 0% 16.5%; /* #2A2A2A */
+    --ring: 44 100% 50%; /* #FFB800 - Energetic Gold */
+    --radius: 0.5rem;
+
+    /* Legacy compatibility variables */
+    --background-color: hsl(0, 0%, 6.7%); /* #111111 */
+    --surface-color: hsl(0, 0%, 9.4%); /* #181818 */
+    --text-primary: hsl(0, 0%, 91.8%); /* #EAEAEA */
+    --text-secondary: hsl(0, 0%, 53.3%); /* #888888 */
+    --border-color: hsl(0, 0%, 16.5%); /* #2A2A2A */
+    --brand-accent: hsl(44, 100%, 50%); /* #FFB800 */
+    --surface-background: hsl(0, 0%, 6.7%); /* #111111 */
+    --ui-border: hsl(0, 0%, 16.5%); /* #2A2A2A */
+  }
+
+  /* Base HTML and body styles - Integrative Clarity Theme */
+  html,
+  body {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Headings - Integrative Clarity Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--text-primary);
+    font-family: var(--font-headings);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Paragraphs - Integrative Clarity Typography */
+  p {
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    line-height: 1.7;
+  }
+
+  /* Links - Integrative Clarity Brand Accent */
+  a {
+    color: var(--brand-accent);
+    transition: color 0.2s ease;
+    text-decoration: none;
+  }
+
+  a:hover {
+    opacity: 0.8;
+  }
+}
+
+/* Navigation and UI elements */
+.header-nav button,
+.header-nav a {
+  transition: all 0.2s ease;
+}
+
+/* Typography utility classes - Integrative Clarity brand identity */
+@utility font-heading {
+  font-family: var(--font-headings);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+@utility font-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+@utility font-logo {
+  font-family: var(--font-logo);
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+/* Ensure Agraham font is applied to logo elements */
+.font-logo {
+  font-family: "Agraham", serif ;
+}
+
+@utility font-ui {
+  font-family: var(--font-ui);
+  font-weight: 400;
+}
+
+@utility font-mono {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-weight: 400;
+}
+
+/* Fix for MDX bullet lists */
+.prose ul,
+.prose ol {
+  list-style-position: outside;
+  padding-left: 1.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose li {
+  display: list-item;
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+/* Nested lists */
+.prose ul ul,
+.prose ol ol,
+.prose ul ol,
+.prose ol ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose ul ul {
+  list-style-type: circle;
+}
+
+.prose ul ul ul {
+  list-style-type: square;
+}
+
+/* Theme-aware scrollbar styling */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 0; /* Rectangular corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* For Firefox */
+html {
+  scrollbar-color: #555 #2d2d2d; /* thumb track */
+  scrollbar-width: thin;
+}
+
+/* Utility class to hide scrollbars */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Modal specific styles - simplified */
+.bookmarks-modal-overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+/* Ensure all Radix UI portals have proper z-index management */
+[data-radix-portal] {
+  z-index: 10000 ;
+}
+
+/* Specific z-index management for different portal types */
+[data-radix-select-content] {
+  z-index: 10001 ;
+}
+
+[data-radix-dialog-overlay] {
+  z-index: 10002 ;
+}
+
+[data-radix-dialog-content] {
+  z-index: 10003 ;
+}
+
+[data-radix-dropdown-menu-content] {
+  z-index: 10001 ;
+}
+
+[data-radix-popover-content] {
+  z-index: 10001 ;
+}
+
+/* MDX Editor specific portal fixes */
+.mdxeditor [data-radix-portal] {
+  z-index: 10010 ;
+}
+
+.mdxeditor [data-radix-select-content] {
+  z-index: 10011 ;
+}
+
+.mdxeditor [data-radix-dialog-overlay] {
+  z-index: 10012 ;
+}
+
+.mdxeditor [data-radix-dialog-content] {
+  z-index: 10013 ;
+}
+
+.bookmarks-modal {
+  /* Ensure proper touch scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Prevent zoom on double tap */
+  touch-action: manipulation;
+}
+
+/* Compact blog card optimizations */
+.CompactBlogCard {
+  /* Ensure proper text truncation */
+  /* Enhanced touch targets for mobile */
+  min-height: 44px;
+}
+
+.CompactBlogCard .line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.CompactBlogCard .line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Responsive modal adjustments - minimal */
+@media (max-width: 320px) {
+  .bookmarks-modal {
+    min-width: 280px;
+  }
+}
+
+/* Required for reactbits.dev/ShinyText component */
+@layer utilities {
+  @keyframes shine {
+    0% {
+      background-position: 100%;
+    }
+    100% {
+      background-position: -100%;
+    }
+  }
+  .animate-shine {
+    animation: shine 5s linear infinite;
+  }
+
+  /* Quantum flow animation for consciousness hero background */
+  @keyframes quantumFlow {
+    0% {
+      transform: translateX(0) translateY(0) scale(1);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateX(10px) translateY(-5px) scale(1.05);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translateX(-5px) translateY(10px) scale(0.95);
+      opacity: 0.3;
+    }
+  }
+}

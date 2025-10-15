@@ -1,0 +1,54 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="systemsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#B91C1C;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#7F1D1D;stop-opacity:0.6" />
+    </linearGradient>
+    <filter id="systemsGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#systemsGradient)"/>
+  
+  <!-- Systems Architecture Pattern -->
+  <g filter="url(#systemsGlow)">
+    <!-- Core system blocks -->
+    <rect x="150" y="100" width="120" height="80" rx="10" fill="#EF4444" opacity="0.9"/>
+    <rect x="530" y="100" width="120" height="80" rx="10" fill="#F87171" opacity="0.9"/>
+    <rect x="150" y="420" width="120" height="80" rx="10" fill="#FCA5A5" opacity="0.9"/>
+    <rect x="530" y="420" width="120" height="80" rx="10" fill="#FECACA" opacity="0.9"/>
+    
+    <!-- Central processing unit -->
+    <rect x="340" y="260" width="120" height="80" rx="10" fill="#DC2626" opacity="1"/>
+    
+    <!-- Data flow arrows -->
+    <polygon points="270,140 320,140 310,130 330,140 310,150" fill="#FFFFFF" opacity="0.8"/>
+    <polygon points="530,140 480,140 490,130 470,140 490,150" fill="#FFFFFF" opacity="0.8"/>
+    <polygon points="210,420 210,370 200,380 210,360 220,380" fill="#FFFFFF" opacity="0.8"/>
+    <polygon points="590,420 590,370 580,380 590,360 600,380" fill="#FFFFFF" opacity="0.8"/>
+    
+    <!-- System interconnections -->
+    <line x1="270" y1="140" x2="340" y2="280" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+    <line x1="530" y1="140" x2="460" y2="280" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+    <line x1="340" y1="320" x2="270" y2="460" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+    <line x1="460" y1="320" x2="530" y2="460" stroke="#FFFFFF" stroke-width="3" opacity="0.7"/>
+    
+    <!-- Feedback loops -->
+    <path d="M 150 180 Q 100 300 150 420" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M 650 180 Q 700 300 650 420" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.6"/>
+  </g>
+  
+  <!-- Abstract system patterns -->
+  <g opacity="0.3">
+    <rect x="50" y="50" width="700" height="500" stroke="#FFFFFF" stroke-width="2" fill="none" rx="20"/>
+    <line x1="100" y1="300" x2="700" y2="300" stroke="#FFFFFF" stroke-width="1"/>
+    <line x1="400" y1="100" x2="400" y2="500" stroke="#FFFFFF" stroke-width="1"/>
+  </g>
+</svg>

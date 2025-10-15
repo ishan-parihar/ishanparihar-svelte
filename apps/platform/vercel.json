@@ -1,0 +1,7 @@
+{
+  "buildCommand": "bun run vercel-build",
+  "outputDirectory": ".next",
+  "installCommand": "bun install --legacy-peer-deps",
+  "framework": "nextjs",
+  "devCommand": "bun run dev"
+}

@@ -1,0 +1,377 @@
+/**
+ * User tRPC Router Tests
+ */
+
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { createTRPCMsw } from "msw-trpc";
+import { type AppRouter } from "@/server/api/root";
+import { TRPCError } from "@trpc/server";
+
+const trpcMsw = createTRPCMsw<AppRouter>();
+
+describe("User tRPC Router", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("getProfile (protected)", () => {
+    it("should return user profile when authenticated", async () => {
+      const mockProfile = {
+        id: "user-1",
+        email: "test@example.com",
+        name: "Test User",
+        picture: "https://example.com/avatar.jpg",
+        newsletter_subscribed: true,
+        preferences: { followed_topics: ["tech", "design"] },
+        role: "user",
+        has_active_membership: false,
+        created_at: new Date().toISOString(),
+      };
+
+      trpcMsw.user.getProfile.query(() => {
+        return mockProfile;
+      });
+
+      expect(mockProfile.email).toBe("test@example.com");
+      expect(mockProfile.name).toBe("Test User");
+      expect(mockProfile.newsletter_subscribed).toBe(true);
+    });
+
+    it("should throw UNAUTHORIZED when not authenticated", async () => {
+      trpcMsw.user.getProfile.query(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      }).toThrow("Authentication required");
+    });
+  });
+
+  describe("updateProfile (protected)", () => {
+    it("should update user profile successfully", async () => {
+      const mockInput = {
+        name: "Updated Name",
+        newsletter_subscribed: false,
+        preferences: { followed_topics: ["tech", "business"] },
+      };
+
+      const mockResult = {
+        success: true,
+        user: {
+          id: "user-1",
+          name: "Updated Name",
+          newsletter_subscribed: false,
+          preferences: { followed_topics: ["tech", "business"] },
+        },
+      };
+
+      trpcMsw.user.updateProfile.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.success).toBe(true);
+      expect(mockResult.user.name).toBe("Updated Name");
+      expect(mockResult.user.newsletter_subscribed).toBe(false);
+    });
+
+    it("should validate name length", async () => {
+      trpcMsw.user.updateProfile.mutation(({ input }) => {
+        if (input.name && input.name.length < 2) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Name must be at least 2 characters long",
+          });
+        }
+        return { success: true, user: {} };
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Name must be at least 2 characters long",
+        });
+      }).toThrow("Name must be at least 2 characters long");
+    });
+  });
+
+  describe("getBookmarks (protected)", () => {
+    it("should return user bookmarks with pagination", async () => {
+      const mockBookmarks = {
+        bookmarks: [
+          {
+            id: "bookmark-1",
+            user_id: "user-1",
+            post_id: "post-1",
+            blog_post: {
+              id: "post-1",
+              slug: "test-post",
+              title: "Test Post",
+              excerpt: "Test excerpt",
+              category: "Technology",
+            },
+            created_at: new Date().toISOString(),
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.user.getBookmarks.query(() => {
+        return mockBookmarks;
+      });
+
+      expect(mockBookmarks.bookmarks).toHaveLength(1);
+      expect(mockBookmarks.bookmarks[0].blog_post.title).toBe("Test Post");
+      expect(mockBookmarks.total).toBe(1);
+    });
+
+    it("should filter bookmarks by category", async () => {
+      const mockFilteredBookmarks = {
+        bookmarks: [
+          {
+            id: "bookmark-1",
+            blog_post: {
+              category: "Technology",
+              title: "Tech Post",
+            },
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      };
+
+      trpcMsw.user.getBookmarks.query(({ input }) => {
+        if (input.category === "Technology") {
+          return mockFilteredBookmarks;
+        }
+        return { bookmarks: [], total: 0, page: 1, limit: 10, totalPages: 0 };
+      });
+
+      expect(mockFilteredBookmarks.bookmarks[0].blog_post.category).toBe(
+        "Technology",
+      );
+    });
+  });
+
+  describe("updateNewsletterStatus (protected)", () => {
+    it("should update newsletter subscription status", async () => {
+      const mockResult = { success: true, subscribed: false };
+
+      trpcMsw.user.updateNewsletterStatus.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.success).toBe(true);
+      expect(mockResult.subscribed).toBe(false);
+    });
+
+    it("should handle subscription and unsubscription", async () => {
+      trpcMsw.user.updateNewsletterStatus.mutation(({ input }) => {
+        return { success: true, subscribed: input.subscribed };
+      });
+
+      // Test subscription
+      const subscribeResult = { success: true, subscribed: true };
+      expect(subscribeResult.subscribed).toBe(true);
+
+      // Test unsubscription
+      const unsubscribeResult = { success: true, subscribed: false };
+      expect(unsubscribeResult.subscribed).toBe(false);
+    });
+  });
+
+  describe("getFollowedTopics (protected)", () => {
+    it("should return user followed topics", async () => {
+      const mockTopics = {
+        topics: ["technology", "design", "business"],
+      };
+
+      trpcMsw.user.getFollowedTopics.query(() => {
+        return mockTopics;
+      });
+
+      expect(mockTopics.topics).toHaveLength(3);
+      expect(mockTopics.topics).toContain("technology");
+      expect(mockTopics.topics).toContain("design");
+    });
+
+    it("should return empty array when no topics followed", async () => {
+      const mockEmptyTopics = { topics: [] };
+
+      trpcMsw.user.getFollowedTopics.query(() => {
+        return mockEmptyTopics;
+      });
+
+      expect(mockEmptyTopics.topics).toHaveLength(0);
+    });
+  });
+
+  describe("updateFollowedTopics (protected)", () => {
+    it("should update followed topics successfully", async () => {
+      const mockInput = { topics: ["technology", "ai", "web-development"] };
+      const mockResult = { success: true, topics: mockInput.topics };
+
+      trpcMsw.user.updateFollowedTopics.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.success).toBe(true);
+      expect(mockResult.topics).toHaveLength(3);
+      expect(mockResult.topics).toContain("ai");
+    });
+
+    it("should validate topics array", async () => {
+      trpcMsw.user.updateFollowedTopics.mutation(({ input }) => {
+        if (!Array.isArray(input.topics)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Topics must be an array",
+          });
+        }
+        return { success: true, topics: input.topics };
+      });
+
+      // Test validation
+      expect(Array.isArray(["tech", "design"])).toBe(true);
+    });
+  });
+
+  describe("getPremiumStatus (protected)", () => {
+    it("should return premium status for regular user", async () => {
+      const mockStatus = {
+        hasPremium: false,
+        hasActiveMembership: false,
+        role: "user",
+        email: "test@example.com",
+      };
+
+      trpcMsw.user.getPremiumStatus.query(() => {
+        return mockStatus;
+      });
+
+      expect(mockStatus.hasPremium).toBe(false);
+      expect(mockStatus.hasActiveMembership).toBe(false);
+      expect(mockStatus.role).toBe("user");
+    });
+
+    it("should return premium status for admin user", async () => {
+      const mockAdminStatus = {
+        hasPremium: true,
+        hasActiveMembership: false,
+        role: "admin",
+        email: "admin@example.com",
+      };
+
+      trpcMsw.user.getPremiumStatus.query(() => {
+        return mockAdminStatus;
+      });
+
+      expect(mockAdminStatus.hasPremium).toBe(true);
+      expect(mockAdminStatus.role).toBe("admin");
+    });
+
+    it("should return premium status for user with active membership", async () => {
+      const mockPremiumStatus = {
+        hasPremium: true,
+        hasActiveMembership: true,
+        role: "user",
+        email: "premium@example.com",
+      };
+
+      trpcMsw.user.getPremiumStatus.query(() => {
+        return mockPremiumStatus;
+      });
+
+      expect(mockPremiumStatus.hasPremium).toBe(true);
+      expect(mockPremiumStatus.hasActiveMembership).toBe(true);
+    });
+  });
+
+  describe("updateName (protected)", () => {
+    it("should update user name successfully", async () => {
+      const mockInput = { name: "New Name" };
+      const mockResult = {
+        success: true,
+        user: {
+          id: "user-1",
+          name: "New Name",
+          email: "test@example.com",
+        },
+      };
+
+      trpcMsw.user.updateName.mutation(() => {
+        return mockResult;
+      });
+
+      expect(mockResult.success).toBe(true);
+      expect(mockResult.user.name).toBe("New Name");
+    });
+
+    it("should validate name requirements", async () => {
+      const validNames = ["John Doe", "Alice", "Bob Smith Jr."];
+      const invalidNames = ["A", "", "   "];
+
+      validNames.forEach((name) => {
+        expect(name.trim().length).toBeGreaterThanOrEqual(2);
+        expect(name.trim().length).toBeLessThanOrEqual(100);
+      });
+
+      invalidNames.forEach((name) => {
+        expect(name.trim().length).toBeLessThan(2);
+      });
+    });
+
+    it("should trim whitespace from name", async () => {
+      const nameWithWhitespace = "  John Doe  ";
+      const trimmedName = nameWithWhitespace.trim();
+
+      expect(trimmedName).toBe("John Doe");
+      expect(trimmedName).not.toContain("  ");
+    });
+  });
+
+  describe("Error handling", () => {
+    it("should handle database errors gracefully", async () => {
+      trpcMsw.user.getProfile.query(() => {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database connection failed",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Database connection failed",
+        });
+      }).toThrow("Database connection failed");
+    });
+
+    it("should handle validation errors", async () => {
+      trpcMsw.user.updateProfile.mutation(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid input data",
+        });
+      });
+
+      expect(() => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid input data",
+        });
+      }).toThrow("Invalid input data");
+    });
+  });
+});

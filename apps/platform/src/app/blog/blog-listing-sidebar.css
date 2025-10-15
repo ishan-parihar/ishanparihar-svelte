@@ -1,0 +1,181 @@
+/* Blog sidebar styles for listing pages - Medium-inspired persistent sidebar */
+
+.blog-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: transparent;
+  position: -webkit-sticky;
+  position: sticky;
+  align-self: flex-start;
+  z-index: 30;
+  transition: all 0.2s ease-out;
+  will-change: transform;
+  gap: 1.5rem;
+  top: 240px; /* Default fallback - will be dynamically updated based on actual header + blog nav height */
+
+  /* Remove conflicting height rules - let content determine height */
+  height: auto;
+  max-height: calc(100vh - 260px); /* Prevent sidebar from being too tall */
+  overflow: visible; /* Let child components handle their own overflow */
+}
+
+/* Desktop styles - Medium-like persistent sidebar */
+@media (min-width: 1024px) {
+  .blog-sidebar {
+    height: fit-content;
+    min-height: 400px;
+    will-change: transform;
+    transform: translateZ(0);
+    padding-left: 2rem;
+    padding-right: 1rem;
+    border-left: 1px solid rgba(226, 232, 240, 0.3);
+    max-height: calc(100vh - 280px); /* Slightly more conservative max-height */
+    margin-top: 0;
+  }
+
+  .dark .blog-sidebar {
+    border-left-color: rgba(51, 65, 85, 0.3);
+  }
+}
+
+/* Mobile sidebar styles - show at bottom of content */
+@media (max-width: 1023px) {
+  .blog-sidebar {
+    position: static;
+    height: auto;
+    max-height: none;
+    padding: 0;
+    border: none;
+    margin-top: 2rem;
+    gap: 1.5rem;
+  }
+
+  /* Mobile sidebar cards styling - specific to blog listing */
+  .blog-sidebar .card {
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .dark .blog-sidebar .card {
+    border-color: rgba(51, 65, 85, 0.6);
+    background-color: rgba(0, 0, 0, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Ensure parent containers support sticky positioning */
+.sidebar-container,
+.blog-layout,
+.article-container,
+main,
+section,
+.content-wrapper {
+  overflow: visible;
+  contain: none; /* Prevent CSS containment from breaking sticky */
+}
+
+/* Enhanced card styling - Monotone design system */
+.blog-sidebar .card {
+  border-radius: 0;
+  overflow: hidden;
+  width: 100%;
+  transition: all 0.2s ease;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card));
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.blog-sidebar .card:hover {
+  border-color: hsl(var(--border));
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.dark .blog-sidebar .card {
+  background-color: var(--bg-primary);
+  border-color: var(--border-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark .blog-sidebar .card:hover {
+  border-color: var(--border-secondary);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced image container styling */
+.blog-sidebar .relative.aspect-\[3\/2\] {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border-radius: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.dark .blog-sidebar .relative.aspect-\[3\/2\] {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced image styling with better hover effects */
+.blog-sidebar img {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.blog-sidebar a:hover img {
+  transform: scale(1.05);
+}
+
+/* Scrollbar styling is handled below */
+
+/* Prevent layout shift during content loading */
+.blog-sidebar > * {
+  flex-shrink: 0;
+}
+
+/* Ensure proper spacing between sidebar sections */
+.blog-sidebar .space-y-6 > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Fix any potential margin collapse issues */
+.blog-sidebar .space-y-6 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure cards don't have conflicting margins */
+.blog-sidebar .space-y-6 > .card,
+.blog-sidebar .space-y-6 > [class*="Card"] {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Override any global card margins that might interfere */
+.blog-sidebar [data-radix-collection-item] {
+  margin: 0;
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+.blog-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.blog-sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.blog-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.dark .blog-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+}

@@ -1,0 +1,23 @@
+{
+  "name": "phoenix-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd apps/platform && bun dev",
+    "build": "bun --filter @repo/platform build",
+    "lint": "bun --filter @repo/platform lint",
+    "test": "bun --filter @repo/platform test",
+    "type-check": "bun --filter @repo/platform type-check"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.55.0",
+    "dotenv": "^17.2.1",
+    "gsap": "^3.13.0"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}

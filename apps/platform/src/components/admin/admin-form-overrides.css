@@ -1,0 +1,321 @@
+/* Admin Form Dropdown Overrides - Minimalist Monotone Theme */
+/* This file contains targeted CSS overrides for admin form dropdowns */
+
+/* ===== NATIVE SELECT STYLING ===== */
+/* Fix for category select dropdown */
+.admin-form select {
+  background-color: white;
+  border: 1px solid #d4d4d4;
+  border-radius: 0;
+  color: black;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+html.dark .admin-form select {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Fix option styling to prevent tick overlap */
+.admin-form select option {
+  background-color: white;
+  color: black;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  outline: none;
+}
+
+html.dark .admin-form select option {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ===== RADIX UI SELECT STYLING ===== */
+/* Target Radix UI Select components specifically */
+.admin-form [data-radix-select-content] {
+  background-color: white;
+  border: 1px solid #d4d4d4;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  z-index: 9999;
+  padding: 0;
+}
+
+html.dark .admin-form [data-radix-select-content] {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+}
+
+/* Fix Radix UI Select Viewport transparency - Vectura Labs Theme */
+.admin-form [data-radix-select-viewport] {
+  background-color: var(--surface-background);
+  padding: 0;
+}
+
+html.dark .admin-form [data-radix-select-viewport] {
+  background-color: var(--bg-primary);
+}
+
+/* Force solid backgrounds on all Radix UI select elements - Vectura Labs Theme */
+.admin-form [data-radix-select-content],
+.admin-form [data-radix-select-viewport],
+.admin-form [data-radix-select-item] {
+  background-color: var(--surface-background);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.dark .admin-form [data-radix-select-content],
+html.dark .admin-form [data-radix-select-viewport],
+html.dark .admin-form [data-radix-select-item] {
+  background-color: var(--bg-primary);
+}
+
+/* Radix UI Select Items */
+.admin-form [data-radix-select-item] {
+  background-color: white;
+  color: black;
+  border-radius: 0;
+  padding: 0.5rem 0.5rem 0.5rem 2rem; /* Proper left padding for check icon */
+  cursor: pointer;
+  border: none;
+  outline: none;
+  position: relative;
+}
+
+/* Fix check icon positioning */
+.admin-form [data-radix-select-item] span[class*="absolute"] {
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+html.dark .admin-form [data-radix-select-item] {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Hover states for Radix UI items */
+.admin-form [data-radix-select-item]:hover,
+.admin-form [data-radix-select-item][data-highlighted] {
+  background-color: #f8f8f8;
+  color: black;
+}
+
+html.dark .admin-form [data-radix-select-item]:hover,
+html.dark .admin-form [data-radix-select-item][data-highlighted] {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* ===== PORTAL TARGETING ===== */
+/* Target Radix UI components that render in portals */
+[data-radix-popper-content-wrapper] {
+  z-index: 9999;
+}
+
+[data-radix-popper-content-wrapper] > div {
+  background-color: var(--surface-background);
+  border: 1px solid var(--ui-border);
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.dark [data-radix-popper-content-wrapper] > div {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  color: var(--text-primary);
+}
+
+/* ===== AGGRESSIVE TRANSPARENCY FIXES ===== */
+/* Target any element that might have transparency in admin forms - Vectura Labs Theme */
+body:has(.admin-form) [data-radix-select-content],
+body:has(.admin-form) [data-radix-select-viewport],
+body:has(.admin-form) [data-radix-select-item] {
+  background-color: var(--surface-background);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.dark body:has(.admin-form) [data-radix-select-content],
+html.dark body:has(.admin-form) [data-radix-select-viewport],
+html.dark body:has(.admin-form) [data-radix-select-item] {
+  background-color: var(--bg-primary);
+}
+
+/* Target any portal-rendered select content */
+[data-radix-select-content] {
+  background-color: var(--surface-background);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html.dark [data-radix-select-content] {
+  background-color: var(--bg-primary);
+}
+
+/* ===== FORM ELEMENT CONSISTENCY FIXES ===== */
+/* Fix unnecessary outlines and ensure consistent styling */
+
+/* Input field fixes */
+.admin-form input[type="text"],
+.admin-form input[type="email"],
+.admin-form input[type="password"],
+.admin-form input[type="date"],
+.admin-form input[type="url"],
+.admin-form textarea {
+  border: 1px solid #d4d4d4;
+  border-radius: 0;
+  background-color: white;
+  color: black;
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-form input[type="text"]:focus,
+.admin-form input[type="email"]:focus,
+.admin-form input[type="password"]:focus,
+.admin-form input[type="date"]:focus,
+.admin-form input[type="url"]:focus,
+.admin-form textarea:focus {
+  border: 1px solid #525252;
+  outline: none;
+  box-shadow: none;
+  ring: none;
+}
+
+/* Dark mode input fixes */
+html.dark .admin-form input[type="text"],
+html.dark .admin-form input[type="email"],
+html.dark .admin-form input[type="password"],
+html.dark .admin-form input[type="date"],
+html.dark .admin-form input[type="url"],
+html.dark .admin-form textarea {
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html.dark .admin-form input[type="text"]:focus,
+html.dark .admin-form input[type="email"]:focus,
+html.dark .admin-form input[type="password"]:focus,
+html.dark .admin-form input[type="date"]:focus,
+html.dark .admin-form input[type="url"]:focus,
+html.dark .admin-form textarea:focus {
+  border: 1px solid var(--text-muted);
+  outline: none;
+  box-shadow: none;
+}
+
+/* Button consistency fixes */
+.admin-form button {
+  border-radius: 0;
+  outline: none;
+}
+
+.admin-form button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Switch component fixes for monotone theme */
+.admin-form .switch-component {
+  border-radius: 0;
+}
+
+.admin-form .switch-component > * {
+  border-radius: 0;
+}
+
+/* Form item border consistency */
+.admin-form .border {
+  border-color: #d4d4d4;
+}
+
+html.dark .admin-form .border {
+  border-color: var(--border-secondary);
+}
+
+/* Remove any unwanted focus rings */
+.admin-form *:focus {
+  outline: none;
+}
+
+.admin-form *:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Code element consistency */
+.admin-form code {
+  border-radius: 0;
+}
+
+/* Card and container consistency */
+.admin-form .shadow-sm,
+.admin-form .shadow-md {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+html.dark .admin-form .shadow-sm,
+html.dark .admin-form .shadow-md {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure all borders are consistent - Vectura Labs Theme */
+.admin-form .border-neutral-200 {
+  border-color: var(--ui-border);
+}
+
+.admin-form .border-neutral-300 {
+  border-color: var(--ui-border);
+}
+
+html.dark .admin-form .border-neutral-800 {
+  border-color: var(--border-secondary);
+}
+
+html.dark .admin-form .border-neutral-700 {
+  border-color: var(--border-secondary);
+}
+
+/* Remove any Tailwind focus ring utilities */
+.admin-form .focus\:ring-2,
+.admin-form .focus\:ring-1,
+.admin-form .focus-visible\:ring-2,
+.admin-form .focus-visible\:ring-1 {
+  --tw-ring-offset-shadow: none;
+  --tw-ring-shadow: none;
+  box-shadow: none;
+}
+
+/* Ensure consistent background colors - Vectura Labs Theme */
+.admin-form .bg-muted {
+  background-color: var(--surface-elevated);
+}
+
+html.dark .admin-form .bg-muted {
+  background-color: var(--bg-tertiary);
+}
+
+.admin-form .bg-background {
+  background-color: var(--surface-background);
+}
+
+html.dark .admin-form .bg-background {
+  background-color: var(--bg-primary);
+}
