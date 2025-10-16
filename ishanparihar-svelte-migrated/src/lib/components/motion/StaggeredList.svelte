@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
 
   export let className = '';
-  export let delay = 0;
+  export let staggerDelay = 0.1;
 
   let element: HTMLElement;
   let isInView = false;
@@ -23,12 +23,23 @@
 
     return () => observer.disconnect();
   });
+
+  function staggeredFly(node: HTMLElement, { delay = 0, ...params }) {
+    const style = getComputedStyle(node);
+    const transform = style.transform === 'none' ? '' : style.transform;
+
+    return {
+      delay,
+      css: (t: number) => `
+        ${transform} translate(0, ${fly(node, params).css(t).transform.split(',')[5].slice(0, -1)}px);
+        opacity: ${fly(node, params).css(t).opacity};
+      `,
+    };
+  }
 </script>
 
 <div bind:this={element} class="{className}">
   {#if isInView}
-    <div in:fly={{ y: 20, duration: 600, delay }}>
-      <slot />
-    </div>
+    <slot staggerDelay={staggerDelay} />
   {/if}
 </div>
