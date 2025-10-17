@@ -1,5 +1,5 @@
 import { redirect, fail } from "@sveltejs/kit";
-import { googleAuth, lucia } from "$lib/server/lucia";
+import { googleAuth, lucia } from "$lib/server/auth";
 import { Pool } from "pg";
 import { env } from "$env/dynamic/private";
 

@@ -1,5 +1,5 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { lucia } from "$lib/server/lucia";
+import { auth as lucia } from "$lib/server/auth";
 import { compare } from "bcrypt";
 import { Pool } from "pg";
 import { env } from "$env/dynamic/private";

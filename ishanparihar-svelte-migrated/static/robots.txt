@@ -1,3 +1,11 @@
-# allow crawling everything by default
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap is available at /api/sitemap
+
+# Disallow sensitive areas
+Disallow: /account/
+Disallow: /admin/
+Disallow: /api/
+
+# Crawl-delay: 10

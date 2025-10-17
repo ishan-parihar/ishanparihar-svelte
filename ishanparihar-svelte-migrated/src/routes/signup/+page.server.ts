@@ -1,5 +1,5 @@
 
-import { lucia } from "$lib/server/lucia";
+import { auth as lucia } from "$lib/server/auth";
 import { fail, redirect } from "@sveltejs/kit";
 import { generateId } from "lucia";
 import { hash } from "bcrypt";

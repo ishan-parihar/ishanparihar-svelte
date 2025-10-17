@@ -26,6 +26,8 @@
 		"@tailwindcss/typography": "^0.5.10",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/svelte": "^5.2.0-next.3",
+		"@types/socket.io": "^3.0.1",
+		"@types/socket.io-client": "^1.4.36",
 		"@vitest/ui": "^3.2.4",
 		"autoprefixer": "^10.4.21",
 		"jsdom": "^27.0.0",
@@ -43,13 +45,16 @@
 		"@node-rs/argon2": "^2.0.2",
 		"@supabase/ssr": "^0.7.0",
 		"@supabase/supabase-js": "^2.75.0",
-		"@types/bcrypt": "^6.0.0",
+		"@types/bcrypt": "^6.0",
 		"arctic": "^3.7.0",
-		"bcrypt": "^6.0.0",
+		"bcrypt": "^6.0",
 		"clsx": "^2.1.1",
 		"lucia": "^3.2.2",
 		"lucide-svelte": "^0.546.0",
 		"pg": "^8.16.3",
+		"razorpay": "^2.9.4",
+		"socket.io": "^4.8.0",
+		"socket.io-client": "^4.8.0",
 		"tailwind-merge": "^3.3.1"
 	}
 }

@@ -1,5 +1,5 @@
 import { redirect } from "@sveltejs/kit";
-import { googleAuth } from "$lib/server/lucia";
+import { googleAuth } from "$lib/server/auth";
 import { randomBytes } from "node:crypto";
 
 import type { PageServerLoad } from "./$types";
