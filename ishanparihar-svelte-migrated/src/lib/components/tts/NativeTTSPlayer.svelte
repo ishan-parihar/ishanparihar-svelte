@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import { Play, Pause, Square, Volume2, Clock } from 'lucide-svelte';
   import Button from '$lib/components/ui/Button.svelte';
-  import Slider from '$lib/components/ui/slider.svelte';
 
   export let textToSpeak: string;
 
@@ -131,7 +130,14 @@
 
     <div class="flex items-center space-x-2">
       <span class="text-sm min-w-[40px]">{rate.toFixed(1)}x</span>
-      <Slider bind:value={[rate]} min={0.5} max={2} step={0.1} />
+      <input 
+        type="range" 
+        bind:value={rate} 
+        min={0.5} 
+        max={2} 
+        step={0.1}
+        class="flex-1 h-2 bg-neutral-200 dark:bg-neutral-800 rounded-none appearance-none cursor-pointer"
+      />
     </div>
   </div>
 </div>

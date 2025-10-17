@@ -1,7 +1,6 @@
-module.exports = {
+export default {
   plugins: {
-    // Temporarily disable Tailwind CSS
-    // tailwindcss: {},
+    tailwindcss: {},
     autoprefixer: {},
   },
 }

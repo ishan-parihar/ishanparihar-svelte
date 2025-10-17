@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export function extractPlainTextFromMDX(mdx: string): string {
   // This is a simplified version. For a more robust solution, you might need a proper parser.
   return mdx

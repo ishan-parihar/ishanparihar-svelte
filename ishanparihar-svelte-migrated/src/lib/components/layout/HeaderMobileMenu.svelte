@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { navigationItems } from '$lib/config/navigation';
   import { auth } from '$lib/stores/auth';
   import { Menu, X, UserCircle2 } from 'lucide-svelte';
@@ -47,7 +47,7 @@
               href={item.path}
               class="relative px-3 py-1.5 text-sm font-bold transition-all duration-300 rounded-none block w-full text-center transform hover:scale-105"
               class:text-accent={item.path === $page.url.pathname}
-              class:bg-accent/10={item.path === $page.url.pathname}
+              class:bg-accent-10={item.path === $page.url.pathname}
               class:scale-105={item.path === $page.url.pathname}
               class:text-foreground={item.path !== $page.url.pathname}
               class:hover:text-accent={item.path !== $page.url.pathname}
@@ -63,7 +63,7 @@
                     href={subItem.path}
                     class="block px-3 py-1.5 text-xs rounded-none transition-all duration-300"
                     class:text-accent={subItem.path === $page.url.pathname}
-                    class:bg-accent/10={subItem.path === $page.url.pathname}
+                    class:bg-accent-10={subItem.path === $page.url.pathname}
                     class:text-muted-foreground={subItem.path !== $page.url.pathname}
                     class:hover:text-accent={subItem.path !== $page.url.pathname}
                     class:hover:bg-muted={subItem.path !== $page.url.pathname}

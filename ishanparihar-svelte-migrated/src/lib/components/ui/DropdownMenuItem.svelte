@@ -1,7 +1,15 @@
 <script lang="ts">
-  // Placeholder for DropdownMenuItem
+  let {
+    children,
+    asChild = false,
+    class: className = '',
+  } = $props();
 </script>
 
-<div role="menuitem">
-  <slot />
-</div>
+{#if asChild}
+  {@render children?.()}
+{:else}
+  <div role="menuitem" class={className}>
+    {@render children?.()}
+  </div>
+{/if}

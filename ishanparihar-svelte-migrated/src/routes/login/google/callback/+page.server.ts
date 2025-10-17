@@ -1,74 +1,71 @@
-
+import { redirect, fail } from "@sveltejs/kit";
 import { googleAuth, lucia } from "$lib/server/lucia";
-import { OAuth2RequestError } from "lucia";
-import { generateId } from "lucia";
+import { Pool } from "pg";
+import { env } from "$env/dynamic/private";
 
-import type { RequestHandler } from "./$types";
+import type { PageServerLoad } from "./$types";
 
-export const GET: RequestHandler = async ({ cookies, url }) => {
+export const load: PageServerLoad = async ({ url, cookies }) => {
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
-    const storedState = cookies.get("google_oauth_state");
-    const codeVerifier = cookies.get("google_oauth_code_verifier");
+    const storedState = cookies.get("oauth_state");
+    const codeVerifier = cookies.get("oauth_code_verifier");
 
-    if (!code || !state || !storedState || state !== storedState || !codeVerifier) {
-        return new Response(null, {
-            status: 400
-        });
+    // Clear cookies
+    cookies.delete("oauth_state", { path: "/" });
+    cookies.delete("oauth_code_verifier", { path: "/" });
+
+    if (!code || !state || !storedState || !codeVerifier) {
+        throw redirect(302, "/login?error=invalid_oauth");
+    }
+
+    if (state !== storedState) {
+        throw redirect(302, "/login?error=invalid_state");
     }
 
     try {
-        const tokens = await googleAuth.validateAuthorizationCode(code, codeVerifier);
-        const googleUserResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-            headers: {
-                Authorization: `Bearer ${tokens.accessToken}`
-            }
+        // Validate authorization code
+        const googleUser = await googleAuth.validateAuthorizationCode(code, codeVerifier);
+
+        const pool = new Pool({
+            connectionString: env.SUPABASE_URL,
         });
-        const googleUser = await googleUserResponse.json();
 
-        const existingUser = await lucia.getUser(googleUser.sub, "google");
+        // Check if user exists
+        const existingUser = await pool.query(
+            'SELECT id, email, role FROM auth.users WHERE email = $1',
+            [googleUser.email]
+        );
 
-        if (existingUser) {
-            const session = await lucia.createSession(existingUser.id, {});
-            const sessionCookie = lucia.createSessionCookie(session.id);
-            return new Response(null, {
-                status: 302,
-                headers: {
-                    Location: "/",
-                    "Set-Cookie": sessionCookie.serialize()
-                }
-            });
+        let userId: string;
+        
+        if (existingUser.rows.length === 0) {
+            // Create new user
+            const newUser = await pool.query(
+                'INSERT INTO auth.users (email, name, picture, role, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING id',
+                [googleUser.email, googleUser.name, googleUser.picture, 'user']
+            );
+            userId = newUser.rows[0].id;
+        } else {
+            userId = existingUser.rows[0].id;
         }
 
-        const userId = generateId(15);
-        await lucia.createUser({
-            id: userId,
-            attributes: {
-                email: googleUser.email,
-                role: "user"
-            }
+        // Create session
+        const session = await lucia.createSession(userId, {
+            email: googleUser.email,
+            role: existingUser.rows[0]?.role || 'user'
         });
-        await lucia.createKey("google", googleUser.sub, {
-            userId
-        });
-
-        const session = await lucia.createSession(userId, {});
+        
         const sessionCookie = lucia.createSessionCookie(session.id);
-        return new Response(null, {
-            status: 302,
-            headers: {
-                Location: "/",
-                "Set-Cookie": sessionCookie.serialize()
-            }
+        cookies.set(sessionCookie.name, sessionCookie.value, {
+            path: ".",
+            ...sessionCookie.attributes
         });
-    } catch (e) {
-        if (e instanceof OAuth2RequestError) {
-            return new Response(null, {
-                status: 400
-            });
-        }
-        return new Response(null, {
-            status: 500
-        });
+
+        await pool.end();
+        throw redirect(302, "/");
+    } catch (error) {
+        console.error('OAuth callback error:', error);
+        throw redirect(302, "/login?error=oauth_failed");
     }
 };

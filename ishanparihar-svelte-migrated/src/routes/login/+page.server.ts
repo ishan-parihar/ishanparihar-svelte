@@ -1,13 +1,10 @@
-
-import { lucia } from "$lib/server/lucia";
 import { fail, redirect } from "@sveltejs/kit";
-import { verify } from "@node-rs/argon2";
-import { pg } from "@lucia-auth/adapter-postgresql";
+import { lucia } from "$lib/server/lucia";
+import { compare } from "bcrypt";
 import { Pool } from "pg";
 import { env } from "$env/dynamic/private";
 
 import type { Actions, PageServerLoad } from "./$types";
-import { compare } from "bcrypt";
 
 export const load: PageServerLoad = async ({ locals }) => {
     if (locals.user) {
@@ -28,33 +25,45 @@ export const actions: Actions = {
             return fail(400, { message: "Password too short" });
         }
 
-        const pool = new Pool({
-            connectionString: env.SUPABASE_URL,
-        });
+        try {
+            const pool = new Pool({
+                connectionString: env.SUPABASE_URL,
+            });
 
-        const db = pg(pool, {
-            user: "auth.users",
-            session: "auth.sessions",
-            key: "auth.keys",
-        });
+            // Query users table directly
+            const result = await pool.query(
+                'SELECT id, email, password, role FROM auth.users WHERE email = $1',
+                [email.toLowerCase()]
+            );
 
-        const key = await db.getKey("email", email);
-        if (!key) {
-            return fail(400, { message: "Incorrect email or password" });
+            if (result.rows.length === 0) {
+                return fail(400, { message: "Incorrect email or password" });
+            }
+
+            const user = result.rows[0];
+            const validPassword = await compare(password, user.password);
+
+            if (!validPassword) {
+                return fail(400, { message: "Incorrect email or password" });
+            }
+
+            // Create session using lucia
+            const session = await lucia.createSession(user.id, {
+                email: user.email,
+                role: user.role
+            });
+            
+            const sessionCookie = lucia.createSessionCookie(session.id);
+            event.cookies.set(sessionCookie.name, sessionCookie.value, {
+                path: ".",
+                ...sessionCookie.attributes
+            });
+
+            await pool.end();
+            return redirect(302, "/");
+        } catch (error) {
+            console.error('Login error:', error);
+            return fail(500, { message: "An error occurred during login" });
         }
-
-        const validPassword = await compare(password, key.hashedPassword!);
-        if (!validPassword) {
-            return fail(400, { message: "Incorrect email or password" });
-        }
-
-        const session = await lucia.createSession(key.userId, {});
-        const sessionCookie = lucia.createSessionCookie(session.id);
-        event.cookies.set(sessionCookie.name, sessionCookie.value, {
-            path: ".",
-            ...sessionCookie.attributes
-        });
-
-        return redirect(302, "/");
     }
 };

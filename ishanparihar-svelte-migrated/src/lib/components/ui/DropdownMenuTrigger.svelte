@@ -1,7 +1,14 @@
 <script lang="ts">
-  // Placeholder for DropdownMenuTrigger
+  let {
+    children,
+    asChild = false,
+  } = $props();
 </script>
 
-<div>
-  <slot />
-</div>
+{#if asChild}
+  {@render children?.()}
+{:else}
+  <div>
+    {@render children?.()}
+  </div>
+{/if}

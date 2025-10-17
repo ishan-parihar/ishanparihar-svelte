@@ -1,14 +1,12 @@
 <script lang="ts">
   import { Star, Share2 } from 'lucide-svelte'; // Assuming lucide-svelte is installed
 
-  export let id: string | undefined = undefined;
   export let title: string;
   export let excerpt: string;
   export let coverImage: string;
   export let date: string;
   export let category: string;
   export let slug: string;
-  export let index: number = 0;
   export let premium: boolean = false;
   export let likes_count: number = 0;
   export let comments_count: number = 0;
@@ -63,7 +61,7 @@
   <div class="group overflow-hidden h-full hover:shadow-sm transition-all duration-300 bg-card border border-border rounded-none">
     <div class="relative aspect-[3/2] overflow-hidden">
       <img src={imageSrc} alt={title} class="transition-transform duration-300 group-hover:scale-102 w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-transparent" />
+      <div class="absolute inset-0 bg-transparent"></div>
     </div>
     <div class="p-4 sm:p-6 border-t-0">
       <div class="flex items-center justify-between mb-2 sm:mb-3">

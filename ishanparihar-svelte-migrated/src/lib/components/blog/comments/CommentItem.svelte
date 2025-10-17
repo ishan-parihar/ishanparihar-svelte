@@ -97,17 +97,19 @@
               {/if}
               {#if $user}
                 <DropdownMenu>
-                  <Button slot="trigger" variant="ghost" size="sm" class="h-6 w-6 p-0 flex items-center justify-center relative z-10">
-                    <MoreVertical class="h-3 w-3" />
-                  </Button>
-                  <div slot="default" let:close>
+                  {#snippet trigger()}
+                    <Button variant="ghost" size="sm" class="h-6 w-6 p-0 flex items-center justify-center relative z-10">
+                      <MoreVertical class="h-3 w-3" />
+                    </Button>
+                  {/snippet}
+                  {#snippet children({ close })}
                     {#if $user.email === comment.user_email}
                       <button on:click={() => showDeleteDialog = true} class="text-red-600 dark:text-red-400 w-full text-left px-2 py-1.5 text-sm rounded-none hover:bg-neutral-100 dark:hover:bg-neutral-900"><Trash2 class="h-3.5 w-3.5 mr-2 inline-block" /> Delete</button>
                       <button on:click={() => isEditing = true} class="w-full text-left px-2 py-1.5 text-sm rounded-none hover:bg-neutral-100 dark:hover:bg-neutral-900"><Edit class="h-3.5 w-3.5 mr-2 inline-block" /> Edit</button>
                     {:else}
                       <button class="w-full text-left px-2 py-1.5 text-sm rounded-none hover:bg-neutral-100 dark:hover:bg-neutral-900"><Flag class="h-3.5 w-3.5 mr-2 inline-block" /> Report</button>
                     {/if}
-                  </div>
+                  {/snippet}
                 </DropdownMenu>
               {/if}
             </div>
@@ -147,13 +149,13 @@
   </div>
 
   <AlertDialog bind:open={showDeleteDialog}>
-    <div slot="default" let:close>
+    {#snippet children({ close })}
       <h2 class="text-lg font-semibold">Delete Comment?</h2>
       <p class="text-sm text-muted-foreground">This action cannot be undone. It will mark the comment as deleted.</p>
       <div class="flex justify-end gap-2 mt-4">
         <Button variant="secondary" on:click={close}>Cancel</Button>
         <Button variant="destructive" on:click={handleDeleteComment}>Delete</Button>
       </div>
-    </div>
+    {/snippet}
   </AlertDialog>
 </div>
