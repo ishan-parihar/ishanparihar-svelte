@@ -4,11 +4,13 @@
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
+  import { onMount } from 'svelte';
 
   const { state: cartState } = cartStore;
   let currentStep = $state(0); // 0: shipping, 1: payment, 2: review
   let isProcessing = $state(false);
   let error = $state<string | null>(null);
+  let razorpayLoaded = $state(false);
 
   let shippingInfo = $state({
     firstName: '',
@@ -35,6 +37,21 @@
     country: 'India'
   });
 
+  onMount(async () => {
+    // Load Razorpay script dynamically
+    if (browser) {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        razorpayLoaded = true;
+      };
+      script.onerror = () => {
+        error = 'Failed to load payment gateway. Please try again later.';
+      };
+      document.head.appendChild(script);
+    }
+  });
+
   const handleShippingSubmit = (e: Event) => {
     e.preventDefault();
     if (validateShipping()) {
@@ -49,27 +66,133 @@
     }
   };
 
-  const handlePaymentSubmit = async (e: Event) => {
-    e.preventDefault();
-    isProcessing = true;
-    error = null;
+   const handlePaymentSubmit = async (e: Event) => {
+     e.preventDefault();
+     isProcessing = true;
+     error = null;
 
-    try {
-      // Simulate payment processing - in real implementation, this would call backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In a real app, this would create an order and redirect to success
-      // For now, we'll just simulate success
-      if (browser) {
-        goto('/checkout/success');
-      }
-    } catch (err) {
-      error = 'Payment processing failed. Please try again.';
-      console.error('Payment error:', err);
-    } finally {
-      isProcessing = false;
-    }
-  };
+     try {
+       if (!razorpayLoaded) {
+         throw new Error('Payment gateway is still loading. Please try again in a moment.');
+       }
+
+       // Step 1: Create payment order with Razorpay
+       const paymentData = {
+         amount: cartState.total, // amount in smallest currency unit (paise for INR)
+         currency: 'INR',
+         receipt: `receipt_${Date.now()}`,
+         notes: {
+           user_id: 'user-id-placeholder', // Replace with actual user ID when available
+         }
+       };
+
+       const paymentResponse = await fetch('/api/payments/create', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(paymentData)
+       });
+
+       if (!paymentResponse.ok) {
+         const paymentError = await paymentResponse.json();
+         throw new Error(paymentError.error || 'Failed to create payment order');
+       }
+
+       const paymentOrder = await paymentResponse.json();
+
+       // Step 2: Initialize Razorpay checkout
+       const options = {
+         key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Replace with actual key from env
+         amount: paymentOrder.amount,
+         currency: paymentOrder.currency,
+         name: 'Service Platform',
+         description: 'Order Payment',
+         order_id: paymentOrder.id,
+         handler: async function(response: any) {
+           // Payment successful - now create the actual order in our database
+           try {
+                const orderData = {
+                  items: cartState.items.map(item => ({
+                    service_id: item.service.id,
+                    service_title: item.service.title,
+                    quantity: item.quantity,
+                    unit_price: item.service.price || 0,
+                    total_price: (item.service.price || 0) * item.quantity
+                  })),
+               shipping_address: {
+                 first_name: shippingInfo.firstName,
+                 last_name: shippingInfo.lastName,
+                 email: shippingInfo.email,
+                 phone: shippingInfo.phone,
+                 address: shippingInfo.address,
+                 city: shippingInfo.city,
+                 state: shippingInfo.state,
+                 zip_code: shippingInfo.zipCode,
+                 country: shippingInfo.country
+               },
+               billing_address: !billingInfo.sameAsShipping ? {
+                 first_name: billingInfo.firstName,
+                 last_name: billingInfo.lastName,
+                 email: billingInfo.email,
+                 phone: billingInfo.phone,
+                 address: billingInfo.address,
+                 city: billingInfo.city,
+                 state: billingInfo.state,
+                 zip_code: billingInfo.zipCode,
+                 country: billingInfo.country
+               } : undefined,
+               payment_id: response.razorpay_order_id, // This is the Razorpay order ID from the payment response
+               total_amount: cartState.total,
+               currency: 'INR'
+             };
+
+             const orderResponse = await fetch('/api/orders/create', {
+               method: 'POST',
+               headers: {
+                 'Content-Type': 'application/json',
+               },
+               body: JSON.stringify(orderData)
+             });
+
+             if (!orderResponse.ok) {
+               const orderError = await orderResponse.json();
+               console.error('Order creation failed:', orderError);
+               error = orderError.error || 'Failed to create order';
+               return;
+             }
+
+             const orderResult = await orderResponse.json();
+             
+             // Clear cart and redirect to success page
+             cartStore.clearCart();
+             if (browser) {
+               goto('/checkout/success');
+             }
+           } catch (orderErr) {
+             console.error('Order creation error:', orderErr);
+             error = 'Payment succeeded but order creation failed';
+           }
+         },
+         prefill: {
+           name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+           email: shippingInfo.email,
+           contact: shippingInfo.phone
+         },
+         theme: {
+           color: '#3b82f6' // Tailwind blue-500
+         }
+       };
+
+       const razorpay = new (window as any).Razorpay(options);
+       razorpay.open();
+     } catch (err) {
+       error = (err as Error).message || 'Payment processing failed. Please try again.';
+       console.error('Payment error:', err);
+     } finally {
+       isProcessing = false;
+     }
+   };
 
   const validateShipping = (): boolean => {
     if (!shippingInfo.firstName.trim() || !shippingInfo.lastName.trim()) {

@@ -30,7 +30,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
         order_items (*)
       `)
       .eq('id', params.orderId)
-      .eq('user_id', locals.auth.user.id)
+      .eq('customer_id', locals.auth.user.id)
       .single();
 
     if (error) {
@@ -89,11 +89,11 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     // Verify the order belongs to the user
     const { data: order, error: fetchError } = await supabase
       .from('orders')
-      .select('user_id')
+      .select('customer_id')
       .eq('id', params.orderId)
       .single();
 
-    if (fetchError || !order || order.user_id !== locals.auth.user.id) {
+    if (fetchError || !order || order.customer_id !== locals.auth.user.id) {
       return json({ error: 'Order not found' }, { status: 404 });
     }
 
@@ -104,7 +104,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
       .from('orders')
       .update({ status })
       .eq('id', params.orderId)
-      .eq('user_id', locals.auth.user.id);
+      .eq('customer_id', locals.auth.user.id);
 
     if (updateError) {
       console.error('Error updating order:', updateError);

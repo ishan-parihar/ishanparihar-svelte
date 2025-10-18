@@ -72,20 +72,36 @@ export function validateRequest<T extends z.ZodSchema>(
 }
 
 export async function requireAuth(event: RequestEvent) {
-  // This is a placeholder - in a real implementation, you would check for 
-  // a valid session/token and return the session object
-  // For now, we'll return a mock session for demonstration purposes
- const session = event.cookies.get('session');
+  // Check if the user is authenticated via the Lucia auth system
+  const { locals } = event;
   
-  if (!session) {
+  // Check if session exists and user is authenticated
+  if (!locals.auth || !locals.auth.session || !locals.auth.user) {
     throw error(401, 'Authentication required');
   }
   
-  // In a real implementation, you would validate the session here
   return {
     user: {
-      userId: 'mock-user-id',
-      email: 'user@example.com'
+      userId: locals.auth.user.id,
+      email: locals.auth.user.email,
+      name: locals.auth.user.name,
+      role: locals.auth.user.role
+    },
+    session: locals.auth.session
+  };
+}
+  
+  // For now, using a mock session - in production, validate the session against Supabase
+  // In a real implementation, you would use Supabase Auth to validate the session
+  // const supabase = createPublicClient();
+  // const { data: { session }, error } = await supabase.auth.getSession();
+  
+  // For now, returning mock session data but with a realistic structure
+  // The actual auth validation would happen in production with Supabase
+  return {
+    user: {
+      userId: event.locals.userId || 'mock-user-id', // This would come from a proper session
+      email: event.locals.userEmail || 'user@example.com' // This would come from a proper session
     }
   };
 }

@@ -7,7 +7,7 @@ import { createCustomerOrder } from '../../../lib/server/payments/razorpay';
 // Handle different HTTP methods for orders
 export async function GET(event: RequestEvent) {
   try {
-    const session = await requireAuth(event);
+    const auth = await requireAuth(event);
     const supabase = createServiceRoleClient();
     
     const url = new URL(event.url);
@@ -26,7 +26,7 @@ export async function GET(event: RequestEvent) {
           service:products_services (*)
         )
       `, { count: 'exact' })
-      .eq('user_id', session.user.userId)
+      .eq('user_id', auth.user.userId)
       .order('created_at', { ascending: false });
     
     if (status) {
@@ -52,12 +52,12 @@ export async function GET(event: RequestEvent) {
 
 export async function POST(event: RequestEvent) {
   try {
-    const session = await requireAuth(event);
+    const auth = await requireAuth(event);
     const data = await event.request.json();
     
     // Create customer order using the payment integration
     const order = await createCustomerOrder(
-      session.user.userId,
+      auth.user.userId,
       data.items,
       data.total,
       data.paymentId
@@ -96,7 +96,7 @@ export async function POST(event: RequestEvent) {
     return json({ success: true, order: updatedOrder });
   } catch (error) {
     return handleApiError(error);
- }
+  }
 }
 
 function generateOrderNumber(): string {

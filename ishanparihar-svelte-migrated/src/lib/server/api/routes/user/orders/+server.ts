@@ -22,7 +22,7 @@ export const GET: RequestHandler = async (event) => {
         total,
         items
       `, { count: 'exact' })
-      .eq('user_id', event.locals.auth.user.id)
+       .eq('customer_id', event.locals.auth.user.id)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

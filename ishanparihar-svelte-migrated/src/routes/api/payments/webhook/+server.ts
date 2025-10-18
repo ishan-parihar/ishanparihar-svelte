@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { PRIVATE_ENV } from '$lib/env';
+import { getSupabase } from '$lib/server/db';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -84,22 +85,78 @@ async function handlePaymentFailed(payment: any) {
   }
 }
 
-async function handleOrderPaid(order: any, payment: any) {
-  console.log('Order paid:', order, payment);
-  // In a real implementation, you would create an order record in the database
-  // and process the order fulfillment
-  try {
-    // Create order record in database
-    // await createOrderRecord(order, payment);
-    
-    // Process order fulfillment (e.g., generate invoice, update inventory)
-    // await processOrderFulfillment(order.id);
-    
-    // Send order confirmation email
-    // await sendOrderConfirmationEmail(order.id);
-    
-    console.log(`Order ${order.id} paid with payment ${payment.id}`);
-  } catch (error) {
-    console.error('Error handling order payment:', error);
-  }
-}
+ async function handleOrderPaid(order: any, payment: any) {
+   console.log('Order paid:', order, payment);
+   try {
+     // Update the order status in the database to 'paid'
+     const supabase = getSupabase();
+     
+     // First, try to match the order using the Razorpay order ID which was stored as razorpay_order_id during order creation
+     const { data, error } = await supabase
+       .from('orders')
+       .update({ 
+         status: 'paid',
+         payment_id: payment.id, // Store the actual payment ID from Razorpay
+         updated_at: new Date().toISOString()
+       })
+       .eq('razorpay_order_id', order.id) // Match by the Razorpay order ID (which was stored as razorpay_order_id during order creation)
+       .select()
+       .single();
+     
+     if (error) {
+       console.error('Error updating order status by razorpay_order_id:', error);
+       
+       // If that doesn't work, try a more general approach - matching by order number that might contain the Razorpay order ID
+       const { data: fallbackData, error: fallbackError } = await supabase
+         .from('orders')
+         .update({ 
+           status: 'paid',
+           payment_id: payment.id,
+           updated_at: new Date().toISOString()
+         })
+         .ilike('order_number', `%${order.id}%`) // Try matching by order number that contains the Razorpay order ID
+         .select()
+         .single();
+       
+       if (fallbackError) {
+         console.error('Error updating order status by order number:', fallbackError);
+         // If still failing, we might be dealing with the different table structure
+         // Try matching by payment_id field (in case the original was stored in payment_id instead of razorpay_order_id)
+         const { data: alternateData, error: alternateError } = await supabase
+           .from('orders')
+           .update({ 
+             status: 'paid',
+             payment_id: payment.id,
+             updated_at: new Date().toISOString()
+           })
+           .eq('payment_id', order.id) // Try matching by payment_id field
+           .select()
+           .single();
+           
+         if (alternateError) {
+           console.error('All attempts to match order failed:', alternateError);
+           // Log the details for debugging
+           console.log(`Could not find order for Razorpay order ${order.id} and payment ${payment.id}`);
+           console.log('Payment details:', { 
+             payment_id: payment.id, 
+             order_id: payment.order_id, 
+             razorpay_signature: payment.signature 
+           });
+           return; // Exit without throwing error to avoid webhook retries
+         } else {
+           console.log(`Order ${alternateData.id} status updated to paid with payment ${payment.id} (using alternate matching)`);
+         }
+       } else {
+         console.log(`Order ${fallbackData.id} status updated to paid with payment ${payment.id} (using order number matching)`);
+       }
+     } else {
+       console.log(`Order ${data.id} status updated to paid with payment ${payment.id}`);
+     }
+     
+     // TODO: Send order confirmation email to customer
+     // await sendOrderConfirmationEmail(data?.id || fallbackData?.id || alternateData?.id);
+     
+   } catch (error) {
+     console.error('Error handling order payment:', error);
+   }
+ }

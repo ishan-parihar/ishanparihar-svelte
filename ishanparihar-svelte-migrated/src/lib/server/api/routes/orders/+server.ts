@@ -19,7 +19,7 @@ export const GET: RequestHandler = async (event) => {
         items,
         shipping_address
       `)
-      .eq('user_id', event.locals.auth.user.id) // Ensure user can only access their own orders
+       .eq('customer_id', event.locals.auth.user.id) // Ensure user can only access their own orders
       .order('created_at', { ascending: false });
 
     if (error) {

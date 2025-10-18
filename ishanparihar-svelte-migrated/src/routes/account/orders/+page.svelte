@@ -9,43 +9,15 @@
 
   onMount(async () => {
     try {
-      // In a real implementation, this would fetch orders from an API
-      // For demo purposes, we'll use mock data
-      orders = [
-        {
-          id: '1',
-          order_number: 'ORD-001',
-          status: 'completed',
-          total_amount: 5000,
-          currency: 'INR',
-          created_at: new Date().toISOString(),
-          items: [
-            { service_title: 'Consultation Session', quantity: 1, unit_price: 5000 }
-          ]
-        },
-        {
-          id: '2',
-          order_number: 'ORD-002',
-          status: 'processing',
-          total_amount: 25000,
-          currency: 'INR',
-          created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-          items: [
-            { service_title: 'Intensive Program', quantity: 1, unit_price: 25000 }
-          ]
-        },
-        {
-          id: '3',
-          order_number: 'ORD-003',
-          status: 'shipped',
-          total_amount: 8000,
-          currency: 'INR',
-          created_at: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-          items: [
-            { service_title: 'Online Course', quantity: 1, unit_price: 8000 }
-          ]
-        }
-      ];
+      const response = await fetch('/api/orders');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch orders');
+      }
+      
+      const data = await response.json();
+      orders = data.orders || [];
     } catch (err) {
       error = 'Failed to load orders';
       console.error('Error loading orders:', err);
@@ -64,6 +36,7 @@
       case 'processing': return 'bg-blue-100 text-blue-800';
       case 'shipped': return 'bg-purple-100 text-purple-800';
       case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };

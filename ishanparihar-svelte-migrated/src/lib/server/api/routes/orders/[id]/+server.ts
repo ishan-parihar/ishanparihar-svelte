@@ -1,10 +1,10 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from '@sveltejs/kit';
 import { getSupabase } from '$lib/server/db';
+import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async (event) => {
-  // Extract order ID from URL query params instead of route params
-  const orderId = event.url.searchParams.get('id');
+  // Extract order ID from route params
+  const orderId = event.params.id;
   
   if (!event.locals.auth?.user) {
     return json({ error: 'Unauthorized' }, { status: 401 });
@@ -21,17 +21,21 @@ export const GET: RequestHandler = async (event) => {
       .from('orders')
       .select(`
         id,
+        order_number,
         created_at,
         status,
-        total,
+        total_amount,
+        currency,
         items,
-        shipping_address
+        shipping_address,
+        billing_address
       `)
       .eq('id', orderId)
-      .eq('user_id', event.locals.auth.user.id) // Ensure user can only access their own orders
+      .eq('customer_id', event.locals.auth.user.id) // Ensure user can only access their own orders
       .single();
 
     if (error) {
+      console.error('Error fetching order:', error);
       return json({ error: error.message }, { status: 500 });
     }
 
