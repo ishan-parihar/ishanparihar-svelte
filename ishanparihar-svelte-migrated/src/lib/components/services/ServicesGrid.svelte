@@ -31,15 +31,15 @@
           
           <div class="flex items-center justify-between">
             <span class="text-lg font-medium text-gray-900">
-              ₹{service.base_price?.toFixed(2) || 'TBD'}
+              ₹{service.price?.toFixed(2) || 'TBD'}
             </span>
             
-            <Button 
-              variant="outline" 
-              class="text-sm"
-              on:click={() => addToCart(service)}
-              disabled={!!loadingStates[service.id]}
-            >
+<Button 
+  variant="outline" 
+  class="text-sm"
+  onclick={() => addToCart(service)}
+  disabled={!!loadingStates[service.id]}
+>
               {#if loadingStates[service.id]}
                 Adding...
               {:else}

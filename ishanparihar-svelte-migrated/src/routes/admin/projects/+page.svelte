@@ -164,9 +164,9 @@
       </p>
     </div>
     
-    <Button on:click={createNewProject}>
-      Create New Project
-    </Button>
+     <Button onclick={createNewProject}>
+       Create New Project
+     </Button>
   </div>
 
   {#if error}
@@ -229,9 +229,9 @@
     </div>
     
     <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
-        Apply Filters
-      </Button>
+       <Button onclick={() => handleFilterChange(filters)}>
+         Apply Filters
+       </Button>
     </div>
   </div>
 
@@ -287,27 +287,27 @@
                   {project.likes}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    type="button"
-                    class="text-blue-600 hover:text-blue-900 mr-3"
-                    on:click={() => editProject(project.id)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    class="text-green-600 hover:text-green-900 mr-3"
-                    on:click={() => toggleProjectStatus(project.id)}
-                  >
-                    {project.status === 'published' ? 'Unpublish' : 'Publish'}
-                  </button>
-                  <button
-                    type="button"
-                    class="text-red-600 hover:text-red-900"
-                    on:click={() => console.log('Delete project:', project.id)}
-                  >
-                    Delete
-                  </button>
+                   <button
+                     type="button"
+                     class="text-blue-600 hover:text-blue-900 mr-3"
+                     onclick={() => editProject(project.id)}
+                   >
+                     Edit
+                   </button>
+                   <button
+                     type="button"
+                     class="text-green-600 hover:text-green-900 mr-3"
+                     onclick={() => toggleProjectStatus(project.id)}
+                   >
+                     {project.status === 'published' ? 'Unpublish' : 'Publish'}
+                   </button>
+                   <button
+                     type="button"
+                     class="text-red-600 hover:text-red-900"
+                     onclick={() => console.log('Delete project:', project.id)}
+                   >
+                     Delete
+                   </button>
                 </td>
               </tr>
             {/each}
@@ -324,20 +324,20 @@
         <span class="font-medium">{pagination.total}</span> results
       </div>
       <div class="flex space-x-2">
-        <button
-          disabled={pagination.page <= 1}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
-        >
-          Previous
-        </button>
-        <button
-          disabled={pagination.page >= pagination.totalPages}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
-        >
-          Next
-        </button>
+         <button
+           disabled={pagination.page <= 1}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page - 1)}
+         >
+           Previous
+         </button>
+         <button
+           disabled={pagination.page >= pagination.totalPages}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page + 1)}
+         >
+           Next
+         </button>
       </div>
     </div>
   {/if}

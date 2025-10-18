@@ -111,6 +111,21 @@ export const apiClient = {
       }
       
       return await response.json();
+    },
+    
+    async getOrder(orderId: string) {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch order: ${response.status}`);
+      }
+      
+      return await response.json();
     }
   }
 };

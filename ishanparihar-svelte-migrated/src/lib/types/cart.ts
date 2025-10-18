@@ -3,8 +3,9 @@ export interface Service {
   title: string;
   excerpt: string;
   description: string;
-  base_price: number;
+  price?: number;
   featured?: boolean;
+  cover_image?: string;
   category?: ServiceCategory;
   pricing?: ServicePricing[];
 }

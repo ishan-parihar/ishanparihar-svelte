@@ -6,6 +6,8 @@
   import HeaderLoadingIndicator from '$lib/components/layout/HeaderLoadingIndicator.svelte';
   import HeaderScrollEffects from '$lib/components/layout/HeaderScrollEffects.svelte';
   import '../app.css';
+  
+  let { children } = $props<{ children?: any; }>();
 </script>
 
 <HeaderScrollEffects />
@@ -30,5 +32,5 @@
 </header>
 
 <main class="pt-16 lg:pt-20">
-  <slot />
+  {@render children?.()}
 </main>

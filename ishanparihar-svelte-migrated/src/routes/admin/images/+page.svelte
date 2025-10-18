@@ -181,7 +181,7 @@
     filters = { ...filters, ...newFilters };
   };
 
-  const deleteImage = async (imageId) => {
+  const deleteImage = async (imageId: string) => {
     if (confirm('Are you sure you want to delete this image? This action cannot be undone.')) {
       loading = true;
       try {
@@ -198,11 +198,11 @@
     }
   };
 
-  const selectImage = (image) => {
+  const selectImage = (image: Image) => {
     selectedImage = image;
   };
 
-  const handleViewModeChange = (mode) => {
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
     viewMode = mode;
   };
 
@@ -237,12 +237,12 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
       <div class="flex items-center space-x-4">
         <label class="relative cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
-          <input 
-            type="file" 
-            class="hidden" 
-            accept="image/*"
-            on:change={handleFileUpload}
-          />
+<input 
+  type="file" 
+  class="hidden" 
+  accept="image/*"
+  onchange={handleFileUpload}
+/>
           {#if isUploading}
             Uploading... {uploadProgress}%
           {:else}
@@ -256,26 +256,26 @@
       </div>
       
       <div class="flex items-center space-x-2">
-        <button
-          class={`px-3 py-1 rounded-md text-sm font-medium ${
-            viewMode === 'grid' 
-              ? 'bg-blue-100 text-blue-800' 
-              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-          }`}
-          on:click={() => handleViewModeChange('grid')}
-        >
-          Grid
-        </button>
-        <button
-          class={`px-3 py-1 rounded-md text-sm font-medium ${
-            viewMode === 'list' 
-              ? 'bg-blue-100 text-blue-800' 
-              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-          }`}
-          on:click={() => handleViewModeChange('list')}
-        >
-          List
-        </button>
+<button
+  class={`px-3 py-1 rounded-md text-sm font-medium ${
+    viewMode === 'grid' 
+      ? 'bg-blue-100 text-blue-800' 
+      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+  }`}
+  onclick={() => handleViewModeChange('grid')}
+>
+  Grid
+</button>
+<button
+  class={`px-3 py-1 rounded-md text-sm font-medium ${
+    viewMode === 'list' 
+      ? 'bg-blue-100 text-blue-800' 
+      : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+  }`}
+  onclick={() => handleViewModeChange('list')}
+>
+  List
+</button>
       </div>
     </div>
     
@@ -334,14 +334,20 @@
       {#each filteredImages as image (image.id)}
         <div class="bg-white shadow rounded-lg overflow-hidden border border-gray-200 hover:shadow-md transition-shadow">
           <div class="p-4">
-            <div class="aspect-w-16 aspect-h-9 mb-4">
-              <img 
-                src={image.thumbnail || image.url} 
-                alt={image.altText || image.name}
-                class="w-full h-48 object-cover rounded-md"
-                on:click={() => selectImage(image)}
-              />
-            </div>
+             <div class="aspect-w-16 aspect-h-9 mb-4">
+<button 
+  type="button"
+  class="w-full h-48 object-cover rounded-md overflow-hidden"
+  onclick={() => selectImage(image)}
+  aria-label={`View details for ${image.altText || image.name}`}
+>
+  <img 
+    src={image.thumbnail || image.url} 
+    alt=""
+    class="w-full h-full object-cover"
+  />
+</button>
+             </div>
             
             <div class="mb-2">
               <h3 class="text-sm font-medium text-gray-900 truncate">{image.name}</h3>
@@ -354,20 +360,20 @@
               </div>
               
               <div class="flex space-x-2">
-                <button
-                  type="button"
-                  class="text-blue-600 hover:text-blue-900 text-xs"
-                  on:click={() => selectImage(image)}
-                >
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  class="text-red-600 hover:text-red-900 text-xs"
-                  on:click={() => deleteImage(image.id)}
-                >
-                  Delete
-                </button>
+<button
+  type="button"
+  class="text-blue-600 hover:text-blue-900 text-xs"
+  onclick={() => selectImage(image)}
+>
+  Edit
+</button>
+<button
+  type="button"
+  class="text-red-600 hover:text-red-900 text-xs"
+  onclick={() => deleteImage(image.id)}
+>
+  Delete
+</button>
               </div>
             </div>
           </div>
@@ -381,33 +387,39 @@
         {#each filteredImages as image (image.id)}
           <li class="hover:bg-gray-50">
             <div class="flex items-center px-6 py-4">
-              <div class="flex-shrink-0 h-16 w-16">
-                <img 
-                  src={image.thumbnail || image.url} 
-                  alt={image.altText || image.name}
-                  class="h-16 w-16 rounded-md object-cover"
-                  on:click={() => selectImage(image)}
-                />
-              </div>
+               <div class="flex-shrink-0 h-16 w-16">
+<button 
+  type="button"
+  class="h-16 w-16 rounded-md object-cover overflow-hidden"
+  onclick={() => selectImage(image)}
+  aria-label={`View details for ${image.altText || image.name}`}
+>
+  <img 
+    src={image.thumbnail || image.url} 
+    alt=""
+    class="h-16 w-16 rounded-md object-cover"
+  />
+</button>
+               </div>
               
               <div class="ml-4 flex-1 min-w-0">
                 <div class="flex items-center justify-between">
                   <p class="text-sm font-medium text-gray-900 truncate">{image.name}</p>
                   <div class="flex space-x-2">
-                    <button
-                      type="button"
-                      class="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                      on:click={() => selectImage(image)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      class="text-red-600 hover:text-red-900 text-sm font-medium"
-                      on:click={() => deleteImage(image.id)}
-                    >
-                      Delete
-                    </button>
+<button
+  type="button"
+  class="text-blue-600 hover:text-blue-900 text-sm font-medium"
+  onclick={() => selectImage(image)}
+>
+  Edit
+</button>
+<button
+  type="button"
+  class="text-red-600 hover:text-red-900 text-sm font-medium"
+  onclick={() => deleteImage(image.id)}
+>
+  Delete
+</button>
                   </div>
                 </div>
                 
@@ -434,22 +446,42 @@
     </div>
   {/if}
 
-  <!-- Image Detail Modal -->
-  {#if selectedImage}
-    <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" on:click={() => selectedImage = null}>
-      <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white" on:click|stopPropagation>
-        <div class="mt-3">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-medium text-gray-900">{selectedImage.name}</h3>
-            <button
-              class="text-gray-400 hover:text-gray-600"
-              on:click={() => selectedImage = null}
-            >
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+   <!-- Image Detail Modal -->
+   {#if selectedImage}
+      <div 
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" 
+        onclick={() => selectedImage = null}
+        onkeydown={(e) => { 
+          if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+            selectedImage = null;
+          }
+        }}
+        role="button"
+        tabindex="0"
+        aria-label="Close image details"
+      >
+       <div 
+         class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white" 
+         onclick={(e) => e.stopPropagation()}
+         onkeydown={(e) => e.stopPropagation()}
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="image-modal-title"
+         tabindex="0"
+       >
+         <div class="mt-3">
+           <div class="flex justify-between items-center mb-4">
+             <h3 id="image-modal-title" class="text-lg font-medium text-gray-900">{selectedImage.name}</h3>
+<button
+  class="text-gray-400 hover:text-gray-600"
+  onclick={() => selectedImage = null}
+  aria-label="Close modal"
+>
+               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+               </svg>
+             </button>
+           </div>
           
           <div class="flex flex-col md:flex-row gap-6">
             <div class="md:w-1/2">
@@ -461,55 +493,52 @@
             </div>
             
             <div class="md:w-1/2 space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Name</label>
-                <p class="mt-1 text-sm text-gray-900">{selectedImage.name}</p>
-              </div>
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Name</p>
+                 <p class="mt-1 text-sm text-gray-900">{selectedImage.name}</p>
+               </div>
               
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Dimensions</label>
-                <p class="mt-1 text-sm text-gray-900">{selectedImage.dimensions}</p>
-              </div>
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Dimensions</p>
+                 <p class="mt-1 text-sm text-gray-900">{selectedImage.dimensions}</p>
+               </div>
+               
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">File Size</p>
+                 <p class="mt-1 text-sm text-gray-900">{selectedImage.size}</p>
+               </div>
+               
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Type</p>
+                 <p class="mt-1 text-sm text-gray-900">{selectedImage.type}</p>
+               </div>
+               
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Uploaded</p>
+                 <p class="mt-1 text-sm text-gray-900">{new Date(selectedImage.uploadedAt).toLocaleDateString()} by {selectedImage.uploadedBy}</p>
+               </div>
+               
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Alt Text</p>
+                 <p class="mt-1 text-sm text-gray-900">{selectedImage.altText || 'No alt text provided'}</p>
+               </div>
+               
+               <div>
+                 <p class="block text-sm font-medium text-gray-700">Tags</p>
+                 <div class="mt-1 flex flex-wrap gap-1">
+                   {#each selectedImage.tags as tag}
+                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                       {tag}
+                     </span>
+                   {/each}
+                 </div>
+               </div>
               
-              <div>
-                <label class="block text-sm font-medium text-gray-700">File Size</label>
-                <p class="mt-1 text-sm text-gray-900">{selectedImage.size}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Type</label>
-                <p class="mt-1 text-sm text-gray-900">{selectedImage.type}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Uploaded</label>
-                <p class="mt-1 text-sm text-gray-900">{new Date(selectedImage.uploadedAt).toLocaleDateString()} by {selectedImage.uploadedBy}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Alt Text</label>
-                <p class="mt-1 text-sm text-gray-900">{selectedImage.altText || 'No alt text provided'}</p>
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Tags</label>
-                <div class="mt-1 flex flex-wrap gap-1">
-                  {#each selectedImage.tags as tag}
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                      {tag}
-                    </span>
-                  {/each}
-                </div>
-              </div>
-              
-              <div class="flex space-x-3 pt-4">
-                <Button on:click={() => window.open(selectedImage.url, '_blank')}>
-                  View Full Size
-                </Button>
-                <Button variant="outline" on:click={() => selectedImage = null}>
-                  Close
-                </Button>
-              </div>
+               <div class="flex space-x-3 pt-4">
+<Button onclick={() => selectedImage && window.open(selectedImage.url, '_blank')}>
+  View Full Size
+</Button>
+</div>
             </div>
           </div>
         </div>

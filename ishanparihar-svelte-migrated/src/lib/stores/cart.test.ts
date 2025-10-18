@@ -45,7 +45,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -63,7 +63,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -80,7 +80,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -96,7 +96,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -112,7 +112,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -131,7 +131,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 100
+      price: 99.99
     };
 
     cartStore.addItem(service, 2); // 2 items at 100 each = 200
@@ -148,7 +148,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 2);
@@ -164,7 +164,7 @@ describe('Cart Store', () => {
       title: 'Test Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 99.99
+      price: 99.99
     };
 
     cartStore.addItem(service, 1);
@@ -192,7 +192,7 @@ describe('Cart Store', () => {
             title: 'Saved Service',
             excerpt: 'Test excerpt',
             description: 'Test description',
-            base_price: 50
+            price: 50
           },
           quantity: 2
         }
@@ -218,7 +218,7 @@ describe('Cart Store', () => {
       title: 'Saved Service',
       excerpt: 'Test excerpt',
       description: 'Test description',
-      base_price: 50
+      price: 50
     };
     cartStore.addItem(service, 2);
     

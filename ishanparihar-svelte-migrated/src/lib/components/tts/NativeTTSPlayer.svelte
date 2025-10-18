@@ -100,14 +100,14 @@
   <div class="flex flex-col space-y-4">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <Button variant="outline" size="icon" on:click={handlePlayPause}>
+        <Button variant="outline" size="icon" onclick={handlePlayPause}>
           {#if isSpeaking && !isPaused}
             <Pause size={18} />
           {:else}
             <Play size={18} />
           {/if}
         </Button>
-        <Button variant="outline" size="icon" on:click={handleStop} disabled={!isSpeaking && !isPaused}>
+        <Button variant="outline" size="icon" onclick={handleStop} disabled={!isSpeaking && !isPaused}>
           <Square size={18} />
         </Button>
       </div>

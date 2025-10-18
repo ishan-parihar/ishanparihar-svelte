@@ -4,11 +4,13 @@
   let { 
     open = false, 
     onOpenChange, 
-    className = ''
+    className = '',
+    children
   } = $props<{
     open?: boolean;
     onOpenChange?: ((open: boolean) => void);
     className?: string;
+    children?: any;
   }>();
   
   // Create reactive state for open
@@ -72,5 +74,5 @@
 </script>
 
 <div class={`relative inline-block text-left ${className}`}>
-  <slot />
+  {@render children?.()}
 </div>

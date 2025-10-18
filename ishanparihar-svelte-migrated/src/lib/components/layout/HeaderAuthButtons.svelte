@@ -22,16 +22,16 @@
       </a>
     </Button>
   {:else}
-    <Button
-      size="sm"
-      variant="default"
-      class="w-32 h-9 px-3 py-2 flex items-center justify-center bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-      href="/login"
-    >
-      <div class="flex items-center justify-center gap-1.5">
-        <UserCircle2 class="h-4 w-4" />
-        <span class="text-sm font-medium">Sign In</span>
-      </div>
-    </Button>
+  <Button
+    asChild
+    size="sm"
+    variant="default"
+    class="w-32 h-9 px-3 py-2 flex items-center justify-center bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+  >
+    <a href="/login" class="flex items-center justify-center gap-1.5">
+      <UserCircle2 class="h-4 w-4" />
+      <span class="text-sm font-medium">Sign In</span>
+    </a>
+  </Button>
   {/if}
 </div>

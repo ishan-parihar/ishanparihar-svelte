@@ -254,23 +254,23 @@
                 Content can include markdown formatting. For a rich editor, consider integrating a WYSIWYG editor.
               </p>
             </div>
-          {:else}
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Content Preview
-              </label>
-              <div class="border border-gray-300 rounded-md p-4 bg-gray-50 max-h-96 overflow-y-auto">
-                {@html blogData.content
-                  .replace(/\n/g, '<br>')
-                  .replace(/# (.+)/g, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>')
-                  .replace(/## (.+)/g, '<h2 class="text-xl font-bold mt-3 mb-2">$1</h2>')
-                  .replace(/### (.+)/g, '<h3 class="text-lg font-bold mt-2 mb-2">$1</h3>')
-                  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                  .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                }
-              </div>
-            </div>
-          {/if}
+           {:else}
+             <div>
+               <p class="block text-sm font-medium text-gray-700 mb-1">
+                 Content Preview
+               </p>
+               <div class="border border-gray-300 rounded-md p-4 bg-gray-50 max-h-96 overflow-y-auto">
+                 {@html blogData.content
+                   .replace(/\n/g, '<br>')
+                   .replace(/# (.+)/g, '<h1 class="text-2xl font-bold mt-4 mb-2">$1</h1>')
+                   .replace(/## (.+)/g, '<h2 class="text-xl font-bold mt-3 mb-2">$1</h2>')
+                   .replace(/### (.+)/g, '<h3 class="text-lg font-bold mt-2 mb-2">$1</h3>')
+                   .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                   .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                 }
+               </div>
+             </div>
+           {/if}
 
           <!-- Category -->
           <div>

@@ -31,9 +31,9 @@
   </p>
   
   <div class="mt-8">
-    <Button on:click={continueShopping}>
-      Continue Shopping
-    </Button>
+<Button onclick={continueShopping}>
+  Continue Shopping
+</Button>
   </div>
   
   <div class="mt-6">

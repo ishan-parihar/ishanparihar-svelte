@@ -2,8 +2,11 @@
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
 
-  export let className = '';
-  export let disabled = false;
+  let { className = '', disabled = false, children } = $props<{ 
+    className?: string; 
+    disabled?: boolean;
+    children?: any;
+  }>();
 
   const scale = tweened(1, { duration: 200, easing: cubicOut });
   const y = tweened(0, { duration: 200, easing: cubicOut });
@@ -49,5 +52,5 @@
     onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') {/* Handle click */} }}
     tabindex="0"
   >
-  <slot />
+  {@render children?.()}
 </div>

@@ -1,3 +1,7 @@
+<script lang="ts">
+  let { children } = $props<{ children?: any; }>();
+</script>
+
 <details class="my-4 border border-border rounded-none">
-  <slot />
+  {@render children?.()}
 </details>

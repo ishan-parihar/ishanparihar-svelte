@@ -74,13 +74,13 @@
       </p>
     </div>
     
-    <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-      <Button on:click={continueShopping}>
-        Continue Shopping
-      </Button>
-      <Button variant="outline" on:click={viewOrder}>
-        View Order History
-      </Button>
-    </div>
+     <div class="mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+       <Button onclick={continueShopping}>
+         Continue Shopping
+       </Button>
+       <Button variant="outline" onclick={viewOrder}>
+         View Order History
+       </Button>
+     </div>
   </div>
 </div>

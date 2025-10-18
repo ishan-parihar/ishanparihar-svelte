@@ -40,29 +40,44 @@
     selectedCategory.set(categoryId);
   }
 
-  $: {
-    let allServices: ProductService[] = [];
-    services.subscribe(value => allServices = value)();
-    let query = '';
-    searchQuery.subscribe(value => query = value)();
-    let categoryId: string | null = null;
-    selectedCategory.subscribe(value => categoryId = value)();
+  let currentServices = $state<ProductService[]>([]);
+  let currentQuery = $state('');
+  let currentCategory = $state<string | null>(null);
 
-    let filtered = allServices;
+  $effect(() => {
+    return services.subscribe(value => {
+      currentServices = value;
+    })();
+  });
 
-    if (query) {
+  $effect(() => {
+    return searchQuery.subscribe(value => {
+      currentQuery = value;
+    })();
+  });
+
+  $effect(() => {
+    return selectedCategory.subscribe(value => {
+      currentCategory = value;
+    })();
+  });
+
+  $effect(() => {
+    let filtered = [...currentServices];
+
+    if (currentQuery) {
       filtered = filtered.filter(service =>
-        service.title.toLowerCase().includes(query.toLowerCase()) ||
-        service.description.toLowerCase().includes(query.toLowerCase())
+        service.title.toLowerCase().includes(currentQuery.toLowerCase()) ||
+        service.description.toLowerCase().includes(currentQuery.toLowerCase())
       );
     }
 
-    if (categoryId) {
-      filtered = filtered.filter(service => service.category_id === categoryId);
+    if (currentCategory) {
+      filtered = filtered.filter(service => service.category_id === currentCategory);
     }
 
     filteredServices.set(filtered);
-  }
+  });
 
   function addToCart(service: ProductService) {
     if (loadingStates[service.id]) return;
@@ -72,14 +87,14 @@
     
     try {
       // Add to cart using the existing cart store
-      const serviceForCart = {
-        id: service.id,
-        title: service.title,
-        excerpt: service.description || service.title,
-        description: service.description,
-        base_price: service.base_price || 0,
-        featured: service.featured
-      };
+       const serviceForCart = {
+         id: service.id,
+         title: service.title,
+         excerpt: service.description || service.title,
+         description: service.description,
+         price: service.base_price || 0,
+         featured: service.featured
+       };
       
       cartStore.addItem(serviceForCart, 1);
     } catch (error) {
@@ -104,11 +119,11 @@
     <input 
       type="text" 
       placeholder="Search services..." 
-      on:input={handleSearch} 
+      oninput={handleSearch} 
       class="px-4 py-2 border border-gray-300 rounded-md flex-1"
     >
     <select 
-      on:change={handleCategoryChange} 
+      onchange={handleCategoryChange} 
       class="px-4 py-2 border border-gray-300 rounded-md"
     >
       <option value="">All Categories</option>
@@ -130,10 +145,10 @@
               ₹{service.base_price?.toFixed(2) || 'TBD'}
             </div>
             
-            <Button 
-              on:click={() => addToCart(service)}
-              disabled={!!loadingStates[service.id]}
-            >
+             <Button 
+               onclick={() => addToCart(service)}
+               disabled={!!loadingStates[service.id]}
+             >
               {#if loadingStates[service.id]}
                 Adding...
               {:else}

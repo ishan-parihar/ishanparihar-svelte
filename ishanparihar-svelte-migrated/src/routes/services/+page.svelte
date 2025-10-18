@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import ServicesHero from '$lib/components/services/ServicesHero.svelte';
   import ServicesGrid from '$lib/components/services/ServicesGrid.svelte';
   import ServicesFilters from '$lib/components/services/ServicesFilters.svelte';
@@ -12,7 +12,7 @@
       title: 'Consultation Session',
       excerpt: 'Personalized consultation to understand your needs and goals',
       description: 'A comprehensive consultation session to assess your current situation and define clear objectives for your journey.',
-      base_price: 5000,
+      price: 5000,
       featured: true,
       category: { id: '1', name: 'Consultation', slug: 'consultation' }
     },
@@ -21,7 +21,7 @@
       title: 'Intensive Program',
       excerpt: 'Comprehensive program for deep transformation',
       description: 'An intensive program designed to create lasting change through structured guidance and support.',
-      base_price: 25000,
+      price: 25000,
       featured: true,
       category: { id: '2', name: 'Programs', slug: 'programs' }
     },
@@ -30,7 +30,7 @@
       title: 'Online Course',
       excerpt: 'Self-paced learning with expert guidance',
       description: 'Access to our comprehensive online course material with ongoing support and resources.',
-      base_price: 8000,
+      price: 8000,
       featured: false,
       category: { id: '3', name: 'Courses', slug: 'courses' }
     }
@@ -42,11 +42,12 @@
     { id: '3', name: 'Courses', slug: 'courses' }
   ]);
 
-  let selectedCategory = $state(null);
+   let selectedCategory = $state<string | null>(null);
   let sortBy = $state('featured');
   let loading = $state(false);
 
-  const handleFilterChange = ({ category, sortBy: newSortBy }) => {
+  const handleFilterChange = (e: CustomEvent<{ category: string | null; sortBy: string }>) => {
+    const { category, sortBy: newSortBy } = e.detail;
     selectedCategory = category;
     sortBy = newSortBy;
     

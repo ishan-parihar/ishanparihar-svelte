@@ -83,12 +83,12 @@
         placeholder="Enter coupon code"
         class="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <Button 
-        type="button" 
-        variant="outline"
-        on:click={applyCoupon}
-        disabled={isApplyingCoupon}
-      >
+<Button 
+  type="button" 
+  variant="outline"
+  onclick={applyCoupon}
+  disabled={isApplyingCoupon}
+>
         {#if isApplyingCoupon}
           Applying...
         {:else}
@@ -102,11 +102,11 @@
   </div>
   
   <!-- Checkout Button -->
-  <Button 
-    class="w-full mt-6 py-3 text-base" 
-    on:click={checkout}
-     disabled={cartStore.state.items.length === 0 || cartStore.state.isLoading}
-  >
+<Button 
+  class="w-full mt-6 py-3 text-base" 
+  onclick={checkout}
+   disabled={cartStore.state.items.length === 0 || cartStore.state.isLoading}
+>
      {#if cartStore.state.isLoading}
        Processing...
      {:else}

@@ -2,11 +2,14 @@
   import { fly } from 'svelte/transition';
   import { onMount } from 'svelte';
 
-  export let className = '';
-  export let delay = 0;
+  let { className = '', delay = 0, children } = $props<{ 
+    className?: string; 
+    delay?: number;
+    children?: any;
+  }>();
 
   let element: HTMLElement;
-  let isInView = false;
+  let isInView = $state(false);
 
   onMount(() => {
     const observer = new IntersectionObserver(
@@ -28,7 +31,7 @@
 <div bind:this={element} class="{className}">
   {#if isInView}
     <div in:fly={{ y: 20, duration: 600, delay }}>
-      <slot />
+      {@render children?.()}
     </div>
   {/if}
 </div>

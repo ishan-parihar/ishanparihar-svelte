@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import { cartStore } from '$lib/stores/cart';
   import { goto } from '$app/navigation';
@@ -6,9 +6,16 @@
   
   // For demo purposes, we'll use mock data based on the slug
   // In a real app, this would come from +page.server.ts
-  let slug = $bindable('');
+  let slug = $state<string | undefined>(undefined);
+  
   $effect(() => {
-    slug = page.params.slug;
+    const unsubscribe = page.subscribe(($page) => {
+      const paramSlug = $page.params.slug;
+      if (paramSlug) {
+        slug = paramSlug;
+      }
+    });
+    return unsubscribe;
   });
 
   let service = $state({
@@ -16,7 +23,7 @@
     title: 'Consultation Session',
     excerpt: 'Personalized consultation to understand your needs and goals',
     description: 'A comprehensive consultation session to assess your current situation and define clear objectives for your journey. This personalized session includes a thorough assessment of your current challenges, identification of key goals, and the creation of a tailored action plan to help you achieve lasting transformation.',
-    base_price: 5000,
+    price: 5000,
     featured: true,
     category: { id: '1', name: 'Consultation', slug: 'consultation' }
   });
@@ -51,12 +58,12 @@
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex justify-between items-center mb-6">
-    <button 
-      on:click={() => goto('/services')}
-      class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
-    >
-      &larr; Back to Services
-    </button>
+     <button 
+       onclick={() => goto('/services')}
+       class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
+     >
+       &larr; Back to Services
+     </button>
   </div>
 
   <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -94,41 +101,50 @@
           <div class="bg-gray-50 p-6 rounded-lg sticky top-8">
             <div class="mb-6">
               <div class="text-3xl font-bold text-gray-900 mb-2">
-                ₹{service.base_price?.toFixed(2)}
+                ₹{service.price?.toFixed(2)}
               </div>
               <p class="text-sm text-gray-600">Inclusive of all taxes</p>
             </div>
             
-            <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Quantity
-              </label>
-              <div class="flex items-center border border-gray-300 rounded-md">
-                <button
-                  type="button"
-                  class="px-3 py-2 border-r border-gray-300 text-gray-600 hover:text-gray-900"
-                  on:click={decrementQuantity}
-                  aria-label="Decrease quantity"
-                >
-                  -
-                </button>
-                <span class="px-4 py-2 text-center">{quantity}</span>
-                <button
-                  type="button"
-                  class="px-3 py-2 border-l border-gray-300 text-gray-600 hover:text-gray-900"
-                  on:click={incrementQuantity}
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
-            </div>
+             <div class="mb-6">
+               <div class="flex items-center justify-between">
+                 <label for="quantity-input" class="block text-sm font-medium text-gray-700 mb-2">
+                   Quantity
+                 </label>
+               </div>
+               <div class="flex items-center border border-gray-300 rounded-md">
+                  <button
+                    type="button"
+                    class="px-3 py-2 border-r border-gray-300 text-gray-600 hover:text-gray-900"
+                    onclick={decrementQuantity}
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <input
+                    id="quantity-input"
+                    type="number"
+                    bind:value={quantity}
+                    min="1"
+                    class="w-full px-4 py-2 text-center border-y border-gray-300"
+                    aria-label="Quantity"
+                  />
+                  <button
+                    type="button"
+                    class="px-3 py-2 border-l border-gray-300 text-gray-600 hover:text-gray-900"
+                    onclick={incrementQuantity}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+               </div>
+             </div>
             
-            <Button 
-              class="w-full py-3 text-base" 
-              on:click={addToCart}
-              disabled={loading}
-            >
+             <Button 
+               class="w-full py-3 text-base" 
+               onclick={addToCart}
+               disabled={loading}
+             >
               {#if loading}
                 Adding to Cart...
               {:else}
@@ -137,12 +153,12 @@
             </Button>
             
             <div class="mt-4 text-center">
-              <button 
-                class="text-blue-600 hover:text-blue-500 text-sm font-medium"
-                on:click={() => goto('/cart')}
-              >
-                View Cart
-              </button>
+               <button 
+                 class="text-blue-600 hover:text-blue-500 text-sm font-medium"
+                 onclick={() => goto('/cart')}
+               >
+                 View Cart
+               </button>
             </div>
           </div>
         </div>

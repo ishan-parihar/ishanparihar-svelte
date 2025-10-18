@@ -1,19 +1,47 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let tickets = $state([]);
+  interface Ticket {
+    id: string;
+    subject: string;
+    customer: string;
+    email: string;
+    priority: 'high' | 'medium' | 'low';
+    status: 'open' | 'in-progress' | 'resolved' | 'closed';
+    category: string;
+    createdAt: string;
+    updatedAt: string;
+    assignee: string | null;
+    messages: number;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    status: string;
+    priority: string;
+    search: string;
+    assignee: string;
+  }
+  
+  let tickets: Ticket[] = $state([]);
   let loading = $state(true);
-  let error = $state(null);
-  let pagination = $state({
+  let error: string | null = $state(null);
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     status: 'all',
     priority: 'all',
     search: '',
@@ -108,22 +136,22 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadTickets();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadTickets();
   };
 
-  const viewTicket = (ticketId) => {
+  const viewTicket = (ticketId: string) => {
     goto(`/admin/support/tickets/${ticketId}`);
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: Ticket['status']) => {
     switch (status) {
       case 'open': return 'bg-yellow-100 text-yellow-800';
       case 'in-progress': return 'bg-blue-100 text-blue-800';
@@ -133,7 +161,7 @@
     }
   };
 
-  const getPriorityClass = (priority) => {
+  const getPriorityClass = (priority: Ticket['priority']) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
       case 'medium': return 'bg-yellow-100 text-yellow-800';
@@ -225,7 +253,7 @@
     </div>
     
     <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
+      <Button onclick={() => handleFilterChange(filters)}>
         Apply Filters
       </Button>
     </div>
@@ -295,7 +323,7 @@
                   <button
                     type="button"
                     class="text-blue-600 hover:text-blue-900"
-                    on:click={() => viewTicket(ticket.id)}
+                    onclick={() => viewTicket(ticket.id)}
                   >
                     View
                   </button>
@@ -318,14 +346,14 @@
         <button
           disabled={pagination.page <= 1}
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
+          onclick={() => handlePageChange(pagination.page - 1)}
         >
           Previous
         </button>
         <button
           disabled={pagination.page >= pagination.totalPages}
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
+          onclick={() => handlePageChange(pagination.page + 1)}
         >
           Next
         </button>

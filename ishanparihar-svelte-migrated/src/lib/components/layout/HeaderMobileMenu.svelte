@@ -19,7 +19,7 @@
 
 <button
   class="relative flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 border border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600 bg-transparent"
-  on:click={toggleMenu}
+  onclick={toggleMenu}
   aria-label="Toggle menu"
   aria-expanded={isMenuOpen}
   aria-controls="mobile-menu"
@@ -77,30 +77,34 @@
               <span class="text-sm font-medium">My Account</span>
             </a>
           </Button>
-          <Button
-            variant="ghost"
-            class="w-full py-2.5 rounded-none"
-            on:click={() => {
-              // signOut({ callbackUrl: '/', redirect: true })
-            }}
-          >
-            Sign Out
-          </Button>
+<Button
+  variant="ghost"
+  class="w-full py-2.5 rounded-none"
+  onclick={() => {
+    // signOut({ callbackUrl: '/', redirect: true })
+  }}
+>
+  Sign Out
+</Button>
         {:else}
-          <Button
-            variant="outline"
-            class="w-full py-2.5 rounded-none bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 border border-black dark:border-white transition-all duration-200"
-            href="/login"
-          >
-            <span class="text-sm font-medium">Sign In</span>
-          </Button>
-          <Button
-            variant="ghost"
-            class="w-full py-2.5 rounded-none"
-            href="/signup"
-          >
-            Create Account
-          </Button>
+<Button
+  asChild
+  variant="outline"
+  class="w-full py-2.5 rounded-none bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90 border border-black dark:border-white transition-all duration-200"
+>
+  <a href="/login" class="flex items-center justify-center">
+    <span class="text-sm font-medium">Sign In</span>
+  </a>
+</Button>
+<Button
+  asChild
+  variant="ghost"
+  class="w-full py-2.5 rounded-none"
+>
+  <a href="/signup" class="flex items-center justify-center">
+    Create Account
+  </a>
+</Button>
         {/if}
       </div>
     </div>

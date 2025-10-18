@@ -1,12 +1,37 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
-  import Textarea from '$lib/components/ui/Textarea.svelte';
+  import Textarea from '$lib/components/ui/textarea.svelte';
   import Select from '$lib/components/ui/Select.svelte';
   import Switch from '$lib/components/ui/Switch.svelte';
   import { onMount } from 'svelte';
 
-  let settings = $state({
+  interface SocialLinks {
+    twitter: string;
+    facebook: string;
+    instagram: string;
+    linkedin: string;
+  }
+
+  interface Settings {
+    siteName: string;
+    siteDescription: string;
+    siteEmail: string;
+    sitePhone: string;
+    siteAddress: string;
+    enableComments: boolean;
+    enableNewsletter: boolean;
+    enableContactForm: boolean;
+    enableSocialLogin: boolean;
+    timezone: string;
+    dateFormat: string;
+    timeFormat: string;
+    maintenanceMode: boolean;
+    analyticsCode: string;
+    socialLinks: SocialLinks;
+  }
+
+  let settings = $state<Settings>({
     siteName: 'Ishan Parihar Coaching',
     siteDescription: 'Personal growth and wellness platform',
     siteEmail: 'admin@ishanparihar.com',
@@ -30,15 +55,15 @@
   });
   
   let loading = $state(false);
-  let error = $state(null);
-  let success = $state(null);
+  let error: string | null = $state(null);
+  let success: string | null = $state(null);
 
   onMount(async () => {
     // In a real app, this would fetch settings from the server
     console.log('Loading settings...');
   });
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     loading = true;
     error = null;
@@ -64,37 +89,48 @@
     }
   };
 
-  const handleInputChange = (field, value) => {
-    if (field.includes('.')) {
-      // Handle nested object properties like socialLinks.twitter
-      const [parent, child] = field.split('.');
-      settings = {
-        ...settings,
-        [parent]: {
-          ...settings[parent],
-          [child]: value
-        }
-      };
-    } else {
-      settings = { ...settings, [field]: value };
-    }
-  };
+   const handleInputChange = (field: string, value: any) => {
+     if (field.includes('.')) {
+       // Handle nested object properties like socialLinks.twitter
+       const [parent, child] = field.split('.');
+       const parentKey = parent as keyof Settings;
+       const parentValue = settings[parentKey];
+       
+       if (typeof parentValue === 'object' && parentValue !== null) {
+         settings = {
+           ...settings,
+           [parent]: {
+             ...parentValue,
+             [child]: value
+           }
+         };
+       }
+     } else {
+       settings = { ...settings, [field]: value };
+     }
+   };
 
-  const handleToggle = (field) => {
-    if (field.includes('.')) {
-      // Handle nested object properties like socialLinks.twitter
-      const [parent, child] = field.split('.');
-      settings = {
-        ...settings,
-        [parent]: {
-          ...settings[parent],
-          [child]: !settings[parent][child]
-        }
-      };
-    } else {
-      settings = { ...settings, [field]: !settings[field] };
-    }
-  };
+   const handleToggle = (field: string) => {
+     if (field.includes('.')) {
+       // Handle nested object properties like socialLinks.twitter
+       const [parent, child] = field.split('.');
+       const parentKey = parent as keyof Settings;
+       const childKey = child as keyof SocialLinks;
+       const parentValue = settings[parentKey];
+       
+       if (typeof parentValue === 'object' && parentValue !== null && childKey in parentValue) {
+         settings = {
+           ...settings,
+           [parent]: {
+             ...parentValue,
+             [child]: !(parentValue as SocialLinks)[childKey]
+           }
+         };
+       }
+     } else {
+       settings = { ...settings, [field]: !settings[field as keyof Settings] };
+     }
+   };
 </script>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -105,7 +141,7 @@
     </p>
   </div>
 
-  <form on:submit={handleSubmit} class="space-y-8">
+  <form onsubmit={handleSubmit} class="space-y-8">
     {#if error}
       <div class="bg-red-50 border-l-4 border-red-400 p-4">
         <div class="flex">
@@ -200,56 +236,51 @@
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <label class="text-sm font-medium text-gray-900">Enable Comments</label>
+            <span class="text-sm font-medium text-gray-900">Enable Comments</span>
             <p class="text-sm text-gray-500">Allow users to comment on your content</p>
           </div>
           <Switch
-            checked={settings.enableComments}
-            on:change={() => handleToggle('enableComments')}
+            bind:checked={settings.enableComments}
           />
         </div>
 
         <div class="flex items-center justify-between">
           <div>
-            <label class="text-sm font-medium text-gray-900">Enable Newsletter</label>
+            <span class="text-sm font-medium text-gray-900">Enable Newsletter</span>
             <p class="text-sm text-gray-500">Allow users to subscribe to newsletter</p>
           </div>
           <Switch
-            checked={settings.enableNewsletter}
-            on:change={() => handleToggle('enableNewsletter')}
+            bind:checked={settings.enableNewsletter}
           />
         </div>
 
         <div class="flex items-center justify-between">
           <div>
-            <label class="text-sm font-medium text-gray-900">Enable Contact Form</label>
+            <span class="text-sm font-medium text-gray-900">Enable Contact Form</span>
             <p class="text-sm text-gray-500">Show contact form on your site</p>
           </div>
           <Switch
-            checked={settings.enableContactForm}
-            on:change={() => handleToggle('enableContactForm')}
+            bind:checked={settings.enableContactForm}
           />
         </div>
 
         <div class="flex items-center justify-between">
           <div>
-            <label class="text-sm font-medium text-gray-900">Enable Social Login</label>
+            <span class="text-sm font-medium text-gray-900">Enable Social Login</span>
             <p class="text-sm text-gray-500">Allow users to login with social accounts</p>
           </div>
           <Switch
-            checked={settings.enableSocialLogin}
-            on:change={() => handleToggle('enableSocialLogin')}
+            bind:checked={settings.enableSocialLogin}
           />
         </div>
 
         <div class="flex items-center justify-between">
           <div>
-            <label class="text-sm font-medium text-gray-900">Maintenance Mode</label>
+            <span class="text-sm font-medium text-gray-900">Maintenance Mode</span>
             <p class="text-sm text-gray-500">Temporarily disable public access to your site</p>
           </div>
           <Switch
-            checked={settings.maintenanceMode}
-            on:change={() => handleToggle('maintenanceMode')}
+            bind:checked={settings.maintenanceMode}
           />
         </div>
       </div>

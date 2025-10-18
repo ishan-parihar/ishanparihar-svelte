@@ -65,14 +65,14 @@
       <div class="text-center">
         <div class="bg-destructive/10 border border-destructive/20 rounded-none p-6 max-w-md mx-auto">
           <p class="text-destructive text-sm">{error}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            class="mt-4"
-            on:click={() => window.location.reload()}
-          >
-            Try Again
-          </Button>
+<Button
+  variant="outline"
+  size="sm"
+  class="mt-4"
+  onclick={() => window.location.reload()}
+>
+  Try Again
+</Button>
         </div>
       </div>
     {:else if displayServices.length > 0}

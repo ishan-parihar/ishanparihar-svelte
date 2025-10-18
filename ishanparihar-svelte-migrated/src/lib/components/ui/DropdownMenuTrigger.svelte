@@ -4,10 +4,12 @@
 
   let { 
     className = '', 
-    disabled = false 
+    disabled = false,
+    children
   } = $props<{
     className?: string;
     disabled?: boolean;
+    children?: any;
   }>();
   
   // Get context from parent
@@ -31,6 +33,6 @@
   disabled={disabled}
   aria-haspopup="true"
   aria-expanded={dropdown.internalOpen}
->
-  <slot />
+ >
+  {@render children?.()}
 </button>

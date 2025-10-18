@@ -1,11 +1,11 @@
-<script>
+<script lang="ts">
   import { cartStore } from '$lib/stores/cart';
   import CartSummary from '$lib/components/cart/CartSummary.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
 
-  const { state } = cartStore;
+  const { state: cartState } = cartStore;
   let currentStep = $state(0); // 0: shipping, 1: payment, 2: review
   let isProcessing = $state(false);
   let error = $state<string | null>(null);
@@ -158,12 +158,12 @@
     <nav aria-label="Checkout steps" class="flex justify-between">
       {#each ['Shipping', 'Payment', 'Review'] as stepName, i}
         <div class="flex items-center">
-          <button
-            type="button"
-            class="flex items-center"
-            on:click={() => goToStep(i)}
-            disabled={i > currentStep}
-          >
+           <button
+             type="button"
+             class="flex items-center"
+             onclick={() => goToStep(i)}
+             disabled={i > currentStep}
+           >
             <span class={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
               i <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
             }`}>
@@ -201,7 +201,7 @@
     <div class="lg:col-span-2">
       {#if currentStep === 0}
         <!-- Shipping Information Step -->
-        <form on:submit={handleShippingSubmit}>
+         <form onsubmit={handleShippingSubmit}>
           <div class="bg-white shadow sm:rounded-md">
             <div class="px-4 py-5 sm:p-6">
               <h2 class="text-lg font-medium text-gray-900 mb-4">Shipping Information</h2>
@@ -329,12 +329,12 @@
             </div>
             
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <Button type="submit" class="ml-3">
-                Continue to Payment
-              </Button>
-              <Button type="button" variant="outline" on:click={() => goto('/cart')}>
-                Back to Cart
-              </Button>
+             <Button type="submit" class="ml-3">
+               Continue to Payment
+             </Button>
+             <Button type="button" variant="outline" onclick={() => goto('/cart')}>
+               Back to Cart
+             </Button>
             </div>
           </div>
         </form>
@@ -342,7 +342,7 @@
 
       {#if currentStep === 1}
         <!-- Payment Information Step -->
-        <form on:submit={handlePaymentSubmit}>
+               <form onsubmit={handlePaymentSubmit}>
           <div class="bg-white shadow sm:rounded-md">
             <div class="px-4 py-5 sm:p-6">
               <h2 class="text-lg font-medium text-gray-900 mb-4">Payment Information</h2>
@@ -361,7 +361,7 @@
                   </label>
                 </div>
                 
-                {!billingInfo.sameAsShipping &&
+                {#if !billingInfo.sameAsShipping}
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label for="billing-first-name" class="block text-sm font-medium text-gray-700 mb-1">
@@ -481,8 +481,8 @@
                         <option value="Other">Other</option>
                       </select>
                     </div>
-                  </div>
-                }
+                   </div>
+                {/if}
               </div>
               
               <!-- Payment Method -->
@@ -522,41 +522,44 @@
               <div class="border-t border-gray-200 pt-6">
                 <h3 class="text-md font-medium text-gray-900 mb-3">Card Details</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div class="sm:col-span-2">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Card Number
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled
-                    />
-                  </div>
-                  
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      Expiry Date
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="MM/YY"
-                      class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled
-                    />
-                  </div>
-                  
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
-                      CVC
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="123"
-                      class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled
-                    />
-                  </div>
+                   <div class="sm:col-span-2">
+                     <label for="card-number" class="block text-sm font-medium text-gray-700 mb-1">
+                       Card Number
+                     </label>
+                     <input
+                       id="card-number"
+                       type="text"
+                       placeholder="1234 5678 9012 3456"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       disabled
+                     />
+                   </div>
+                   
+                   <div>
+                     <label for="expiry-date" class="block text-sm font-medium text-gray-700 mb-1">
+                       Expiry Date
+                     </label>
+                     <input
+                       id="expiry-date"
+                       type="text"
+                       placeholder="MM/YY"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       disabled
+                     />
+                   </div>
+                   
+                   <div>
+                     <label for="cvc" class="block text-sm font-medium text-gray-700 mb-1">
+                       CVC
+                     </label>
+                     <input
+                       id="cvc"
+                       type="text"
+                       placeholder="123"
+                       class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       disabled
+                     />
+                   </div>
                 </div>
               </div>
             </div>
@@ -569,12 +572,12 @@
                   Place Order
                 {/if}
               </Button>
-              <Button type="button" variant="outline" on:click={goBack} class="mr-2">
-                Back
-              </Button>
-              <Button type="button" variant="outline" on:click={() => goto('/cart')}>
-                Back to Cart
-              </Button>
+               <Button type="button" variant="outline" onclick={goBack} class="mr-2">
+                 Back
+               </Button>
+               <Button type="button" variant="outline" onclick={() => goto('/cart')}>
+                 Back to Cart
+               </Button>
             </div>
           </div>
         </form>
@@ -624,28 +627,28 @@
             <div class="mb-6">
               <h3 class="text-md font-medium text-gray-900 mb-2">Order Items</h3>
               <div class="bg-gray-50 p-4 rounded-md">
-                {#each state.items as item (item.service.id)}
+                {#each cartState.items as item (item.service.id)}
                   <div class="flex justify-between py-2 border-b border-gray-200 last:border-0">
                     <div>
                       <p class="font-medium">{item.service.title}</p>
                       <p class="text-sm text-gray-500">Qty: {item.quantity}</p>
                     </div>
-                    <p>₹{(item.service.base_price || 0) * item.quantity}</p>
+                    <p>₹{(item.service.price || 0) * item.quantity}</p>
                   </div>
                 {/each}
               </div>
             </div>
             
             <div class="border-t border-gray-200 pt-6">
-              <form on:submit={handlePaymentSubmit}>
+              <form onsubmit={handlePaymentSubmit}>
                 <div class="flex justify-end space-x-3">
-                  <Button type="button" variant="outline" on:click={goBack}>
-                    Back
-                  </Button>
-                  <Button type="button" variant="outline" on:click={() => goto('/cart')}>
-                    Back to Cart
-                  </Button>
-                  <Button type="submit" disabled={isProcessing}>
+                   <Button type="button" variant="outline" onclick={goBack}>
+                     Back
+                   </Button>
+                   <Button type="button" variant="outline" onclick={() => goto('/cart')}>
+                     Back to Cart
+                   </Button>
+                   <Button type="submit" disabled={isProcessing}>
                     {#if isProcessing}
                       Placing Order...
                     {:else}

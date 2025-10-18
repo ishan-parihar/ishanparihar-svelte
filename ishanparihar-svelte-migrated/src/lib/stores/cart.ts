@@ -31,7 +31,7 @@ function createCartStore() {
   $effect(() => {
     // Calculate derived values
     const subtotal = state.items.reduce((sum, item) => {
-      const price = item.service.base_price || 0;
+      const price = item.service.price || 0;
       return sum + (price * item.quantity);
     }, 0);
     

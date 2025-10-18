@@ -1,8 +1,21 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   
-  let serviceData = $state({
+  interface ServiceData {
+    title: string;
+    excerpt: string;
+    description: string;
+    price: string | number;
+    category: string;
+    status: 'active' | 'inactive';
+    featured: boolean;
+    metaTitle: string;
+    metaDescription: string;
+    image: string;
+  }
+  
+  let serviceData = $state<ServiceData>({
     title: '',
     excerpt: '',
     description: '',
@@ -16,9 +29,9 @@
   });
 
   let loading = $state(false);
-  let error = $state(null);
+  let error = $state<string | null>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     loading = true;
     error = null;
@@ -47,14 +60,14 @@
 </script>
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="flex items-center justify-between mb-6">
-    <button 
-      on:click={() => goto('/admin/services')}
-      class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
-    >
-      &larr; Back to Services Management
-    </button>
-  </div>
+   <div class="flex items-center justify-between mb-6">
+     <button 
+       onclick={() => goto('/admin/services')}
+       class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
+     >
+       &larr; Back to Services Management
+     </button>
+   </div>
 
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
@@ -80,7 +93,7 @@
         </div>
       {/if}
 
-      <form on:submit={handleSubmit}>
+       <form onsubmit={handleSubmit}>
         <div class="grid grid-cols-1 gap-6">
           <!-- Title -->
           <div>
@@ -234,31 +247,31 @@
             
             <div class="space-y-4">
               <!-- Status -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
-                <div class="flex space-x-4 mt-2">
-                  <label class="inline-flex items-center">
-                    <input
-                      type="radio"
-                      bind:group={serviceData.status}
-                      value="active"
-                      class="text-blue-600 focus:ring-blue-500"
-                    />
-                    <span class="ml-2">Active</span>
-                  </label>
-                  <label class="inline-flex items-center">
-                    <input
-                      type="radio"
-                      bind:group={serviceData.status}
-                      value="inactive"
-                      class="text-blue-600 focus:ring-blue-500"
-                    />
-                    <span class="ml-2">Inactive</span>
-                  </label>
-                </div>
-              </div>
+               <div>
+                 <p class="block text-sm font-medium text-gray-700 mb-1">
+                   Status
+                 </p>
+                 <div class="flex space-x-4 mt-2">
+                   <label class="inline-flex items-center">
+                     <input
+                       type="radio"
+                       bind:group={serviceData.status}
+                       value="active"
+                       class="text-blue-600 focus:ring-blue-500"
+                     />
+                     <span class="ml-2">Active</span>
+                   </label>
+                   <label class="inline-flex items-center">
+                     <input
+                       type="radio"
+                       bind:group={serviceData.status}
+                       value="inactive"
+                       class="text-blue-600 focus:ring-blue-500"
+                     />
+                     <span class="ml-2">Inactive</span>
+                   </label>
+                 </div>
+               </div>
 
               <!-- Featured -->
               <div class="flex items-start">
@@ -285,14 +298,14 @@
 
         <!-- Action Buttons -->
         <div class="mt-8 flex justify-end space-x-3">
-          <Button 
-            type="button" 
-            variant="outline" 
-            on:click={handleCancel}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
+           <Button 
+             type="button" 
+             variant="outline" 
+             onclick={handleCancel}
+             disabled={loading}
+           >
+             Cancel
+           </Button>
           <Button 
             type="submit" 
             disabled={loading}

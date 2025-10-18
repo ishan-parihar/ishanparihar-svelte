@@ -61,52 +61,52 @@
       <p class="text-gray-500 text-sm mt-1">{item.service.excerpt}</p>
       
       <div class="flex items-center mt-4 space-x-3">
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-8 w-8 p-0"
-          on:click={decrement}
-          disabled={!!loadingId}
-          aria-label="Decrease quantity"
-        >
-          <span class="text-lg">-</span>
-        </Button>
+<Button
+  variant="outline"
+  size="sm"
+  class="h-8 w-8 p-0"
+  onclick={decrement}
+  disabled={!!loadingId}
+  aria-label="Decrease quantity"
+>
+  <span class="text-lg">-</span>
+</Button>
         
         <span class="text-lg font-medium w-8 text-center">{item.quantity}</span>
         
-        <Button
-          variant="outline"
-          size="sm"
-          class="h-8 w-8 p-0"
-          on:click={increment}
-          disabled={!!loadingId}
-          aria-label="Increase quantity"
-        >
-          <span class="text-lg">+</span>
-        </Button>
+<Button
+  variant="outline"
+  size="sm"
+  class="h-8 w-8 p-0"
+  onclick={increment}
+  disabled={!!loadingId}
+  aria-label="Increase quantity"
+>
+  <span class="text-lg">+</span>
+</Button>
         
-        <Button
-          variant="destructive"
-          size="sm"
-          class="ml-2"
-          on:click={removeItem}
-          disabled={!!loadingId}
-        >
-          {#if loadingId === item.service.id}
-            Removing...
-          {:else}
-            Remove
-          {/if}
-        </Button>
+<Button
+  variant="destructive"
+  size="sm"
+  class="ml-2"
+  onclick={removeItem}
+  disabled={!!loadingId}
+>
+  {#if loadingId === item.service.id}
+    Removing...
+  {:else}
+    Remove
+  {/if}
+</Button>
       </div>
     </div>
     
     <div class="text-right">
       <p class="text-lg font-medium text-gray-900">
-        ₹{(item.service.base_price || 0) * item.quantity}
+        ₹{(item.service.price || 0) * item.quantity}
       </p>
       <p class="text-sm text-gray-500">
-        ₹{item.service.base_price || 0} × {item.quantity}
+        ₹{item.service.price || 0} × {item.quantity}
       </p>
     </div>
   </div>

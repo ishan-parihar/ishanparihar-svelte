@@ -2,9 +2,11 @@
   import { getContext } from 'svelte';
 
   let { 
-    className = ''
+    className = '',
+    children
   } = $props<{
     className?: string;
+    children?: any;
   }>();
   
   // Get context from parent
@@ -22,6 +24,6 @@
     role="menu"
     aria-orientation="vertical"
   >
-    <slot />
+    {@render children?.()}
   </div>
 {/if}

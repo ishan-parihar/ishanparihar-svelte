@@ -1,12 +1,22 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
-  import Textarea from '$lib/components/ui/Textarea.svelte';
-  import Select from '$lib/components/ui/Select.svelte';
+  import Textarea from '$lib/components/ui/textarea.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  let project = $state({
+  interface Project {
+    title: string;
+    excerpt: string;
+    content: string;
+    category: string;
+    status: string;
+    featured: boolean;
+    tags: string[];
+    imageUrl: string;
+  }
+
+  let project = $state<Project>({
     title: '',
     excerpt: '',
     content: '',
@@ -18,10 +28,10 @@
   });
   
   let loading = $state(false);
-  let error = $state(null);
-  let success = $state(null);
+  let error = $state<string | null>(null);
+  let success = $state<string | null>(null);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     loading = true;
     error = null;
@@ -51,7 +61,7 @@
     goto('/admin/projects');
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof Project, value: any) => {
     project = { ...project, [field]: value };
   };
 
@@ -68,7 +78,7 @@
     </p>
   </div>
 
-  <form on:submit={handleSubmit} class="bg-white shadow rounded-lg p-6">
+  <form onsubmit={handleSubmit} class="bg-white shadow rounded-lg p-6">
     {#if error}
       <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
         <div class="flex">
@@ -136,31 +146,33 @@
 
       <!-- Right Column -->
       <div class="space-y-6">
-        <div>
-          <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-          <Select
-            id="category"
-            bind:value={project.category}
-          >
-            <option value="programs">Programs</option>
-            <option value="courses">Courses</option>
-            <option value="workshops">Workshops</option>
-            <option value="books">Books</option>
-            <option value="articles">Articles</option>
-          </Select>
-        </div>
+         <div>
+           <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+           <select
+             id="category"
+             bind:value={project.category}
+             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+           >
+             <option value="programs">Programs</option>
+             <option value="courses">Courses</option>
+             <option value="workshops">Workshops</option>
+             <option value="books">Books</option>
+             <option value="articles">Articles</option>
+           </select>
+         </div>
 
-        <div>
-          <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <Select
-            id="status"
-            bind:value={project.status}
-          >
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-            <option value="archived">Archived</option>
-          </Select>
-        </div>
+         <div>
+           <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+           <select
+             id="status"
+             bind:value={project.status}
+             class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+           >
+             <option value="draft">Draft</option>
+             <option value="published">Published</option>
+             <option value="archived">Archived</option>
+           </select>
+         </div>
 
         <div>
           <label for="imageUrl" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
@@ -178,7 +190,7 @@
             type="checkbox"
             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             checked={project.featured}
-            on:change={handleToggleFeatured}
+             onchange={handleToggleFeatured}
           />
           <label for="featured" class="ml-2 block text-sm text-gray-900">
             Featured Project
@@ -188,14 +200,14 @@
     </div>
 
     <div class="mt-8 flex justify-end space-x-3">
-      <Button
-        type="button"
-        variant="outline"
-        on:click={handleCancel}
-        disabled={loading}
-      >
-        Cancel
-      </Button>
+       <Button
+         type="button"
+         variant="outline"
+         onclick={handleCancel}
+         disabled={loading}
+       >
+         Cancel
+       </Button>
       <Button
         type="submit"
         disabled={loading}

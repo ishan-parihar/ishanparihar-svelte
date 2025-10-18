@@ -58,7 +58,7 @@
         </div>
 
         <div class="mt-6 flex justify-center">
-          <Button variant="outline" on:click={continueShopping}>
+          <Button variant="outline" onclick={continueShopping}>
             Continue Shopping
           </Button>
         </div>

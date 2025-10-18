@@ -1,19 +1,45 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let services = $state([]);
+  interface Service {
+    id: string;
+    title: string;
+    excerpt: string;
+    price: number;
+    category: string;
+    status: 'active' | 'inactive';
+    featured: boolean;
+    createdAt: string;
+    updatedAt: string;
+    sales: number;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    search: string;
+    category: string;
+    status: string;
+  }
+  
+  let services = $state<Service[]>([]);
   let loading = $state(true);
-  let error = $state(null);
-  let pagination = $state({
+  let error = $state<string | null>(null);
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     search: '',
     category: 'all',
     status: 'all'
@@ -78,18 +104,18 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadServices();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadServices();
   };
 
-  const editService = (serviceId) => {
+  const editService = (serviceId: string) => {
     goto(`/admin/services/edit/${serviceId}`);
   };
 
@@ -97,16 +123,19 @@
     goto('/admin/services/new');
   };
 
-  const toggleServiceStatus = async (serviceId) => {
+  const toggleServiceStatus = async (serviceId: string) => {
     loading = true;
     try {
       // Simulate API call to update service status
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // In real app, this would make an API call
-      const service = services.find(s => s.id === serviceId);
-      if (service) {
-        service.status = service.status === 'active' ? 'inactive' : 'active';
+      const serviceIndex = services.findIndex(s => s.id === serviceId);
+      if (serviceIndex !== -1) {
+        services[serviceIndex] = {
+          ...services[serviceIndex],
+          status: services[serviceIndex].status === 'active' ? 'inactive' : 'active'
+        };
       }
     } catch (err) {
       error = 'Failed to update service status';
@@ -116,7 +145,7 @@
     }
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
       case 'inactive': return 'bg-red-100 text-red-800';
@@ -134,7 +163,7 @@
       </p>
     </div>
     
-    <Button on:click={createNewService}>
+     <Button onclick={createNewService}>
       Create New Service
     </Button>
   </div>
@@ -197,7 +226,7 @@
     </div>
     
     <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
+       <Button onclick={() => handleFilterChange(filters)}>
         Apply Filters
       </Button>
     </div>
@@ -258,21 +287,21 @@
                   <button
                     type="button"
                     class="text-blue-600 hover:text-blue-900 mr-3"
-                    on:click={() => editService(service.id)}
+                     onclick={() => editService(service.id)}
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     class="text-green-600 hover:text-green-900 mr-3"
-                    on:click={() => toggleServiceStatus(service.id)}
+                     onclick={() => toggleServiceStatus(service.id)}
                   >
                     {service.status === 'active' ? 'Deactivate' : 'Activate'}
                   </button>
                   <button
                     type="button"
                     class="text-red-600 hover:text-red-900"
-                    on:click={() => console.log('Delete service:', service.id)}
+                     onclick={() => console.log('Delete service:', service.id)}
                   >
                     Delete
                   </button>
@@ -295,14 +324,14 @@
         <button
           disabled={pagination.page <= 1}
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
+           onclick={() => handlePageChange(pagination.page - 1)}
         >
           Previous
         </button>
         <button
           disabled={pagination.page >= pagination.totalPages}
           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
+           onclick={() => handlePageChange(pagination.page + 1)}
         >
           Next
         </button>

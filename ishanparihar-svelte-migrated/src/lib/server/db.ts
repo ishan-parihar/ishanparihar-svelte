@@ -1,5 +1,4 @@
 import { createServiceRoleClient } from './supabase';
-import { TimeSpan } from 'lucia';
 
 // Create supabase client instance with lazy initialization
 let _supabase: any = null;

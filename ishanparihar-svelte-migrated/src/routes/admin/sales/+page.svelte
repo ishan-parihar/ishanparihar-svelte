@@ -1,25 +1,55 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let orders = $state([]);
+  interface Order {
+    id: string;
+    customer: string;
+    email: string;
+    total: number;
+    status: 'completed' | 'pending' | 'refunded' | 'cancelled';
+    date: string;
+    items: number;
+  }
+  
+  interface Metrics {
+    totalRevenue: number;
+    totalOrders: number;
+    avgOrderValue: number;
+    newCustomers: number;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    status: string;
+    dateRange: string;
+    search: string;
+  }
+  
+  let orders = $state<Order[]>([]);
   let loading = $state(true);
-  let error = $state(null);
-  let metrics = $state({
+  let error = $state<string | null>(null);
+  let metrics = $state<Metrics>({
     totalRevenue: 0,
     totalOrders: 0,
     avgOrderValue: 0,
     newCustomers: 0
   });
-  let pagination = $state({
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     status: 'all',
     dateRange: 'all',
     search: ''
@@ -102,22 +132,22 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadSalesData();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadSalesData();
   };
 
-  const viewOrder = (orderId) => {
+  const viewOrder = (orderId: string) => {
     goto(`/admin/orders/${orderId}`);
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -256,9 +286,9 @@
     </div>
     
     <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
-        Apply Filters
-      </Button>
+       <Button onclick={() => handleFilterChange(filters)}>
+         Apply Filters
+       </Button>
     </div>
   </div>
 
@@ -320,13 +350,13 @@
                   {order.items}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    type="button"
-                    class="text-blue-600 hover:text-blue-900"
-                    on:click={() => viewOrder(order.id)}
-                  >
-                    View
-                  </button>
+                   <button
+                     type="button"
+                     class="text-blue-600 hover:text-blue-900"
+                     onclick={() => viewOrder(order.id)}
+                   >
+                     View
+                   </button>
                 </td>
               </tr>
             {/each}
@@ -343,20 +373,20 @@
         <span class="font-medium">{pagination.total}</span> results
       </div>
       <div class="flex space-x-2">
-        <button
-          disabled={pagination.page <= 1}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
-        >
-          Previous
-        </button>
-        <button
-          disabled={pagination.page >= pagination.totalPages}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
-        >
-          Next
-        </button>
+         <button
+           disabled={pagination.page <= 1}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page - 1)}
+         >
+           Previous
+         </button>
+         <button
+           disabled={pagination.page >= pagination.totalPages}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page + 1)}
+         >
+           Next
+         </button>
       </div>
     </div>
   {/if}

@@ -1,12 +1,19 @@
-<script>
+<script lang="ts">
   import ServicesHero from '$lib/components/services/ServicesHero.svelte';
   import ServicesGrid from '$lib/components/services/ServicesGrid.svelte';
   import ServicesFilters from '$lib/components/services/ServicesFilters.svelte';
   import { page } from '$app/stores';
   
-  let category = $bindable('');
+  let category = $state<string | undefined>(undefined);
+  
   $effect(() => {
-    category = page.params.category;
+    const unsubscribe = page.subscribe(($page) => {
+      const paramCategory = $page.params.category;
+      if (paramCategory) {
+        category = paramCategory;
+      }
+    });
+    return unsubscribe;
   });
 
   // Simulated services data filtered by category - in real app, this would come from a +page.server.ts
@@ -16,7 +23,7 @@
       title: 'Consultation Session',
       excerpt: 'Personalized consultation to understand your needs and goals',
       description: 'A comprehensive consultation session to assess your current situation and define clear objectives for your journey.',
-      base_price: 5000,
+      price: 5000,
       featured: true,
       category: { id: '1', name: 'Consultation', slug: 'consultation' }
     },
@@ -25,7 +32,7 @@
       title: 'Follow-up Session',
       excerpt: 'Additional session for continued progress',
       description: 'A follow-up session to continue your transformation journey with ongoing support.',
-      base_price: 4000,
+      price: 4000,
       featured: false,
       category: { id: '1', name: 'Consultation', slug: 'consultation' }
     }
@@ -37,12 +44,13 @@
     { id: '3', name: 'Courses', slug: 'courses' }
   ]);
 
-  let selectedCategory = $state(category);
+  let selectedCategory = $derived(category || '');
   let sortBy = $state('featured');
   let loading = $state(false);
 
-  const handleFilterChange = ({ category: newCategory, sortBy: newSortBy }) => {
-    selectedCategory = newCategory;
+  const handleFilterChange = (e: CustomEvent<{ category: string | null; sortBy: string }>) => {
+    const { category: newCategory, sortBy: newSortBy } = e.detail;
+    selectedCategory = newCategory || '';
     sortBy = newSortBy;
     
     // Simulate filtering and sorting

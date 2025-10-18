@@ -17,3 +17,5 @@ export { default as AvatarImage } from './AvatarImage.svelte';
 export { default as AvatarFallback } from './AvatarFallback.svelte';
 export { default as BrandLogo } from './BrandLogo.svelte';
 export { default as AmbientLight } from './AmbientLight.svelte';
+export { default as Select } from './Select.svelte';
+export { default as Switch } from './Switch.svelte';

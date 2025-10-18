@@ -1,22 +1,40 @@
-<script>
+<script lang="ts">
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
-  import Textarea from '$lib/components/ui/Textarea.svelte';
+  import Textarea from '$lib/components/ui/textarea.svelte'; // Fixed casing
   import { onMount } from 'svelte';
   
-  let categories = $state([]);
+  interface Category {
+    id: string;
+    name: string;
+    description: string;
+    slug: string;
+    active: boolean;
+    createdAt: string;
+    updatedAt: string;
+    serviceCount: number;
+  }
+  
+  interface NewCategory {
+    name: string;
+    description: string;
+    slug: string;
+    active: boolean;
+  }
+  
+  let categories = $state<Category[]>([]);
   let loading = $state(true);
-  let error = $state(null);
+  let error = $state<string | null>(null);
   let isCreating = $state(false);
-  let newCategory = $state({
+  let newCategory = $state<NewCategory>({
     name: '',
     description: '',
     slug: '',
     active: true
   });
   
-  let editingCategory = $state(null);
-  let editingValues = $state({});
+  let editingCategory = $state<string | null>(null);
+  let editingValues = $state<Partial<Category>>({});
 
   onMount(async () => {
     await loadCategories();
@@ -78,7 +96,7 @@
     }
   }
 
-  const handleCreateCategory = async (event) => {
+  const handleCreateCategory = async (event: SubmitEvent) => {
     event.preventDefault();
     loading = true;
     error = null;
@@ -87,7 +105,7 @@
       // Simulate API call to create category
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const newCat = {
+      const newCat: Category = {
         id: (categories.length + 1).toString(),
         ...newCategory,
         createdAt: new Date().toISOString().split('T')[0],
@@ -112,7 +130,7 @@
     }
   };
 
-  const handleEditCategory = (categoryId) => {
+  const handleEditCategory = (categoryId: string) => {
     const category = categories.find(c => c.id === categoryId);
     if (category) {
       editingCategory = categoryId;
@@ -120,7 +138,8 @@
     }
   };
 
-  const handleSaveCategory = async () => {
+  const handleSaveCategory = async (event: SubmitEvent) => {
+    event.preventDefault();
     loading = true;
     error = null;
 
@@ -129,7 +148,7 @@
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       categories = categories.map(cat => 
-        cat.id === editingCategory ? { ...editingValues } : cat
+        cat.id === editingCategory ? { ...cat, ...editingValues } as Category : cat
       );
       
       editingCategory = null;
@@ -147,7 +166,7 @@
     editingValues = {};
   };
 
-  const handleDeleteCategory = async (categoryId) => {
+  const handleDeleteCategory = async (categoryId: string) => {
     if (confirm('Are you sure you want to delete this category? Services in this category will not be deleted.')) {
       loading = true;
       error = null;
@@ -166,7 +185,7 @@
     }
   };
 
-  const toggleCategoryStatus = (categoryId) => {
+  const toggleCategoryStatus = (categoryId: string) => {
     categories = categories.map(cat => 
       cat.id === categoryId 
         ? { ...cat, active: !cat.active, updatedAt: new Date().toISOString().split('T')[0] } 
@@ -174,16 +193,16 @@
     );
   };
 
-  const generateSlug = (name) => {
+  const generateSlug = (name: string) => {
     return name
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      .trim('-');
+      .replace(/^-|-$/g, ''); // Fixed to not pass argument to trim
   };
 
-  const handleNameChange = (name) => {
+  const handleNameChange = (name: string) => {
     newCategory.name = name;
     newCategory.slug = generateSlug(name);
   };
@@ -228,7 +247,7 @@
       {/if}
     </h2>
     
-    <form on:submit={editingCategory ? handleSaveCategory : handleCreateCategory}>
+     <form onsubmit={(e) => (editingCategory ? handleSaveCategory : handleCreateCategory)(e)}>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
@@ -236,14 +255,15 @@
              id="name"
              type="text"
              placeholder="Enter category name"
-             value={editingCategory ? editingValues.name : newCategory.name}
-             on:input={(e) => {
-               if (editingCategory) {
-                 editingValues.name = e.target.value;
-               } else {
-                 handleNameChange(e.target.value);
-               }
-             }}
+              value={editingCategory ? editingValues.name : newCategory.name}
+                oninput={(e: Event) => {
+                  const target = e.target as HTMLInputElement;
+                  if (editingCategory) {
+                    editingValues.name = target.value;
+                  } else {
+                    handleNameChange(target.value);
+                  }
+                }}
              required
            />
         </div>
@@ -254,14 +274,15 @@
              id="slug"
              type="text"
              placeholder="category-slug"
-             value={editingCategory ? editingValues.slug : newCategory.slug}
-             on:input={(e) => {
-               if (editingCategory) {
-                 editingValues.slug = e.target.value;
-               } else {
-                 newCategory.slug = e.target.value;
-               }
-             }}
+              value={editingCategory ? editingValues.slug : newCategory.slug}
+               oninput={(e: Event) => {
+                 const target = e.target as HTMLInputElement;
+                 if (editingCategory) {
+                   editingValues.slug = target.value;
+                 } else {
+                   newCategory.slug = target.value;
+                }
+               }}
              required
            />
         </div>
@@ -272,14 +293,15 @@
              id="description"
              placeholder="Brief description of the category"
              rows="3"
-             value={editingCategory ? editingValues.description : newCategory.description}
-             on:input={(e) => {
-               if (editingCategory) {
-                 editingValues.description = e.target.value;
-               } else {
-                 newCategory.description = e.target.value;
-               }
-             }}
+              value={editingCategory ? editingValues.description : newCategory.description}
+               oninput={(e: Event) => {
+                 const target = e.target as HTMLTextAreaElement;
+                 if (editingCategory) {
+                   editingValues.description = target.value;
+                 } else {
+                   newCategory.description = target.value;
+                }
+               }}
            />
          </div>
 
@@ -289,13 +311,13 @@
              type="checkbox"
              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
              checked={editingCategory ? editingValues.active : newCategory.active}
-             on:change={() => {
-               if (editingCategory) {
-                 editingValues.active = !editingValues.active;
-               } else {
-                 newCategory.active = !newCategory.active;
-               }
-             }}
+              onchange={() => {
+                if (editingCategory) {
+                  editingValues.active = !editingValues.active;
+                } else {
+                  newCategory.active = !newCategory.active;
+                }
+              }}
            />
            <label for="active" class="ml-2 block text-sm text-gray-900">
              Active Category
@@ -308,7 +330,7 @@
           <Button
             type="button"
             variant="outline"
-            on:click={handleCancelEdit}
+             onclick={handleCancelEdit}
             disabled={loading}
           >
             Cancel
@@ -350,21 +372,21 @@
                   <button
                     type="button"
                     class="text-blue-600 hover:text-blue-900 text-sm font-medium"
-                    on:click={() => handleEditCategory(category.id)}
+                     onclick={() => handleEditCategory(category.id)}
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     class="text-green-600 hover:text-green-900 text-sm font-medium"
-                    on:click={() => toggleCategoryStatus(category.id)}
+                     onclick={() => toggleCategoryStatus(category.id)}
                   >
                     {category.active ? 'Deactivate' : 'Activate'}
                   </button>
                   <button
                     type="button"
                     class="text-red-600 hover:text-red-900 text-sm font-medium"
-                    on:click={() => handleDeleteCategory(category.id)}
+                     onclick={() => handleDeleteCategory(category.id)}
                   >
                     Delete
                   </button>
