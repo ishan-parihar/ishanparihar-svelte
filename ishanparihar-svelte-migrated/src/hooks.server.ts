@@ -1,5 +1,36 @@
+import { auth } from '$lib/server/auth';
 import type { Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
+
+// Lucia auth hook
+const authHook: Handle = async ({ event, resolve }) => {
+  const sessionId = event.cookies.get(auth.sessionCookieName);
+  if (!sessionId) {
+    event.locals.auth = {
+      session: null,
+      user: null
+    };
+    return resolve(event);
+  }
+
+  const { session, user } = await auth.validateSession(sessionId);
+  if (session && session.fresh) {
+    const sessionCookie = auth.createSessionCookie(session.id);
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '.',
+      ...sessionCookie.attributes
+    });
+  }
+  if (!session) {
+    const sessionCookie = auth.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '.',
+      ...sessionCookie.attributes
+    });
+  }
+  event.locals.auth = { session, user };
+  return resolve(event);
+};
 
 // SEO metadata hook
 const seoHook: Handle = async ({ event, resolve }) => {
@@ -59,4 +90,4 @@ export function generateMetaTags(pageData: {
   return metaTags;
 }
 
-export const handle = sequence(seoHook);
+export const handle = sequence(authHook, seoHook);

@@ -4,24 +4,25 @@
   import UserManagementTable from '$lib/components/admin/UserManagementTable.svelte';
   import UserFilters from '$lib/components/admin/UserFilters.svelte';
   import { apiClient } from '$lib/api/client';
+  import type { UserForTable } from '$lib/types/user';
   
-  let users = [];
-  let loading = true;
-  let pagination = {
+  let users = $state<UserForTable[]>([]);
+  let loading = $state(true);
+  let pagination = $state({
     page: 1,
     limit: 20,
     total: 0,
     totalPages: 0
-  };
+  });
   
-  let filters = {
+  let filters = $state({
     search: '',
     status: 'all',
     role: 'all'
-  };
+  });
   
-  onMount(async () => {
-    await loadUsers();
+  onMount(() => {
+    loadUsers();
   });
   
   async function loadUsers() {
@@ -47,18 +48,18 @@
     }
   }
   
-  function handleFilterChange(newFilters) {
+  function handleFilterChange(newFilters: Partial<typeof filters>) {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadUsers();
   }
   
-  function handlePageChange(newPage) {
+  function handlePageChange(newPage: number) {
     pagination.page = newPage;
     loadUsers();
   }
   
-  async function handleUserAction(action, user) {
+  async function handleUserAction(action: string, user: UserForTable) {
     try {
       switch (action) {
         case 'suspend':

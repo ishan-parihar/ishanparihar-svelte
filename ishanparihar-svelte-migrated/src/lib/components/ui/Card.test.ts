@@ -2,10 +2,24 @@ import { render } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
 import Card from './Card.svelte';
 
+// Define the expected props type to match the component
+interface CardProps {
+  title: string;
+  excerpt: string;
+  coverImage?: string;
+  date?: string;
+  category?: string;
+  slug?: string;
+  premium?: boolean;
+  likes_count?: number;
+  comments_count?: number;
+  views_count?: number;
+  content_type?: "blog" | "research_paper";
+}
+
 describe('Card Component', () => {
 	it('renders card with all props', () => {
 		const props = {
-			id: 'test-card',
 			title: 'Test Card',
 			excerpt: 'This is a test card excerpt',
 			coverImage: 'https://example.com/image.jpg',
@@ -18,7 +32,7 @@ describe('Card Component', () => {
 			views_count: 100
 		};
 
-		const { getByText, getByRole } = render(Card, { props });
+		const { getByText, getByRole } = render(Card as any, { props });
 
 		expect(getByText('Test Card')).toBeInTheDocument();
 		expect(getByText('This is a test card excerpt')).toBeInTheDocument();
@@ -33,9 +47,8 @@ describe('Card Component', () => {
 	});
 
 	it('displays premium badge for premium content', () => {
-		const { getByText } = render(Card, {
+		const { getByText } = render(Card as any, {
 			props: {
-				id: 'premium-card',
 				title: 'Premium Card',
 				excerpt: 'Premium content',
 				premium: true
@@ -46,9 +59,8 @@ describe('Card Component', () => {
 	});
 
 	it('hides engagement metrics when counts are zero', () => {
-		const { queryByText } = render(Card, {
+		const { queryByText } = render(Card as any, {
 			props: {
-				id: 'no-metrics-card',
 				title: 'No Metrics Card',
 				excerpt: 'No engagement metrics',
 				likes_count: 0,
@@ -61,9 +73,8 @@ describe('Card Component', () => {
 	});
 
 	it('renders correctly without cover image', () => {
-		const { queryByRole } = render(Card, {
+		const { queryByRole } = render(Card as any, {
 			props: {
-				id: 'no-image-card',
 				title: 'No Image Card',
 				excerpt: 'No cover image'
 			}

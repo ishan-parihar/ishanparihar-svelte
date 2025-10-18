@@ -7,14 +7,14 @@ import type { RequestEvent } from '@sveltejs/kit';
 export async function requireAdmin(event: RequestEvent) {
   // In a real implementation, this would check the user's session/role
   // For now, we'll just return true to allow the request to proceed
-  const session = event.locals.session;
+  const auth = event.locals.auth;
   
-  // Assuming session structure based on typical SvelteKit auth patterns
- if (!session || (session as any).user?.role !== 'admin') {
+  // Using the auth structure from hooks.server.ts ({ session, user })
+  if (!auth || !auth.user || (auth.user as any).role !== 'admin') {
     throw error(401, 'Unauthorized');
   }
   
-  return (session as any).user;
+  return auth.user;
 }
 
 /**

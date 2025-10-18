@@ -1,7 +1,11 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   
-  export let filters;
+  export let filters: {
+    search?: string;
+    status?: string;
+    role?: string;
+  } = {};
   
   const dispatch = createEventDispatcher();
   

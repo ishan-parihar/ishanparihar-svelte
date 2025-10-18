@@ -6,6 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+// Define the Database type
 export interface Database {
   public: {
     Tables: {
@@ -72,6 +73,91 @@ export interface Database {
           meta_title?: string;
           meta_description?: string;
           keywords?: string[];
+        };
+      };
+      blog_comments: {
+        Row: {
+          id: string;
+          post_id: string;
+          user_id: string;
+          content: string;
+          parent_id?: string;
+          created_at: string;
+          updated_at: string;
+          status: string; // pending, approved, rejected
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          user_id: string;
+          content: string;
+          parent_id?: string;
+          created_at?: string;
+          updated_at?: string;
+          status?: string; // pending, approved, rejected
+        };
+        Update: {
+          id?: string;
+          post_id?: string;
+          user_id?: string;
+          content?: string;
+          parent_id?: string;
+          created_at?: string;
+          updated_at?: string;
+          status?: string; // pending, approved, rejected
+        };
+      };
+      services: {
+        Row: {
+          id: string;
+          title: string;
+          slug: string;
+          description: string;
+          content?: string;
+          category?: string;
+          price?: number;
+          duration?: string;
+          status: 'active' | 'inactive' | 'draft';
+          featured: boolean;
+          cover_image?: string;
+          created_at: string;
+          updated_at: string;
+          meta_title?: string;
+          meta_description?: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          slug: string;
+          description: string;
+          content?: string;
+          category?: string;
+          price?: number;
+          duration?: string;
+          status?: 'active' | 'inactive' | 'draft';
+          featured?: boolean;
+          cover_image?: string;
+          created_at?: string;
+          updated_at?: string;
+          meta_title?: string;
+          meta_description?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          description?: string;
+          content?: string;
+          category?: string;
+          price?: number;
+          duration?: string;
+          status?: 'active' | 'inactive' | 'draft';
+          featured?: boolean;
+          cover_image?: string;
+          created_at?: string;
+          updated_at?: string;
+          meta_title?: string;
+          meta_description?: string;
         };
       };
       users: {

@@ -1,9 +1,12 @@
 
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import type { ActionData } from "../../routes/login/$types";
 
-    let form: ActionData;
+    let form: {
+        type?: string;
+        error?: string;
+        message?: string;
+    } = $state({});
 </script>
 
 <div class="flex flex-col items-center justify-center">

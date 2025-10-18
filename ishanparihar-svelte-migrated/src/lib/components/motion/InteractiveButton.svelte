@@ -6,7 +6,13 @@
     className = '',
     onClick,
     disabled = false,
-  } = $props();
+    children
+  } = $props<{
+    className?: string;
+    onClick?: () => void;
+    disabled?: boolean;
+    children?: () => any;
+  }>();
 
   const scale = tweened(1, { duration: 200, easing: cubicOut });
 
@@ -35,15 +41,17 @@
   }
 </script>
 
-<button
-  class={className}
-  {disabled}
-  on:click={onClick}
-  on:mouseover={handleMouseOver}
-  on:mouseout={handleMouseOut}
-  on:mousedown={handleMouseDown}
-  on:mouseup={handleMouseUp}
-  style="transform: scale({$scale});"
->
-  <slot />
+ <button
+   class={className}
+   {disabled}
+   onclick={onClick}
+   onmouseover={handleMouseOver}
+   onmouseout={handleMouseOut}
+   onmousedown={handleMouseDown}
+   onmouseup={handleMouseUp}
+   onfocus={handleMouseOver}
+   onblur={handleMouseOut}
+   style="transform: scale({$scale});"
+ >
+  {@render children?.()}
 </button>

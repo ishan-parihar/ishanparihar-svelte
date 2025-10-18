@@ -28,12 +28,21 @@
     const style = getComputedStyle(node);
     const transform = style.transform === 'none' ? '' : style.transform;
 
+    // Calculate the fly animation parameters
+    const flyParams = { ...params };
+    const y = flyParams.y || 50; // Default to 50px if not specified
+    const opacity = flyParams.opacity !== undefined ? flyParams.opacity : 0; // Default to 0 if not specified
+    const duration = flyParams.duration || 400; // Default to 400ms if not specified
+    const easing = flyParams.easing || "cubic-bezier(0.25, 0.46, 0.45, 0.94)"; // Default easing
+
     return {
       delay,
       css: (t: number) => `
-        ${transform} translate(0, ${fly(node, params).css(t).transform.split(',')[5].slice(0, -1)}px);
-        opacity: ${fly(node, params).css(t).opacity};
+        ${transform} translate(0, ${(1 - t) * y}px);
+        opacity: ${t * (1 - opacity) + opacity};
       `,
+      duration,
+      easing
     };
   }
 </script>

@@ -3,7 +3,9 @@
   import { fly } from 'svelte/transition';
   import { ChevronDown } from 'lucide-svelte';
   import { navigationItems, type NavigationItem } from '$lib/config/navigation';
-  import DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
+  import DropdownMenu from '$lib/components/ui/DropdownMenu.svelte';
+  import DropdownMenuTrigger from '$lib/components/ui/DropdownMenuTrigger.svelte';
+  import DropdownMenuContent from '$lib/components/ui/DropdownMenuContent.svelte';
 
   let activePath = $page.url.pathname;
 
@@ -24,7 +26,7 @@
     {@const active = isActive(item)}
     {#if item.hasDropdown}
       <DropdownMenu>
-        {#snippet trigger()}
+        <DropdownMenuTrigger>
           <button
             data-active={active}
             class="relative px-3 py-1.5 text-sm font-ui font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-1 bg-transparent border-none cursor-pointer {active ? 'text-accent font-bold scale-105' : 'text-muted-foreground hover:text-foreground'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-none"
@@ -36,8 +38,8 @@
               <div class="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-accent"></div>
             {/if}
           </button>
-        {/snippet}
-        {#snippet children()}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
           <div class="w-72 rounded-none border shadow-lg backdrop-blur-sm" 
                style="background-color: {isDark ? 'rgba(0, 0, 0, 0.95)' : 'rgba(255, 255, 255, 0.95)'}; border-color: {isDark ? 'rgb(39, 39, 42)' : 'rgb(229, 231, 235)'}; box-shadow: {isDark ? '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3)' : '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'};">
             {#each item.dropdownItems as subItem}
@@ -53,7 +55,7 @@
               </div>
             {/each}
           </div>
-        {/snippet}
+        </DropdownMenuContent>
       </DropdownMenu>
     {:else}
       <a href={item.path} data-active={active} class="relative px-3 py-1.5 text-sm font-ui font-bold transition-all duration-300 transform hover:scale-105 {active ? 'text-accent font-bold scale-105' : 'text-muted-foreground hover:text-foreground'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-none" aria-current={active ? 'page' : undefined}>

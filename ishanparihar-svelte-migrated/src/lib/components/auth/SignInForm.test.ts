@@ -1,10 +1,11 @@
 import { render, fireEvent } from '@testing-library/svelte';
 import { describe, it, expect, vi } from 'vitest';
 import SignInForm from './SignInForm.svelte';
+import type { ComponentProps } from 'svelte';
 
 describe('SignInForm Component', () => {
 	it('renders form with email and password fields', () => {
-		const { getByLabelText, getByRole } = render(SignInForm);
+		const { getByLabelText, getByRole } = render(SignInForm as any);
 
 		expect(getByLabelText(/email/i)).toBeInTheDocument();
 		expect(getByLabelText(/password/i)).toBeInTheDocument();
@@ -12,7 +13,7 @@ describe('SignInForm Component', () => {
 	});
 
 	it('shows validation errors for empty fields', async () => {
-		const { getByRole, getByText } = render(SignInForm);
+		const { getByRole, getByText } = render(SignInForm as any);
 
 		const submitButton = getByRole('button', { name: /sign in/i });
 		await fireEvent.click(submitButton);
@@ -22,7 +23,7 @@ describe('SignInForm Component', () => {
 	});
 
 	it('shows validation error for invalid email', async () => {
-		const { getByLabelText, getByRole, getByText } = render(SignInForm);
+		const { getByLabelText, getByRole, getByText } = render(SignInForm as any);
 
 		const emailInput = getByLabelText(/email/i);
 		await fireEvent.input(emailInput, { target: { value: 'invalid-email' } });
@@ -35,7 +36,7 @@ describe('SignInForm Component', () => {
 
 	it('submits form with valid data', async () => {
 		const mockSubmit = vi.fn();
-		const { getByLabelText, getByRole } = render(SignInForm);
+		const { getByLabelText, getByRole } = render(SignInForm as any);
 
 		const emailInput = getByLabelText(/email/i);
 		const passwordInput = getByLabelText(/password/i);
@@ -52,7 +53,7 @@ describe('SignInForm Component', () => {
 	});
 
 	it('shows loading state during submission', async () => {
-		const { getByRole } = render(SignInForm);
+		const { getByRole } = render(SignInForm as any);
 
 		const submitButton = getByRole('button', { name: /sign in/i });
 		
@@ -65,7 +66,7 @@ describe('SignInForm Component', () => {
 	});
 
 	it('has link to signup page', () => {
-		const { getByText } = render(SignInForm);
+		const { getByText } = render(SignInForm as any);
 
 		const signupLink = getByText(/don't have an account/i);
 		expect(signupLink).toBeInTheDocument();

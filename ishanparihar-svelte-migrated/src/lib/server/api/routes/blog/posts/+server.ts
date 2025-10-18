@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import { handleApiError, validateRequest, requireAuth } from '../../utils';
+import { handleApiError, validateRequest, requireAuth } from '$lib/server/utils';
 import { createServiceRoleClient } from '$lib/server/supabase';
 
 const getPostsSchema = z.object({
@@ -56,11 +56,11 @@ export async function GET(event: RequestEvent) {
     if (error) throw error;
     
     return json({
-      posts: posts || [],
-      total: count || 0,
+      posts: posts ?? [],
+      total: count ?? 0,
       page,
       limit,
-      totalPages: Math.ceil((count || 0) / limit)
+      totalPages: Math.ceil((count ?? 0) / limit)
     });
   } catch (err) {
     return handleApiError(err);
@@ -82,18 +82,22 @@ export async function POST(event: RequestEvent) {
     
     const { data: post, error } = await supabase
       .from('blog_posts')
-      .insert({
+      .insert([{
         ...postData,
         slug,
         author_user_id: session.user.id,
-        created_at: new Date().toISOString()
-      })
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        views_count: 0,
+        likes_count: 0,
+        comments_count: 0
+      }])
       .select()
       .single();
     
     if (error) throw error;
     
-    return json({ success: true, post });
+    return json({ success: true, post: post || null });
   } catch (err) {
     return handleApiError(err);
   }

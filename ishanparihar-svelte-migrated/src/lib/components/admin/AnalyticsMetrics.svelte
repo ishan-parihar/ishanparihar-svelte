@@ -21,7 +21,8 @@
   }
   
   // Reactive statement to update cards when data changes
- $: metricCards: MetricCard[] = [
+ let metricCards: MetricCard[] = [];
+ $: metricCards = [
     {
       id: 'users',
       title: 'Total Users',
@@ -77,38 +78,14 @@
   {#each metricCards as metric}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
       <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div 
-            class="p-2 rounded-lg"
-            class:bg-blue-100={metric.color === 'blue'}
-            class:bg-green-100={metric.color === 'green'}
-            class:bg-purple-100={metric.color === 'purple'}
-            class:bg-yellow-100={metric.color === 'yellow'}
-            class:bg-red-100={metric.color === 'red'}
-            class:bg-indigo-100={metric.color === 'indigo'}
-            class:dark:bg-blue-900/20={metric.color === 'blue'}
-            class:dark:bg-green-900/20={metric.color === 'green'}
-            class:dark:bg-purple-900/20={metric.color === 'purple'}
-            class:dark:bg-yellow-900/20={metric.color === 'yellow'}
-            class:dark:bg-red-900/20={metric.color === 'red'}
-            class:dark:bg-indigo-900/20={metric.color === 'indigo'}
-          >
-            <svelte:component 
-              this={metric.icon} 
-              class="w-6 h-6"
-              class:text-blue-600={metric.color === 'blue'}
-              class:text-green-600={metric.color === 'green'}
-              class:text-purple-600={metric.color === 'purple'}
-              class:text-yellow-600={metric.color === 'yellow'}
-              class:text-red-600={metric.color === 'red'}
-              class:text-indigo-600={metric.color === 'indigo'}
-              class:dark:text-blue-400={metric.color === 'blue'}
-              class:dark:text-green-400={metric.color === 'green'}
-              class:dark:text-purple-400={metric.color === 'purple'}
-              class:dark:text-yellow-400={metric.color === 'yellow'}
-              class:dark:text-red-400={metric.color === 'red'}
-              class:dark:text-indigo-400={metric.color === 'indigo'}
-            />
+         <div class="flex items-center space-x-3">
+           <div 
+             class="p-2 rounded-lg {metric.color === 'blue' ? 'bg-blue-100 dark:bg-blue-900/20' : ''} {metric.color === 'green' ? 'bg-green-100 dark:bg-green-900/20' : ''} {metric.color === 'purple' ? 'bg-purple-100 dark:bg-purple-900/20' : ''} {metric.color === 'yellow' ? 'bg-yellow-100 dark:bg-yellow-900/20' : ''} {metric.color === 'red' ? 'bg-red-100 dark:bg-red-900/20' : ''} {metric.color === 'indigo' ? 'bg-indigo-100 dark:bg-indigo-900/20' : ''}"
+           >
+             <svelte:component 
+               this={metric.icon} 
+               class="w-6 h-6 {metric.color === 'blue' ? 'text-blue-600 dark:text-blue-400' : ''} {metric.color === 'green' ? 'text-green-600 dark:text-green-400' : ''} {metric.color === 'purple' ? 'text-purple-600 dark:text-purple-400' : ''} {metric.color === 'yellow' ? 'text-yellow-600 dark:text-yellow-400' : ''} {metric.color === 'red' ? 'text-red-600 dark:text-red-400' : ''} {metric.color === 'indigo' ? 'text-indigo-600 dark:text-indigo-400' : ''}"
+             />
           </div>
           <div>
             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -123,11 +100,9 @@
           <p class="text-sm text-gray-600 dark:text-gray-400">
             {metric.change > 0 ? '+' : ''}{metric.change}%
           </p>
-          <div 
-            class="w-2 h-2 rounded-full"
-            class:bg-green-500={metric.change > 0}
-            class:bg-red-500={metric.change <= 0}
-          ></div>
+           <div 
+             class="w-2 h-2 rounded-full {metric.change > 0 ? 'bg-green-500' : 'bg-red-500'}"
+           ></div>
         </div>
       </div>
     </div>

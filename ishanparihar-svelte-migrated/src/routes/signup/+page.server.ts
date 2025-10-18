@@ -1,13 +1,14 @@
 
 import { auth as lucia } from "$lib/server/auth";
 import { fail, redirect } from "@sveltejs/kit";
-import { generateId } from "lucia";
+import { generateIdFromEntropySize } from "lucia";
 import { hash } from "bcrypt";
+import { getSupabase } from "$lib/server/db";
 
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-    if (locals.user) {
+    if (locals.auth?.user) {
         return redirect(302, "/");
     }
 };
@@ -25,28 +26,34 @@ export const actions: Actions = {
             return fail(400, { message: "Password too short" });
         }
 
-        const userId = generateId(15);
+        const userId = generateIdFromEntropySize(15);
         const passwordHash = await hash(password, 10);
 
         try {
-            await lucia.createUser({
-                id: userId,
-                attributes: {
+            // Create user in Supabase
+            const { error: userError } = await getSupabase()
+                .from('users')
+                .insert({
+                    id: userId,
                     email,
-                    role: "user"
-                }
-            });
+                    password_hash: passwordHash,
+                    role: "user",
+                    name: email.split("@")[0] // Use part of email as name
+                });
 
-            await lucia.createKey("email", email, {
-                userId,
-                password: passwordHash
-            });
+            if (userError) {
+                // Check if it's a duplicate email error
+                if (userError.code === '23505') { // Unique violation code in PostgreSQL/Supabase
+                    return fail(400, { message: "Email already used" });
+                }
+                throw userError;
+            }
         } catch (e) {
-            // this part depends on the database you're using
-            // check for unique constraint error in user table
-            return fail(400, { message: "Email already used" });
+            console.error("Signup error:", e);
+            return fail(400, { message: "An error occurred during signup" });
         }
 
+        // Create session for the user
         const session = await lucia.createSession(userId, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
         event.cookies.set(sessionCookie.name, sessionCookie.value, {

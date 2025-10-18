@@ -2,23 +2,23 @@
   import { cn } from '$lib/utils';
   import ShuffleGrid from './ShuffleGrid.svelte';
 
-  let {
-    title = "Ready to Transform Your Life?",
-    subtitle = "Spiritual Growth",
-    description = "Take the first step towards a more conscious, purposeful life. Join our community of seekers and discover the tools, guidance, and support you need to unlock your full potential.",
-    buttonText = "Schedule a Consultation",
-    buttonLink = "/contact",
-    onButtonClick,
-    rightColumn,
-  }: {
-    title?: string;
-    subtitle?: string;
-    description?: string;
-    buttonText?: string;
-    buttonLink?: string;
-    onButtonClick?: () => void;
-    rightColumn?: any;
-  } = $props();
+let {
+  title = "Ready to Transform Your Life?",
+  subtitle = "Spiritual Growth",
+  description = "Take the first step towards a more conscious, purposeful life. Join our community of seekers and discover the tools, guidance, and support you need to unlock your full potential.",
+  buttonText = "Schedule a Consultation",
+  buttonLink = "/contact",
+  onButtonClick,
+  rightColumn,
+}: {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  buttonText?: string;
+  buttonLink?: string;
+  onButtonClick?: () => void;
+  rightColumn?: () => any;
+} = $props();
 
   function handleButtonClick() {
     if (onButtonClick) {
@@ -40,20 +40,20 @@
     <p class="text-base md:text-lg text-muted-foreground my-4 md:my-6">
       {description}
     </p>
-    <button
-      on:click={handleButtonClick}
-      class={cn(
-        "bg-primary text-primary-foreground font-medium py-2 px-4 rounded-md",
-        "transition-all hover:bg-primary/90 active:scale-95",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      )}
-    >
+     <button
+       onclick={handleButtonClick}
+       class={cn(
+         "bg-primary text-primary-foreground font-medium py-2 px-4 rounded-md",
+         "transition-all hover:bg-primary/90 active:scale-95",
+         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+       )}
+     >
       {buttonText}
     </button>
   </div>
-  {#if rightColumn}
-    <svelte:component this={rightColumn} />
-  {:else}
-    <ShuffleGrid />
-  {/if}
+{#if rightColumn}
+  {@render rightColumn()}
+{:else}
+  <ShuffleGrid />
+{/if}
 </section>

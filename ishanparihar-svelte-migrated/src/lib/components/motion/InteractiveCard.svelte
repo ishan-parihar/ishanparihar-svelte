@@ -37,14 +37,17 @@
   }
 </script>
 
-<div
-  class="{className} {disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
-  style="transform: scale({$scale}) translateY({$y}px);"
-  on:mouseenter={handleMouseenter}
-  on:mouseleave={handleMouseleave}
-  on:mousedown={handleMousedown}
-  on:mouseup={handleMouseup}
-  on:click
->
+  <div
+    class="{className} {disabled ? 'cursor-not-allowed' : 'cursor-pointer'}"
+    style="transform: scale({$scale}) translateY({$y}px);"
+    onmouseenter={handleMouseenter}
+    onmouseleave={handleMouseleave}
+    onmousedown={handleMousedown}
+    onmouseup={handleMouseup}
+    onclick={() => {}}
+    role="button"
+    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') {/* Handle click */} }}
+    tabindex="0"
+  >
   <slot />
 </div>

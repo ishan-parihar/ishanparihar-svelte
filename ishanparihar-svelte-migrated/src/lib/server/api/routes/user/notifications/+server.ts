@@ -1,17 +1,17 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
+import type { RequestHandler } from '@sveltejs/kit';
+import { getSupabase } from '$lib/server/db';
 
-export const PUT: RequestHandler = async ({ request, locals }) => {
-  if (!locals.user) {
+export const PUT: RequestHandler = async (event) => {
+  if (!event.locals.auth?.user) {
     return json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const { email_notifications, sms_notifications, push_notifications, marketing_emails } = await request.json();
+    const { email_notifications, sms_notifications, push_notifications, marketing_emails } = await event.request.json();
 
     // Update notification preferences in database
-    const { data: user, error } = await db
+    const { data: user, error } = await getSupabase()
       .from('users')
       .update({
         notification_preferences: {
@@ -22,7 +22,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         marketing_emails: marketing_emails || false,
         updated_at: new Date().toISOString()
       })
-      .eq('id', locals.user.id)
+      .eq('id', event.locals.auth.user.id)
       .select('id, notification_preferences, marketing_emails')
       .single();
 

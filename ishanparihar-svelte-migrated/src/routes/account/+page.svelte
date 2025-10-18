@@ -1,50 +1,58 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { apiClient } from '$lib/api/client';
-  import ProfileForm from '$components/account/ProfileForm.svelte';
-  import AccountSettings from '$components/account/AccountSettings.svelte';
-  import OrderHistory from '$components/account/OrderHistory.svelte';
-  import NotificationSettings from '$components/account/NotificationSettings.svelte';
+  import ProfileForm from '$lib/components/account/ProfileForm.svelte';
+  import AccountSettings from '$lib/components/account/AccountSettings.svelte';
+  import OrderHistory from '$lib/components/account/OrderHistory.svelte';
+  import NotificationSettings from '$lib/components/account/NotificationSettings.svelte';
   
-  let user = null;
-  let loading = true;
-  let activeTab = 'profile';
-  let error = null;
+  import type { User } from '$lib/types/user';
+
+  let user = $state<User | null>(null);
+  let loading = $state(true);
+  let activeTab = $state('profile');
+  let error = $state<string | null>(null);
+  let currentPageUrl = $state('');
+  
+  $effect(() => {
+    currentPageUrl = $page.url.href;
+  });
   
   onMount(async () => {
     try {
       user = await apiClient.user.getProfile();
-    } catch (err) {
+    } catch (err: any) {
       error = err.message;
     } finally {
       loading = false;
     }
   });
   
-  async function handleProfileUpdate(profileData) {
+  async function handleProfileUpdate(profileData: any) {
     try {
       const updatedUser = await apiClient.user.updateProfile(profileData);
       user = updatedUser;
-    } catch (err) {
+    } catch (err: any) {
       error = err.message;
     }
   }
   
-  async function handlePasswordChange(passwordData) {
+  async function handlePasswordChange(passwordData: any) {
     try {
       await apiClient.user.changePassword(passwordData);
       // Show success message
-    } catch (err) {
+    } catch (err: any) {
       error = err.message;
     }
  }
   
-  async function handleNotificationSettings(settings) {
+  async function handleNotificationSettings(settings: any) {
     try {
       await apiClient.user.updateNotificationSettings(settings);
       user = { ...user, ...settings };
-    } catch (err) {
+    } catch (err: any) {
       error = err.message;
     }
   }
@@ -60,7 +68,7 @@
       "@type": "WebPage",
       "name": "My Account",
       "description": "Manage your account settings and preferences",
-      "url": "${$page.url.href}"
+      "url": "${currentPageUrl}"
     }
     </script>
   `}
@@ -92,7 +100,7 @@
         <nav class="-mb-px flex space-x-8">
           {#each ['profile', 'settings', 'notifications', 'orders'] as tab}
             <button 
-              on:click={() => activeTab = tab}
+              onclick={() => activeTab = tab}
               class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {
                 activeTab === tab 
                   ? 'border-blue-500 text-blue-600 dark:text-blue-40' 

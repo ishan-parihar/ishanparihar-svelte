@@ -1,16 +1,14 @@
-<script lang="ts">
-	import { cn } from "$lib/utils";
+  <script lang="ts">
+  	import { cn } from "$lib/utils";
+    import type { Snippet } from 'svelte';
 
-	interface Props {
-		class?: string;
-		children?: any;
-	}
+  	let { 
+      className = "", 
+      children = $bindable() as () => Snippet,
+      ...restProps 
+    } = $props<{ className?: string; children?: () => Snippet; [key: string]: any }>();
+  </script>
 
-	let { class: className = "", children, ...restProps }: Props = $props();
-</script>
-
-<div class={cn("text-xl font-ui font-semibold leading-none tracking-tight text-foreground", className)} {...restProps}>
-	{#if children}
-		{@render children()}
-	{/if}
-</div>
+  <div class={cn("text-xl font-ui font-semibold leading-none tracking-tight text-foreground", className)} {...restProps}>
+  	{@render children?.()}
+  </div>

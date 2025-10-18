@@ -1,14 +1,16 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let scrolled = false;
-  let header: HTMLElement;
+  let scrolled = $state(false);
+  let header: HTMLElement | null = null;
 
   function handleScroll() {
     scrolled = window.scrollY > 20;
   }
 
   onMount(() => {
+    header = document.querySelector('header.header-nav') as HTMLElement;
+    
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
@@ -16,9 +18,9 @@
     };
   });
 
-  $: if (header) {
-    header.classList.toggle('scrolled', scrolled);
-  }
+  $effect(() => {
+    if (header) {
+      header.classList.toggle('scrolled', scrolled);
+    }
+  });
 </script>
-
-<svelte:window on:scroll={handleScroll} />

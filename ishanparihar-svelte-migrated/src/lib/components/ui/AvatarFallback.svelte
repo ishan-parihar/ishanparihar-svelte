@@ -1,10 +1,12 @@
-<script lang="ts">
-  let {
-    class: className = "",
-    ...props
-  } = $props();
-</script>
+  <script lang="ts">
+    import type { Snippet } from 'svelte';
+    let {
+      class: className = "",
+      children = $bindable() as () => Snippet,
+      ...props
+    } = $props<{ class?: string; children?: () => Snippet; [key: string]: any }>();
+  </script>
 
-<div class={`flex h-full w-full items-center justify-center rounded-full bg-muted ${className}`}>
-  <slot />
-</div>
+  <div class={`flex h-full w-full items-center justify-center rounded-full bg-muted ${className}`}>
+    {@render children?.()}
+  </div>

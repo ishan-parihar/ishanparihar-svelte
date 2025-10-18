@@ -1,20 +1,20 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { handleApiError } from '../../utils';
+import { handleApiError } from '$lib/server/utils';
 import { auth as lucia } from '$lib/server/auth';
 
 export async function POST(event: RequestEvent) {
   try {
-    // Get the session from the request
-    const session = await event.locals.auth();
+    // Get the session ID from cookies
+    const sessionId = event.cookies.get(lucia.sessionCookieName);
     
-    if (!session) {
+    if (!sessionId) {
       // No active session, but that's okay
       return json({ success: true });
     }
     
     // Invalidate the session
-    await lucia.invalidateSession(session.sessionId);
+    await lucia.invalidateSession(sessionId);
     
     // Create a blank session cookie to clear the existing one
     const sessionCookie = lucia.createBlankSessionCookie();

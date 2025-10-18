@@ -25,11 +25,13 @@
   function handleCommentAdded() {
     // TODO: Refetch comments
   }
+  
+  let onCommentAdded = handleCommentAdded;
 </script>
 
 <section class="mt-8 pt-8 border-t border-border/40 max-w-3xl mx-auto min-h-0">
   <div class="comment-form-container mb-4">
-    <CommentForm {blogPostId} {onCommentAdded} />
+    <CommentForm {blogPostId} {onCommentAdded} onCancel={() => {}} />
   </div>
 
   {#if isLoading}

@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import { handleApiError, validateRequest, requireAuth } from '../../utils';
+import { handleApiError, validateRequest, requireAuth } from '$lib/server/utils';
 import { createServiceRoleClient } from '$lib/server/supabase';
 
 const getCommentsSchema = z.object({
@@ -34,7 +34,7 @@ export async function GET(event: RequestEvent) {
       .from('blog_comments')
       .select('*', { count: 'exact' })
       .eq('post_id', post_id)
-      .eq('parent_id', null)
+      .is('parent_id', null)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
     
@@ -62,17 +62,19 @@ export async function POST(event: RequestEvent) {
     
     const { data: comment, error } = await supabase
       .from('blog_comments')
-      .insert({
+      .insert([{
         ...commentData,
         user_id: session.user.id,
-        created_at: new Date().toISOString()
-      })
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        status: 'pending'
+      }])
       .select()
       .single();
     
     if (error) throw error;
     
-    return json({ success: true, comment });
+    return json({ success: true, comment: comment || null });
   } catch (err) {
     return handleApiError(err);
   }

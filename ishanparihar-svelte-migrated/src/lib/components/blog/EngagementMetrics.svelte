@@ -37,7 +37,7 @@
 <div class={`flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400 ${className}`}>
   {#if showLiking}
     <button
-      on:click={handleLike}
+      onclick={handleLike}
       class={`flex items-center gap-1 transition-colors duration-200 disabled:opacity-50 ${$user ? 'hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer' : 'hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer'}`}
     >
       <Heart class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -49,7 +49,7 @@
   {/if}
 
   <button
-    on:click={handleCommentsClick}
+    onclick={handleCommentsClick}
     class="flex items-center gap-1 hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors duration-200"
     title="View comments"
   >

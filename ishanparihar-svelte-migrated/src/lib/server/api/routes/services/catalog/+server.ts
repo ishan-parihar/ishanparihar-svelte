@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import { handleApiError, validateRequest } from '../../utils';
+import { handleApiError, validateRequest } from '$lib/server/utils';
 import { createServiceRoleClient } from '$lib/server/supabase';
 
 const getCatalogSchema = z.object({
@@ -53,11 +53,11 @@ export async function GET(event: RequestEvent) {
     if (error) throw error;
     
     return json({
-      services: services || [],
-      total: count || 0,
+      services: services ?? [],
+      total: count ?? 0,
       page,
       limit,
-      totalPages: Math.ceil((count || 0) / limit)
+      totalPages: Math.ceil((count ?? 0) / limit)
     });
   } catch (err) {
     return handleApiError(err);

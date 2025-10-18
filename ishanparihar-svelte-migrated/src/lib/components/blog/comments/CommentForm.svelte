@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { user } from '$lib/stores/user';
+  import { user as userStore } from '$lib/stores/user';
   import { auth } from '$lib/stores/auth';
-  import Button from '$lib/components/ui/button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import Textarea from '$lib/components/ui/textarea.svelte';
   import Avatar from '$lib/components/ui/avatar.svelte';
   import AvatarImage from '$lib/components/ui/AvatarImage.svelte';
   import AvatarFallback from '$lib/components/ui/AvatarFallback.svelte';
   import { Loader2, AlertCircle, KeyboardIcon } from 'lucide-svelte';
+  import type { User } from '$lib/types/user';
 
   let {
     blogPostId,
@@ -18,36 +19,42 @@
 
   let content = $state("");
   let error = $state(null);
+  let currentUser = $state<User | null>(null);
+  let isLoading = $state(true);
 
-  // TODO: Implement actual authentication logic
-  const { isLoading: authLoading } = $auth;
+  $effect(() => {
+    const authState = $auth;
+    isLoading = authState.isLoading;
+    currentUser = authState.user as User | null;
+  });
 
-  function handleSubmit() {
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
     // TODO: Implement comment submission
   }
 </script>
 
-{#if authLoading}
+{#if isLoading}
   <div class="flex justify-center items-center p-4">
     <Loader2 class="h-5 w-5 animate-spin text-muted-foreground" />
   </div>
-{:else if !$user}
+{:else if !currentUser}
   <div class="rounded-md bg-muted/50 p-4 text-center border border-border/50">
     <p class="text-sm text-muted-foreground mb-3">
       Please sign in to join the conversation
     </p>
-    <Button variant="default" size="sm" on:click={() => { /* TODO: open auth modal */ }}>
+     <Button variant="default" size="sm" onclick={() => { /* TODO: open auth modal */ }}>
       Sign In
     </Button>
   </div>
 {:else}
-  <form on:submit|preventDefault={handleSubmit} class="space-y-3 comment-form">
+    <form onsubmit={handleSubmit} class="space-y-3 comment-form">
     <div class="flex items-start gap-2">
       <div class="flex-shrink-0 mt-1">
         <Avatar class="h-6 w-6">
-          <AvatarImage src={$user.picture} alt={$user.name} />
+          <AvatarImage src={currentUser?.picture} alt={currentUser?.name} />
           <AvatarFallback class="text-xs">
-            {$user.name ? $user.name.charAt(0).toUpperCase() : $user.email.charAt(0).toUpperCase()}
+            {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : currentUser?.email?.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </div>
@@ -78,7 +85,7 @@
           type="button"
           variant="secondary"
           size="sm"
-          on:click={onCancel}
+           onclick={onCancel}
           class="h-8 text-xs font-medium"
         >
           Cancel

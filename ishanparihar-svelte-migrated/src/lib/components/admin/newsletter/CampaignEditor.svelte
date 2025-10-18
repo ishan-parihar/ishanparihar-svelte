@@ -12,21 +12,26 @@
     sent_at?: string;
   }
   
-  export let campaign: Campaign | null = null;
-  export let mode: 'create' | 'edit' = 'create'; // 'create' | 'edit'
+  let { 
+    campaign = null, 
+    mode = 'create'
+  } = $props<{ 
+    campaign?: Campaign | null; 
+    mode?: 'create' | 'edit';
+  }>();
   
-  let formData = {
+  let formData = $state({
     subject: '',
     content: '',
     status: 'draft'
-  };
+  });
   
-  let loading = false;
-  let saving = false;
-  let sending = false;
-  let error: string | null = null;
- let subscriberCount = 0;
-  let showPreview = false;
+  let loading = $state(false);
+  let saving = $state(false);
+  let sending = $state(false);
+  let error: string | null = $state(null);
+  let subscriberCount = $state(0);
+  let showPreview = $state(false);
   
   onMount(async () => {
     if (mode === 'edit' && campaign) {
@@ -167,12 +172,12 @@
     </div>
     
     <div class="flex items-center space-x-2">
-      <button 
-        on:click={togglePreview}
-        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-      >
-        {showPreview ? 'Edit' : 'Preview'}
-      </button>
+<button 
+  onclick={togglePreview}
+  class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+>
+  {showPreview ? 'Edit' : 'Preview'}
+</button>
     </div>
   </div>
   
@@ -195,81 +200,82 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Editor -->
       <div class="lg:col-span-2 space-y-6">
-        <!-- Subject -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Subject Line
-          </label>
-          <input 
-            type="text"
-            bind:value={formData.subject}
-            placeholder="Enter email subject..."
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-          />
-        </div>
+<!-- Subject -->
+<div>
+  <label for="subject-line" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+    Subject Line
+  </label>
+  <input 
+    id="subject-line"
+    type="text"
+    bind:value={formData.subject}
+    placeholder="Enter email subject..."
+    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+  />
+</div>
         
-        <!-- Content -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email Content
-            </label>
-            <div class="flex space-x-2">
-              <button 
-                on:click={insertBold}
-                class="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
-                type="button"
-              >
-                <strong>B</strong>
-              </button>
-              <button 
-                on:click={insertItalic}
-                class="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
-                type="button"
-              >
-                <em>I</em>
-              </button>
-            </div>
-          </div>
-          <textarea
-            id="content-editor"
-            bind:value={formData.content}
-            placeholder="Write your email content..."
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
-            rows="12"
-          ></textarea>
-        </div>
+<!-- Content -->
+<div>
+  <div class="flex items-center justify-between mb-2">
+    <label for="content-editor" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      Email Content
+    </label>
+    <div class="flex space-x-2">
+<button 
+  onclick={insertBold}
+  class="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+  type="button"
+>
+  <strong>B</strong>
+</button>
+       <button 
+         onclick={insertItalic}
+         class="px-2 py-1 text-sm bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+         type="button"
+       >
+         <em>I</em>
+       </button>
+    </div>
+  </div>
+  <textarea
+    id="content-editor"
+    bind:value={formData.content}
+    placeholder="Write your email content..."
+    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white resize-none"
+    rows="12"
+  ></textarea>
+</div>
         
         <!-- Actions -->
         <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
           <div class="flex items-center space-x-2">
-            <button 
-              on:click={handleSave}
-              disabled={saving}
-              class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 transition-colors"
-            >
-              {saving ? 'Saving...' : 'Save Draft'}
-            </button>
+             <button 
+               onclick={handleSave}
+               disabled={saving}
+               class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 transition-colors"
+             >
+               {saving ? 'Saving...' : 'Save Draft'}
+             </button>
             
             {#if mode === 'edit' && campaign?.status !== 'sent'}
-              <button 
-                on:click={handleSchedule}
-                disabled={saving}
-                class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors"
-              >
-                Schedule
-              </button>
+               <button 
+                 onclick={handleSchedule}
+                 disabled={saving}
+                 class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 transition-colors"
+               >
+                 Schedule
+               </button>
             {/if}
           </div>
           
           <div class="flex items-center space-x-2">
-            <button 
-              on:click={handleSend}
-              disabled={sending || !formData.subject.trim() || !formData.content.trim()}
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-            >
-              {sending ? 'Sending...' : 'Send Now'}
-            </button>
+             <button 
+               onclick={handleSend}
+               disabled={sending || !formData.subject.trim() || !formData.content.trim()}
+               class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+             >
+               {sending ? 'Sending...' : 'Send Now'}
+             </button>
           </div>
         </div>
       </div>

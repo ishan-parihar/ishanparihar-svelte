@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import { handleApiError, validateRequest, requireAdmin } from '../../utils';
+import { handleApiError, validateRequest, requireAdmin } from '$lib/server/utils';
 import { createServiceRoleClient } from '$lib/server/supabase';
 
 const getUsersSchema = z.object({
@@ -73,19 +73,22 @@ export async function PUT(event: RequestEvent) {
     
     const supabase = createServiceRoleClient();
     
+    // Extract user_id since it's not a column we want to update
+    const { user_id, ...updateFields } = updateData;
+    
     const { data: user, error } = await supabase
       .from('users')
       .update({
-        ...updateData,
+        ...updateFields,
         updated_at: new Date().toISOString()
       })
-      .eq('id', updateData.user_id)
+      .eq('id', user_id)
       .select()
       .single();
     
     if (error) throw error;
     
-    return json({ success: true, user });
+    return json({ success: true, user: user || null });
   } catch (err) {
     return handleApiError(err);
   }

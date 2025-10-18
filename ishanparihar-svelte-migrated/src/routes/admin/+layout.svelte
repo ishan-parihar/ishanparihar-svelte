@@ -4,12 +4,22 @@
   import AdminSidebar from '$lib/components/admin/AdminSidebar.svelte';
   import AdminHeader from '$lib/components/admin/AdminHeader.svelte';
   import { adminNavigation } from '$lib/config/admin-navigation';
+  import type { User } from '$lib/types/user';
   
-  export let data;
+  let { data, children } = $props<{ 
+    data: { user: User | null; permissions: string[] }; 
+    children?: () => any;
+  }>();
   
-  $: currentPath = $page.url.pathname;
-  $: user = data.user;
-  $: permissions = data.permissions;
+  let currentPath = $state('');
+  let user = $state<User | null>(null);
+  let permissions = $state<string[]>([]);
+
+  $effect(() => {
+    currentPath = $page.url.pathname;
+    user = data.user;
+    permissions = data.permissions;
+  });
 </script>
 
 <div class="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -17,14 +27,14 @@
     {user} 
     {permissions}
     navigation={adminNavigation}
-    currentPath={currentPath}
+    {currentPath}
   />
   
   <div class="flex-1 flex flex-col overflow-hidden">
     <AdminHeader {user} />
     
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 p-6">
-      <slot />
+      {@render children?.()}
     </main>
   </div>
 </div>

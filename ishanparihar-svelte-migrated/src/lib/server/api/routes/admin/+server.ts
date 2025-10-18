@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { handleApiError, requireAdmin } from '../../utils';
+import { handleApiError, requireAdmin } from '$lib/server/utils';
 
 export async function GET(event: RequestEvent) {
   try {

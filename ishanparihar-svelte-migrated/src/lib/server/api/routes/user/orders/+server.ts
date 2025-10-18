@@ -1,19 +1,19 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
+import type { RequestHandler } from '@sveltejs/kit';
+import { getSupabase } from '$lib/server/db';
 
-export const GET: RequestHandler = async ({ locals, url }) => {
-  if (!locals.user) {
+export const GET: RequestHandler = async (event) => {
+  if (!event.locals.auth?.user) {
     return json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '10');
+    const page = parseInt(event.url.searchParams.get('page') || '1');
+    const limit = parseInt(event.url.searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
 
     // Get user orders from database
-    const { data: orders, error, count } = await db
+    const { data: orders, error, count } = await getSupabase()
       .from('orders')
       .select(`
         id,
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
         total,
         items
       `, { count: 'exact' })
-      .eq('user_id', locals.user.id)
+      .eq('user_id', event.locals.auth.user.id)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

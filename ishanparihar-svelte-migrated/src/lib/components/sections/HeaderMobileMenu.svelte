@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { state } from 'svelte/legacy';
+
   import { fly } from 'svelte/transition';
   import { Menu, X } from 'lucide-svelte';
   import { page } from '$app/stores';
@@ -28,7 +28,7 @@
 
 <button
   class="relative flex items-center justify-center w-9 h-9 rounded-full transition-all duration-200 border {isDark ? 'border-slate-700 hover:border-slate-600' : 'border-slate-200 hover:border-slate-300'} bg-transparent"
-  on:click={toggleMenu}
+  onclick={toggleMenu}
   aria-label="Toggle menu"
   aria-expanded={isMenuOpen}
   aria-controls="mobile-menu"

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Badge from "$lib/components/ui/badge.svelte";
+  import Badge from "$lib/components/ui/Badge.svelte";
   import { Star } from "lucide-svelte";
-  import StaticEngagementMetrics from "./StaticEngagementMetrics.svelte";
+  import StaticEngagementMetrics from "$lib/components/blog/StaticEngagementMetrics.svelte";
   import CoverImage from "../optimized/CoverImage.svelte";
-  import BookmarkButton from "./BookmarkButton.svelte";
+  import BookmarkButton from "$lib/components/blog/BookmarkButton.svelte";
 
   let {
     id,
@@ -32,8 +32,8 @@
 <a href={`/blog/${slug}`} class="block h-full">
   <div class="group overflow-hidden h-full hover:shadow-sm transition-all duration-300 bg-white dark:bg-black">
     <div class="relative aspect-[3/2] overflow-hidden">
-      <CoverImage src={coverImage} alt={title} class="transition-transform duration-300 group-hover:scale-102" priority={index < 3} />
-      <div class="absolute inset-0 bg-transparent" />
+      <CoverImage src={coverImage} alt={title} className="transition-transform duration-300 group-hover:scale-102" priority={index < 3} width={undefined} height={undefined} />
+      <div class="absolute inset-0 bg-transparent"></div>
     </div>
 
     <div class="p-4 sm:p-6 border border-border border-t-0">
@@ -59,8 +59,8 @@
         </div>
 
         {#if id}
-          <div on:click|stopPropagation|preventDefault={() => {}}>
-            <BookmarkButton postId={id} postTitle={title} size="sm" />
+          <div onclick={(e) => { e.stopPropagation(); e.preventDefault(); }} role="none">
+            <BookmarkButton postId={id} size="sm" />
           </div>
         {/if}
       </div>

@@ -7,18 +7,19 @@
   import AdminQuickActions from '$lib/components/admin/AdminQuickActions.svelte';
   import { apiClient } from '$lib/api/client';
   import type { AdminDashboardData } from '$lib/types/admin';
+  import type { User } from '$lib/types/user';
   
-  export let data;
+  let { data } = $props<{ data: { user: User; permissions: string[] } }>();
   
-  let dashboardData: AdminDashboardData | null = null;
-  let isLoading = true;
-  let error = null;
+  let dashboardData = $state<AdminDashboardData | null>(null);
+  let isLoading = $state(true);
+  let error = $state<string | null>(null);
   
-  $: user = data.user;
-  $: permissions = data.permissions;
+  let user = $derived(data.user);
+  let permissions = $derived(data.permissions);
   
-  onMount(async () => {
-    await loadDashboardData();
+  onMount(() => {
+    loadDashboardData();
     
     // Set up real-time updates
     const interval = setInterval(loadDashboardData, 30000);
@@ -29,7 +30,7 @@
     try {
       isLoading = true;
       dashboardData = await apiClient.admin.getDashboard();
-    } catch (err) {
+    } catch (err: any) {
       error = err.message;
     } finally {
       isLoading = false;
@@ -53,13 +54,13 @@
       </p>
     </div>
     
-    <button 
-      on:click={loadDashboardData}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-      disabled={isLoading}
-    >
-      {isLoading ? 'Refreshing...' : 'Refresh'}
-    </button>
+  <button 
+    onclick={loadDashboardData}
+    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+    disabled={isLoading}
+  >
+    {isLoading ? 'Refreshing...' : 'Refresh'}
+  </button>
   </div>
   
   <!-- Metrics Cards -->

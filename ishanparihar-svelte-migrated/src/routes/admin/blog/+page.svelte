@@ -60,22 +60,22 @@
       </p>
     </div>
     
-    <button 
-      on:click={handleCreatePost}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-    >
-      Create New Post
-    </button>
+     <button 
+       onclick={handleCreatePost}
+       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+     >
+       Create New Post
+     </button>
   </div>
   
-  <!-- Filters -->
-  <BlogFilters 
-    {filters}
-    on:change={(e) => {
-      filters = { ...filters, ...e.detail };
-      loadPosts();
-    }}
-  />
+   <!-- Filters -->
+   <BlogFilters 
+     {filters}
+     onChange={(newFilters) => {
+       filters = { ...filters, ...newFilters };
+       loadPosts();
+     }}
+   />
   
   <!-- Posts Table -->
   <BlogPostsTable 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { session } from '$lib/stores/session';
   import { UserCircle2 } from 'lucide-svelte';
-  import Button from '$lib/components/ui/button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
 
   // TODO: Implement actual authentication logic
   const status = $derived($session ? 'authenticated' : 'unauthenticated');

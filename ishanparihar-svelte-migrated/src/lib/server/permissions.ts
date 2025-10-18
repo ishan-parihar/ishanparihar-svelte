@@ -18,7 +18,7 @@ export async function getUserPermissions(userId: string): Promise<string[]> {
   }
   
   if (data && Array.isArray(data)) {
-    return data.map(p => p.permission);
+    return data.map((p: any) => p.permission);
   }
   
   return [];

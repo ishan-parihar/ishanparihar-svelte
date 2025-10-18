@@ -45,10 +45,10 @@
       </p>
     </div>
     
-    <DateRangePicker 
-      {dateRange}
-      on:change={(e) => handleDateRangeChange(e.detail)}
-    />
+     <DateRangePicker 
+       {dateRange}
+       onChange={handleDateRangeChange}
+     />
  </div>
   
   <!-- Metrics Overview -->

@@ -1,22 +1,39 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from 'svelte';
+  import { onMount } from 'svelte';
   import { performanceMonitor } from '$lib/performance/monitoring';
 
-  export let src: string;
-  export let alt: string = '';
-  export let width: number | undefined;
-  export let height: number | undefined;
-  export let fallback: string = 'Loading...';
-  export let threshold: number = 0.1;
-  export let rootMargin: string = '50px';
-  export let className: string = '';
+let {
+  src,
+  alt = '',
+  width,
+  height,
+  fallback = 'Loading...',
+  threshold = 0.1,
+  rootMargin = '50px',
+  className = '',
+  children,
+  onLoad,
+  onError
+} = $props<{
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  fallback?: string;
+  threshold?: number;
+  rootMargin?: string;
+  className?: string;
+  children?: () => any;
+  onLoad?: () => void;
+  onError?: (event: { error: Error }) => void;
+}>();
 
-  let element: HTMLElement | null = null;
+  let element: HTMLElement | null = $state(null);
   let isLoaded = $state(false);
   let hasError = $state(false);
-  let imgElement: HTMLImageElement | null = null;
+  let imgElement: HTMLImageElement | null = $state(null);
 
-  const dispatch = createEventDispatcher();
+  
 
   onMount(() => {
     if (typeof window !== 'undefined') {
@@ -55,24 +72,24 @@
       await performanceMonitor.measure('lazy-load-content', async () => {
         if (imgElement && src) {
           imgElement.src = src;
-          imgElement.onload = () => {
-            isLoaded = true;
-            dispatch('load');
-          };
-          imgElement.onerror = () => {
-            hasError = true;
-            dispatch('error', { error: new Error('Image failed to load') });
-          };
+imgElement.onload = () => {
+  isLoaded = true;
+  onLoad?.();
+};
+imgElement.onerror = () => {
+  hasError = true;
+  onError?.({ error: new Error('Image failed to load') });
+};
         } else {
-          // For non-image content, just mark as loaded after a short delay
-          await new Promise(resolve => setTimeout(resolve, 100));
-          isLoaded = true;
-          dispatch('load');
+// For non-image content, just mark as loaded after a short delay
+await new Promise(resolve => setTimeout(resolve, 100));
+isLoaded = true;
+onLoad?.();
         }
       });
     } catch (error) {
-      hasError = true;
-      dispatch('error', { error });
+hasError = true;
+onError?.({ error });
     }
  }
 </script>
@@ -96,13 +113,13 @@
 {:else}
   <div bind:this={element} class="lazy-load-container {className}">
     {#if isLoaded && !hasError}
-      <slot />
+      {@render children?.()}
     {:else if hasError}
       <div class="error">Failed to load content</div>
     {:else}
       <div class="fallback">{fallback}</div>
     {/if}
- </div>
+  </div>
 {/if}
 
 <style>

@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { ProductService } from '$lib/types/supabase';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Button } from '$lib/components/ui/button';
   import { Star, Clock, Users, Eye, MessageSquare, ArrowRight, Sparkles, Crown } from 'lucide-svelte';
   import { fly } from 'svelte/transition';
+  import Badge from '$lib/components/ui/Badge.svelte';
 
-  export let service: ProductService;
-  export let index: number;
+  let { service, index }: { service: ProductService; index: number; } = $props<{
+    service: ProductService;
+    index: number;
+  }>();
 
   function formatPrice() {
     if (!service.base_price) return "Contact for pricing";
@@ -19,19 +20,19 @@
     }).format(service.base_price);
 
     if (service.pricing_type === "recurring" && service.billing_period) {
-      const periodMap = {
+      const periodMap: Record<string, string> = {
         monthly: "/month",
         yearly: "/year",
         weekly: "/week",
         daily: "/day",
       };
-      return `${formattedPrice}${periodMap[service.billing_period]}`;
+      return `${formattedPrice}${periodMap[service.billing_period as string]}`;
     }
 
     return formattedPrice;
   }
 
-  const serviceTypeInfo = {
+  const serviceTypeInfo = ({
     product: {
       label: "Product",
       color: "bg-accent/10 text-accent border-accent/20",
@@ -48,7 +49,7 @@
       label: "Consultation",
       color: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
     },
-  }[service.service_type];
+  } as const)[service.service_type as 'product' | 'service' | 'course' | 'consultation'];
 
 </script>
 
@@ -72,64 +73,64 @@
           {/if}
         </div>
         <div class="absolute top-3 right-3">
-          <Badge variant="outline" class="{serviceTypeInfo.color}">
+          <Badge variant="outline" class={serviceTypeInfo.color}>
             {serviceTypeInfo.label}
           </Badge>
         </div>
       </div>
-      <div class="p-4 flex flex-col">
-        {#if service.category}
-          <div class="mb-2">
-            <Badge variant="outline" class="text-xs border-border/50 text-muted-foreground hover:border-border hover:text-foreground transition-colors">
-              {service.category.name}
-            </Badge>
-          </div>
-        {/if}
-        <h3 class="text-lg font-semibold text-foreground mb-2 group-hover:text-accent transition-colors line-clamp-2">
-          {service.title}
-        </h3>
-        <p class="text-muted-foreground text-sm mb-3 line-clamp-2">
-          {service.excerpt}
-        </p>
-        <div class="mb-2">
-          <div class="text-xl font-bold text-foreground">
-            {formatPrice()}
-          </div>
-          {#if service.pricing_type === 'custom'}
-            <div class="text-sm text-muted-foreground">
-              Custom pricing available
-            </div>
-          {/if}
-        </div>
-        <div class="flex items-center justify-between text-xs text-muted-foreground mb-2">
-          <div class="flex items-center gap-4">
-            {#if service.views_count > 0}
-              <div class="flex items-center gap-1">
-                <Eye class="h-3 w-3" />
-                <span>{service.views_count}</span>
-              </div>
-            {/if}
-            {#if service.inquiries_count > 0}
-              <div class="flex items-center gap-1">
-                <MessageSquare class="h-3 w-3" />
-                <span>{service.inquiries_count}</span>
-              </div>
-            {/if}
-            {#if service.bookings_count > 0}
-              <div class="flex items-center gap-1">
-                <Users class="h-3 w-3" />
-                <span>{service.bookings_count}</span>
-              </div>
-            {/if}
-          </div>
-        </div>
-        <Button variant="outline" class="w-full group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-300">
-          <span>
-            {service.service_type === 'consultation' ? 'Book Consultation' : service.service_type === 'course' ? 'Explore Course' : service.service_type === 'product' ? 'View Product' : 'Explore Service'}
-          </span>
-          <ArrowRight class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
-        </Button>
-      </div>
+       <div class="p-4 flex flex-col">
+         {#if service.category}
+           <div class="mb-2">
+             <span class="px-2 py-1 text-xs border border-border/50 text-muted-foreground hover:border-border hover:text-foreground transition-colors rounded">
+               {service.category.name}
+             </span>
+           </div>
+         {/if}
+         <h3 class="text-lg font-semibold text-foreground mb-2 group-hover:text-accent transition-colors line-clamp-2">
+           {service.title}
+         </h3>
+         <p class="text-muted-foreground text-sm mb-3 line-clamp-2">
+           {service.excerpt}
+         </p>
+         <div class="mb-2">
+           <div class="text-xl font-bold text-foreground">
+             {formatPrice()}
+           </div>
+           {#if service.pricing_type === 'custom'}
+             <div class="text-sm text-muted-foreground">
+               Custom pricing available
+             </div>
+           {/if}
+         </div>
+         <div class="flex items-center justify-between text-xs text-muted-foreground mb-2">
+           <div class="flex items-center gap-4">
+             {#if service.views_count > 0}
+               <div class="flex items-center gap-1">
+                 <Eye class="h-3 w-3" />
+                 <span>{service.views_count}</span>
+               </div>
+             {/if}
+             {#if service.inquiries_count > 0}
+               <div class="flex items-center gap-1">
+                 <MessageSquare class="h-3 w-3" />
+                 <span>{service.inquiries_count}</span>
+               </div>
+             {/if}
+             {#if service.bookings_count > 0}
+               <div class="flex items-center gap-1">
+                 <Users class="h-3 w-3" />
+                 <span>{service.bookings_count}</span>
+               </div>
+             {/if}
+           </div>
+         </div>
+         <button class="w-full border border-border rounded-sm p-2 group-hover:bg-accent group-hover:text-accent-foreground group-hover:border-accent transition-all duration-300">
+           <span>
+             {service.service_type === 'consultation' ? 'Book Consultation' : service.service_type === 'course' ? 'Explore Course' : service.service_type === 'product' ? 'View Product' : 'Explore Service'}
+           </span>
+           <ArrowRight class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform inline-block" />
+         </button>
+       </div>
     </div>
   </a>
 </div>

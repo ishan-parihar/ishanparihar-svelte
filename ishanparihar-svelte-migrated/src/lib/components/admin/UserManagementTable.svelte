@@ -3,9 +3,18 @@
   import UserActionMenu from './UserActionMenu.svelte';
   import UserStatusBadge from './UserStatusBadge.svelte';
   
-  export let users = [];
+  import type { UserForTable } from '$lib/types/user';
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  export let users: UserForTable[] = [];
   export let loading = false;
-  export let pagination;
+  export let pagination: Pagination | undefined;
   
   const dispatch = createEventDispatcher();
 </script>

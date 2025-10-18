@@ -1,5 +1,6 @@
-import { error } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
+import { z } from 'zod';
 
 /**
  * Check if the user is an admin
@@ -7,14 +8,14 @@ import type { RequestEvent } from '@sveltejs/kit';
 export async function requireAdmin(event: RequestEvent) {
   // In a real implementation, this would check the user's session/role
   // For now, we'll just return true to allow the request to proceed
-  const session = event.locals.session;
+  const auth = event.locals.auth;
   
-  // Assuming session structure based on typical SvelteKit auth patterns
- if (!session || (session as any).user?.role !== 'admin') {
+  // Using the auth structure from hooks.server.ts ({ session, user })
+  if (!auth || !auth.user || (auth.user as any).role !== 'admin') {
     throw error(401, 'Unauthorized');
   }
   
-  return (session as any).user;
+  return auth.user;
 }
 
 /**
@@ -29,4 +30,34 @@ export function handleApiError(error: any) {
       headers: { 'Content-Type': 'application/json' }
     }
   );
+}
+
+/**
+ * Validate request using zod
+ */
+export async function validateRequest<T extends z.ZodSchema>(
+  schema: T,
+  data: any
+): Promise<z.infer<T>> {
+  const result = schema.safeParse(data);
+  
+  if (!result.success) {
+    const errorMessages = result.error.issues.map((err: z.ZodIssue) => `${err.path.join('.')}: ${err.message}`);
+    throw error(400, `Validation failed: ${errorMessages.join(', ')}`);
+  }
+  
+  return result.data;
+}
+
+/**
+ * Require authentication for API endpoint
+ */
+export async function requireAuth(event: RequestEvent) {
+  const auth = event.locals.auth;
+  
+  if (!auth || !auth.user) {
+    throw error(401, 'Unauthorized');
+  }
+  
+  return auth.user;
 }

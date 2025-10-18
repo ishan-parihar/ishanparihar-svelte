@@ -1,17 +1,19 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { adminNavigation } from '$lib/config/admin-navigation';
   import { PERMISSION_SCOPES } from '$lib/constants/permissions';
+  import type { User } from '$lib/types/user';
+  import type { NavigationItem } from '$lib/types/navigation';
   
-  export let user;
-  export let permissions;
-  export let currentPath;
+  export let user: User | null;
+  export let permissions: string[];
+  export let currentPath: string;
+  export let navigation: NavigationItem[];
   
   function hasPermission(permission: string): boolean {
     return permissions.includes(permission);
   }
   
-  $: visibleNavigation = adminNavigation.filter(item => 
+  $: visibleNavigation = navigation.filter(item => 
     !item.permission || hasPermission(item.permission)
   );
 </script>
@@ -39,21 +41,23 @@
     </ul>
   </nav>
   
-  <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-    <div class="flex items-center space-x-3">
-      <img 
-        src={user.picture || '/default-avatar.png'} 
-        alt={user.name}
-        class="w-8 h-8 rounded-full"
-      />
-      <div class="min-w-0">
-        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
-          {user.name}
-        </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
-          {user.email}
-        </p>
+  {#if user}
+    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex items-center space-x-3">
+        <img 
+          src={user.picture || '/default-avatar.png'} 
+          alt={user.name}
+          class="w-8 h-8 rounded-full"
+        />
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+            {user.name}
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+            {user.email}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
 </div>

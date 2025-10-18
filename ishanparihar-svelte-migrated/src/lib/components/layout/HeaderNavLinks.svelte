@@ -2,7 +2,9 @@
   import { page } from '$app/stores';
   import { navigationItems } from '$lib/config/navigation';
   import { ChevronDown } from 'lucide-svelte';
-  import DropdownMenu from '$lib/components/ui/dropdown-menu.svelte';
+  import DropdownMenu from '$lib/components/ui/DropdownMenu.svelte';
+  import DropdownMenuTrigger from '$lib/components/ui/DropdownMenuTrigger.svelte';
+  import DropdownMenuContent from '$lib/components/ui/DropdownMenuContent.svelte';
   import { slide } from 'svelte/transition';
 </script>
 
@@ -12,7 +14,7 @@
 
     {#if item.hasDropdown}
       <DropdownMenu>
-        {#snippet trigger()}
+        <DropdownMenuTrigger>
           <button
             class="relative px-3 py-1.5 text-sm font-ui font-bold transition-all duration-300 transform hover:scale-105 flex items-center gap-1 bg-transparent border-none cursor-pointer {isActive ? 'text-accent font-bold scale-105' : 'text-muted-foreground hover:text-foreground'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-none"
             aria-current={isActive ? 'page' : undefined}
@@ -21,10 +23,10 @@
             <ChevronDown class="h-3 w-3 transition-transform duration-200" />
             {#if isActive}
               <div transition:slide={{ duration: 200, axis: 'x' }} class="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-accent"></div>
-            {/if}
+          {/if}
           </button>
-        {/snippet}
-        {#snippet children()}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
           <div class="w-72 rounded-none border shadow-lg backdrop-blur-sm">
             {#each item.dropdownItems as subItem}
               <div class="rounded-none">
@@ -39,7 +41,7 @@
               </div>
             {/each}
           </div>
-        {/snippet}
+        </DropdownMenuContent>
       </DropdownMenu>
     {:else}
       <a href={item.path} class="relative px-3 py-1.5 text-sm font-ui font-bold transition-all duration-300 transform hover:scale-105 {isActive ? 'text-accent font-bold scale-105' : 'text-muted-foreground hover:text-foreground'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 rounded-none" aria-current={isActive ? 'page' : undefined}>

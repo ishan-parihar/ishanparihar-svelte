@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from '@sveltejs/kit';
 
 // Mock analytics data
 const mockAnalyticsData = {
@@ -75,11 +75,11 @@ const mockAnalyticsData = {
  }
 };
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async (event) => {
   // In a real implementation, you would fetch data from your database
   // based on the date range and other parameters
-  const dateFrom = url.searchParams.get('from');
-  const dateTo = url.searchParams.get('to');
+  const dateFrom = event.url.searchParams.get('from');
+  const dateTo = event.url.searchParams.get('to');
   
   // For now, return mock data
   return json(mockAnalyticsData);

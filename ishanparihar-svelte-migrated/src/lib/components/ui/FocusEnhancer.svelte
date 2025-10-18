@@ -3,7 +3,11 @@
 
   let {
     intensity = 1,
-  } = $props();
+    children
+  } = $props<{
+    intensity?: number;
+    children?: () => any;
+  }>();
 
   let container: HTMLDivElement;
   let isFocused = false;
@@ -26,13 +30,13 @@
       mouseY = 0.5;
     };
 
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    container?.addEventListener('mouseenter', handleMouseEnter);
+    container?.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('mousemove', handleMouseMove);
 
     return () => {
-      container.removeEventListener('mouseenter', handleMouseEnter);
-      container.removeEventListener('mouseleave', handleMouseLeave);
+      container?.removeEventListener('mouseenter', handleMouseEnter);
+      container?.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('mousemove', handleMouseMove);
     };
   });
@@ -49,7 +53,7 @@
   <div
     style="transform: rotateX({rotateX}deg) rotateY({rotateY}deg); transform-style: preserve-3d;"
   >
-    <slot />
+    {@render children?.()}
     <div
       class="absolute inset-0 rounded-[inherit] pointer-events-none"
       style="background: radial-gradient(600px circle at center, rgba(0, 255, 255, 0.15) 0%, transparent 80%); opacity: {glowOpacity}; transform: translateZ(10px);"

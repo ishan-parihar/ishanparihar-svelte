@@ -3,8 +3,10 @@
   import { page } from '$app/stores';
   import { createBrowserClient } from '@supabase/ssr';
   import { env } from '$env/dynamic/public';
-  import type { BlogPost } from '$lib/types/supabase';
+  import type { Database } from '$lib/types/database';
   import { writable } from 'svelte/store';
+  
+  type BlogPost = Database['public']['Tables']['blog_posts']['Row'];
   import MdxRenderer from '$lib/components/mdx/MdxRenderer.svelte';
   import NativeTTSPlayer from '$lib/components/tts/NativeTTSPlayer.svelte';
   import { extractPlainTextFromMDX } from '$lib/utils';

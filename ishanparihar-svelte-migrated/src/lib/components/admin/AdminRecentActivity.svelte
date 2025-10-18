@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let activities = [];
+  import type { AdminActivity } from '$lib/types/admin';
+  
+  export let activities: AdminActivity[] = [];
   export let isLoading = false;
 </script>
 

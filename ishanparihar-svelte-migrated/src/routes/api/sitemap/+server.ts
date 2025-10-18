@@ -1,6 +1,5 @@
-import { xml } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
+import { getSupabase } from '$lib/server/db';
 
 // GET /api/sitemap - Generate sitemap.xml
 export const GET: RequestHandler = async ({ url: requestUrl }) => {
@@ -14,23 +13,23 @@ export const GET: RequestHandler = async ({ url: requestUrl }) => {
       { url: `${requestUrl.origin}/account`, lastmod: new Date().toISOString(), priority: 0.8 },
     ];
 
-    // Fetch blog posts to include in sitemap
-    const { data: blogPosts, error: blogError } = await db
-      .from('blog_posts')
-      .select('slug, updated_at')
-      .eq('status', 'published')
-      .order('updated_at', { ascending: false });
+     // Fetch blog posts to include in sitemap
+     const { data: blogPosts, error: blogError } = await getSupabase()
+       .from('blog_posts')
+       .select('slug, updated_at')
+       .eq('status', 'published')
+       .order('updated_at', { ascending: false });
 
     if (blogError) {
       console.error('Error fetching blog posts for sitemap:', blogError);
     }
 
-    // Add blog posts to URLs
-    const blogPostUrls = blogPosts?.map(post => ({
-      url: `${requestUrl.origin}/blog/${post.slug}`,
-      lastmod: post.updated_at,
-      priority: 0.7
-    })) || [];
+     // Add blog posts to URLs
+     const blogPostUrls = blogPosts?.map((post: any) => ({
+       url: `${requestUrl.origin}/blog/${post.slug}`,
+       lastmod: post.updated_at,
+       priority: 0.7
+     })) || [];
 
     // Combine all URLs
     const allUrls = [...baseUrls, ...blogPostUrls];
@@ -47,9 +46,19 @@ ${allUrls.map(url => `
 `).join('')}
 </urlset>`;
 
-    return xml(sitemap);
+    return new Response(sitemap, {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'max-age=3600'
+      }
+    });
   } catch (error) {
     console.error('Sitemap generation error:', error);
-    return xml('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+    return new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', {
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'max-age=3600'
+      }
+    });
   }
 };

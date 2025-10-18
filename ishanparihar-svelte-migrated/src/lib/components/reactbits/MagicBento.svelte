@@ -12,9 +12,9 @@
 <div class="bento-section grid gap-2 p-3 select-none relative" bind:this={grid}>
   <div class={className || "card-responsive grid gap-4"}>
     {#each cards as item (item.id)}
-      <div class="card flex flex-col justify-between relative bg-card p-4 md:p-5 rounded-none border border-solid border-border font-light overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-0.5">
-        <svelte:component this={item.content} />
-      </div>
+       <div class="card flex flex-col justify-between relative bg-card p-4 md:p-5 rounded-none border border-solid border-border font-light overflow-hidden transition-all duration-300 ease-in-out hover:-translate-y-0.5">
+         {item.content}
+       </div>
     {/each}
   </div>
 </div>

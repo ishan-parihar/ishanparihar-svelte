@@ -18,21 +18,21 @@
 		[key: string]: any;
 	}
 
-	let {
-		type = "text",
-		class: className = "",
-		placeholder,
-		disabled = false,
-		readonly = false,
-		required = false,
-		value,
-		oninput,
-		onchange,
-		onfocus,
-		onblur,
-		style,
-		...restProps
-	}: Props = $props();
+ 	let {
+ 		type = "text",
+ 		class: className = "",
+ 		placeholder,
+ 		disabled = false,
+ 		readonly = false,
+ 		required = false,
+ 		value = $bindable(),
+ 		oninput,
+ 		onchange,
+ 		onfocus,
+ 		onblur,
+ 		style,
+ 		...restProps
+ 	}: Props = $props();
 
 	let isMounted = $state(false);
 	let inputElement: HTMLInputElement;
@@ -44,11 +44,13 @@
 	// Create a version of props without style if not mounted yet
 	const safeProps = $derived(!isMounted && style ? { ...restProps, style: undefined } : restProps);
 
-	function handleInput(event: Event) {
-		if (oninput) {
-			oninput(event);
-		}
-	}
+ 	function handleInput(event: Event) {
+ 		const target = event.target as HTMLInputElement;
+ 		value = target.value;
+ 		if (oninput) {
+ 			oninput(event);
+ 		}
+ 	}
 
 	function handleChange(event: Event) {
 		if (onchange) {

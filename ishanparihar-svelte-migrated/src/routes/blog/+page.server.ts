@@ -1,9 +1,9 @@
-import { supabase } from '$lib/server/supabase';
+import { getSupabase } from '$lib/server/db';
 import type { PageServerLoad } from './$types';
 
 // Replicating the logic from getPublicBlogPosts in the original codebase
 async function getPublicBlogPosts() {
-    let query = supabase
+    let query = getSupabase()
         .from("blog_posts")
         .select(
             `
@@ -59,9 +59,10 @@ async function getPublicBlogPosts() {
     return transformedData;
 }
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
     const posts = await getPublicBlogPosts();
     return {
         posts,
+        session: event.locals.auth // Pass the session data from hooks
     };
 };

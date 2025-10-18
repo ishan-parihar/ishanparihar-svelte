@@ -1,13 +1,12 @@
 import { fail, redirect } from "@sveltejs/kit";
 import { auth as lucia } from "$lib/server/auth";
 import { compare } from "bcrypt";
-import { Pool } from "pg";
-import { env } from "$env/dynamic/private";
+import { getSupabase } from "$lib/server/db";
 
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals }) => {
-    if (locals.user) {
+    if (locals.auth?.user) {
         return redirect(302, "/");
     }
 };
@@ -26,32 +25,26 @@ export const actions: Actions = {
         }
 
         try {
-            const pool = new Pool({
-                connectionString: env.SUPABASE_URL,
-            });
+            // Query users table directly using Supabase
+            const { data: user, error } = await getSupabase()
+                .from('users')
+                .select('id, email, password_hash, role')
+                .eq('email', email.toLowerCase())
+                .single();
 
-            // Query users table directly
-            const result = await pool.query(
-                'SELECT id, email, password, role FROM auth.users WHERE email = $1',
-                [email.toLowerCase()]
-            );
-
-            if (result.rows.length === 0) {
+            if (error || !user) {
                 return fail(400, { message: "Incorrect email or password" });
             }
 
-            const user = result.rows[0];
-            const validPassword = await compare(password, user.password);
+            // Compare the password using bcrypt
+            const validPassword = await compare(password, user.password_hash);
 
             if (!validPassword) {
                 return fail(400, { message: "Incorrect email or password" });
             }
 
             // Create session using lucia
-            const session = await lucia.createSession(user.id, {
-                email: user.email,
-                role: user.role
-            });
+            const session = await lucia.createSession(user.id, {});
             
             const sessionCookie = lucia.createSessionCookie(session.id);
             event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -59,7 +52,6 @@ export const actions: Actions = {
                 ...sessionCookie.attributes
             });
 
-            await pool.end();
             return redirect(302, "/");
         } catch (error) {
             console.error('Login error:', error);

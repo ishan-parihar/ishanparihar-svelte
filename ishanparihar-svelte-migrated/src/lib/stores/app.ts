@@ -1,26 +1,23 @@
-import { rune, type Rune } from 'svelte\/compiler';
+import { writable } from 'svelte/store';
 
 interface AppState {
   theme: 'light' | 'dark';
   isLoading: boolean;
 }
 
+const initialState: AppState = {
+  theme: 'dark',
+  isLoading: false,
+};
+
 function createAppStore() {
-  let state: AppState = $rune({
-    theme: 'dark',
-    isLoading: false,
-  });
+  const { subscribe, set, update } = writable<AppState>(initialState);
 
   return {
-    get state() {
-      return state;
-    },
-    setTheme: (theme: 'light' | 'dark') => {
-      state.theme = theme;
-    },
-    setLoading: (loading: boolean) => {
-      state.isLoading = loading;
-    },
+    subscribe,
+    setTheme: (theme: 'light' | 'dark') => update(state => ({ ...state, theme })),
+    setLoading: (loading: boolean) => update(state => ({ ...state, isLoading: loading })),
+    reset: () => set(initialState)
   };
 }
 

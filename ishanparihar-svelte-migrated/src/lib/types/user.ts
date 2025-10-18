@@ -30,3 +30,18 @@ export interface NotificationSettings {
   push_notifications: boolean;
   marketing_emails: boolean;
 }
+
+export interface UserForTable {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  last_login?: string;
+  picture?: string;
+  suspended?: boolean;
+  is_spam_flagged?: boolean;
+  email_verified: boolean;
+}

@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from '@sveltejs/kit';
 
 // Mock blog posts data
 const mockBlogPosts = [
@@ -60,12 +60,12 @@ const mockBlogPosts = [
   }
 ];
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async (event) => {
   // In a real implementation, you would fetch data from your database
   // based on filters like status, category, search, etc.
-  const status = url.searchParams.get('status');
-  const category = url.searchParams.get('category');
-  const search = url.searchParams.get('search');
+  const status = event.url.searchParams.get('status');
+  const category = event.url.searchParams.get('category');
+  const search = event.url.searchParams.get('search');
   
   // Filter mock data based on parameters
   let filteredPosts = mockBlogPosts;
@@ -84,10 +84,10 @@ export const GET: RequestHandler = async ({ url }) => {
   return json(filteredPosts);
 };
 
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async (event) => {
   // In a real implementation, you would delete the post from your database
  // based on the slug parameter
-  const slug = params.slug;
+  const slug = event.params.slug;
   
   // For now, just return success
   return json({ success: true, message: `Post with slug ${slug} deleted successfully` });

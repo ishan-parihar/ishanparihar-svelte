@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
 import { z } from 'zod';
-import { handleApiError, validateRequest } from '../../utils';
+import { handleApiError, validateRequest, authenticateUser, ApiError } from '$lib/server/utils';
 import { auth as lucia } from '$lib/server/auth';
 import { googleAuth as google } from '$lib/server/auth';
 import { generateCodeVerifier, generateState } from 'arctic';
@@ -54,9 +54,7 @@ export async function GET(event: RequestEvent) {
     maxAge: 60 * 10
   });
   
-  const url = await google.createAuthorizationURL(state, codeVerifier, {
-    scopes: ['profile', 'email']
-  });
+  const url = google.createAuthorizationURL(state, codeVerifier, ['profile', 'email']);
   
-  return json({ url });
+  return json({ url: url.toString() });
 }

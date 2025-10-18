@@ -91,10 +91,13 @@
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {#each visibleMetrics as metric}
-    <div 
-      class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow cursor-pointer"
-      on:click={() => dispatch('navigate', metric.href)}
-    >
+  <div 
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow cursor-pointer"
+    onclick={() => dispatch('navigate', metric.href)}
+    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') dispatch('navigate', metric.href); }}
+    role="button"
+    tabindex="0"
+  >
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div class="p-2 bg-{metric.color}-100 dark:bg-{metric.color}-900/20 rounded-lg">

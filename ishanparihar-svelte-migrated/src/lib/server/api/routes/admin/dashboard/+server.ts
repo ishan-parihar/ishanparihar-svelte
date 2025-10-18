@@ -1,11 +1,11 @@
 import { json } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { handleApiError, requireAdmin } from '../../utils';
+import { handleApiError, requireAdmin } from '$lib/server/utils';
 import { createServiceRoleClient } from '$lib/server/supabase';
 
 export async function GET(event: RequestEvent) {
   try {
-    const session = await requireAdmin(event);
+    const user = await requireAdmin(event);
     
     const supabase = createServiceRoleClient();
     
@@ -37,7 +37,7 @@ export async function GET(event: RequestEvent) {
         posts: postCount || 0,
         comments: commentCount || 0
       },
-      user: session.user
+      user: user
     });
   } catch (err) {
     return handleApiError(err);

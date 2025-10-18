@@ -124,7 +124,7 @@
     "msw": "^2.10.5",
     "msw-trpc": "^2.0.1",
     "prettier": "^3.6.2",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }
 }

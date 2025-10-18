@@ -1,17 +1,17 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { update } from '$lib/server/queries/blog';
+import type { RequestHandler } from '@sveltejs/kit';
+import { getSupabase } from '$lib/server/db';
 
 // GET /api/user/profile - Get user profile
-export const GET: RequestHandler = async ({ locals }) => {
-  if (!locals.user) {
+export const GET: RequestHandler = async (event) => {
+  if (!event.locals.auth?.user) {
     return json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     // Get user profile from database
-    const { data: user, error } = await db
+    const supabase = getSupabase();
+    const { data: user, error } = await supabase
       .from('users')
       .select(`
         id,
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ locals }) => {
         created_at,
         notification_preferences
       `)
-      .eq('id', locals.user.id)
+      .eq('id', event.locals.auth.user.id)
       .single();
 
     if (error) {
@@ -38,16 +38,17 @@ export const GET: RequestHandler = async ({ locals }) => {
 };
 
 // PUT /api/user/profile - Update user profile
-export const PUT: RequestHandler = async ({ request, locals }) => {
-  if (!locals.user) {
+export const PUT: RequestHandler = async (event) => {
+  if (!event.locals.auth?.user) {
     return json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const { name, email, phone, bio } = await request.json();
+    const { name, email, phone, bio } = await event.request.json();
 
     // Update user profile in database
-    const { data: user, error } = await db
+    const supabase = getSupabase();
+    const { data: user, error } = await supabase
       .from('users')
       .update({
         name,
@@ -56,7 +57,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
         bio,
         updated_at: new Date().toISOString()
       })
-      .eq('id', locals.user.id)
+      .eq('id', event.locals.auth.user.id)
       .select(`
         id,
         name,

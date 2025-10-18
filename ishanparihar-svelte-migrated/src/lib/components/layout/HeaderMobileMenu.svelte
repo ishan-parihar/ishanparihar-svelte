@@ -45,13 +45,7 @@
           <div class="w-full">
             <a
               href={item.path}
-              class="relative px-3 py-1.5 text-sm font-bold transition-all duration-300 rounded-none block w-full text-center transform hover:scale-105"
-              class:text-accent={item.path === $page.url.pathname}
-              class:bg-accent-10={item.path === $page.url.pathname}
-              class:scale-105={item.path === $page.url.pathname}
-              class:text-foreground={item.path !== $page.url.pathname}
-              class:hover:text-accent={item.path !== $page.url.pathname}
-              class:hover:bg-muted={item.path !== $page.url.pathname}
+              class="relative px-3 py-1.5 text-sm font-bold transition-all duration-300 rounded-none block w-full text-center transform hover:scale-105 {item.path === $page.url.pathname ? 'text-accent bg-accent-10 scale-105' : 'text-foreground hover:text-accent hover:bg-muted'}"
               aria-current={item.path === $page.url.pathname ? 'page' : undefined}
             >
               <span>{item.name}</span>
@@ -61,12 +55,7 @@
                 {#each item.dropdownItems as subItem}
                   <a
                     href={subItem.path}
-                    class="block px-3 py-1.5 text-xs rounded-none transition-all duration-300"
-                    class:text-accent={subItem.path === $page.url.pathname}
-                    class:bg-accent-10={subItem.path === $page.url.pathname}
-                    class:text-muted-foreground={subItem.path !== $page.url.pathname}
-                    class:hover:text-accent={subItem.path !== $page.url.pathname}
-                    class:hover:bg-muted={subItem.path !== $page.url.pathname}
+                    class="block px-3 py-1.5 text-xs rounded-none transition-all duration-300 {subItem.path === $page.url.pathname ? 'text-accent bg-accent-10' : 'text-muted-foreground hover:text-accent hover:bg-muted'}"
                   >
                     {subItem.name}
                   </a>

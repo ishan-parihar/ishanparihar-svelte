@@ -51,7 +51,7 @@
   />
   
   {#if !isLoaded && !isError}
-    <div class="absolute inset-0 bg-gray-20 dark:bg-gray-700 animate-pulse" />
+    <div class="absolute inset-0 bg-gray-20 dark:bg-gray-700 animate-pulse"></div>
   {/if}
   
   {#if isError}

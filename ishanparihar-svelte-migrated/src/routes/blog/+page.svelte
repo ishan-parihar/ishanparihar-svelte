@@ -1,13 +1,13 @@
 <script lang="ts">
   import type { PageData } from './$types';
   import Card from '$lib/components/ui/Card.svelte';
-  import { sessionStore } from '$lib/stores/session';
 
-  export let data: PageData;
+  let { data } = $props<{ data: PageData }>();
 
-  const { posts } = data;
-
-  const { state: sessionState } = sessionStore;
+  const { posts, session } = data;
+  
+  // session is available directly from the loaded data
+  const sessionState = $state(session);
 </script>
 
 <div class="container mx-auto px-4 py-8">

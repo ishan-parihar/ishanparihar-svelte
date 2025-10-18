@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
+import { getSupabase } from '$lib/server/db';
 
 // GET /api/search - Search across the site
 export const GET: RequestHandler = async ({ url }) => {
@@ -20,22 +20,22 @@ export const GET: RequestHandler = async ({ url }) => {
 
     switch (type) {
       case 'blog':
-        // Search in blog posts
-        const { data: blogResults, error: blogError, count } = await db
-          .from('blog_posts')
-          .select(`
-            id,
-            title,
-            slug,
-            excerpt,
-            created_at,
-            updated_at,
-            author
-          `)
-          .ilike('title', `%${query}%`)
-          .or(`excerpt.ilike.%${query}%,content.ilike.%${query}%`)
-          .order('created_at', { ascending: false })
-          .range(offset, offset + limit - 1);
+         // Search in blog posts
+         const { data: blogResults, error: blogError, count } = await getSupabase()
+           .from('blog_posts')
+           .select(`
+             id,
+             title,
+             slug,
+             excerpt,
+             created_at,
+             updated_at,
+             author
+           `)
+           .ilike('title', `%${query}%`)
+           .or(`excerpt.ilike.%${query}%,content.ilike.%${query}%`)
+           .order('created_at', { ascending: false })
+           .range(offset, offset + limit - 1);
 
         if (blogError) {
           return json({ error: blogError.message }, { status: 500 });
@@ -47,23 +47,23 @@ export const GET: RequestHandler = async ({ url }) => {
 
       case 'all':
       default:
-        // Search across all content types
-        // For now, just search blog posts as an example
-        const { data: allResults, error: allError, count: allCount } = await db
-          .from('blog_posts')
-          .select(`
-            id,
-            title,
-            slug,
-            excerpt,
-            created_at,
-            updated_at,
-            author
-          `)
-          .ilike('title', `%${query}%`)
-          .or(`excerpt.ilike.%${query}%,content.ilike.%${query}%`)
-          .order('created_at', { ascending: false })
-          .range(offset, offset + limit - 1);
+         // Search across all content types
+         // For now, just search blog posts as an example
+         const { data: allResults, error: allError, count: allCount } = await getSupabase()
+           .from('blog_posts')
+           .select(`
+             id,
+             title,
+             slug,
+             excerpt,
+             created_at,
+             updated_at,
+             author
+           `)
+           .ilike('title', `%${query}%`)
+           .or(`excerpt.ilike.%${query}%,content.ilike.%${query}%`)
+           .order('created_at', { ascending: false })
+           .range(offset, offset + limit - 1);
 
         if (allError) {
           return json({ error: allError.message }, { status: 500 });

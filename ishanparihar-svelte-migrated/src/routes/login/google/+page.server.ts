@@ -29,6 +29,6 @@ export const load: PageServerLoad = async ({ cookies }) => {
         maxAge: 60 * 10 // 10 minutes
     });
 
-    const url = googleAuth.createAuthorizationURL(state, codeVerifier);
+    const url = googleAuth.createAuthorizationURL(state, codeVerifier, ['email', 'profile']);
     throw redirect(302, url.toString());
 };

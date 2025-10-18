@@ -8,7 +8,7 @@
 
   function handleScroll() {
     const offset = window.scrollY;
-    setVisible(true);
+    visible = true;
     scrolled = offset > 20;
 
     const height = document.documentElement.scrollHeight - window.innerHeight;

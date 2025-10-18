@@ -1,7 +1,7 @@
 import { redirect, fail } from "@sveltejs/kit";
-import { googleAuth, lucia } from "$lib/server/auth";
-import { Pool } from "pg";
-import { env } from "$env/dynamic/private";
+import { googleAuth, auth } from "$lib/server/auth";
+import { getSupabase } from "$lib/server/db";
+import { generateIdFromEntropySize } from "lucia";
 
 import type { PageServerLoad } from "./$types";
 
@@ -25,44 +25,61 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
     try {
         // Validate authorization code
-        const googleUser = await googleAuth.validateAuthorizationCode(code, codeVerifier);
+        const tokens = await googleAuth.validateAuthorizationCode(code, codeVerifier);
 
-        const pool = new Pool({
-            connectionString: env.SUPABASE_URL,
+        // Get user info from Google API using the access token
+        const googleUserResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: {
+                Authorization: `Bearer ${tokens.accessToken}`
+            }
         });
 
-        // Check if user exists
-        const existingUser = await pool.query(
-            'SELECT id, email, role FROM auth.users WHERE email = $1',
-            [googleUser.email]
-        );
+        if (!googleUserResponse.ok) {
+            throw redirect(302, "/login?error=oauth_failed");
+        }
+
+        const googleUser = await googleUserResponse.json();
+
+        // Check if user exists in our database
+        const { data: existingUser, error: fetchError } = await getSupabase()
+            .from('users')
+            .select('id, email, role')
+            .eq('email', googleUser.email)
+            .single();
 
         let userId: string;
         
-        if (existingUser.rows.length === 0) {
+        if (!existingUser) {
             // Create new user
-            const newUser = await pool.query(
-                'INSERT INTO auth.users (email, name, picture, role, created_at) VALUES ($1, $2, $3, $4, NOW()) RETURNING id',
-                [googleUser.email, googleUser.name, googleUser.picture, 'user']
-            );
-            userId = newUser.rows[0].id;
+            const newUserId = generateIdFromEntropySize(15);
+            const { error: insertError } = await getSupabase()
+                .from('users')
+                .insert({
+                    id: newUserId,
+                    email: googleUser.email,
+                    name: googleUser.name,
+                    picture: googleUser.picture,
+                    role: 'user'
+                });
+
+            if (insertError) {
+                console.error('Error creating user:', insertError);
+                throw redirect(302, "/login?error=oauth_failed");
+            }
+            
+            userId = newUserId;
         } else {
-            userId = existingUser.rows[0].id;
+            userId = existingUser.id;
         }
 
         // Create session
-        const session = await lucia.createSession(userId, {
-            email: googleUser.email,
-            role: existingUser.rows[0]?.role || 'user'
-        });
-        
-        const sessionCookie = lucia.createSessionCookie(session.id);
+        const session = await auth.createSession(userId, {});
+        const sessionCookie = auth.createSessionCookie(session.id);
         cookies.set(sessionCookie.name, sessionCookie.value, {
             path: ".",
             ...sessionCookie.attributes
         });
 
-        await pool.end();
         throw redirect(302, "/");
     } catch (error) {
         console.error('OAuth callback error:', error);

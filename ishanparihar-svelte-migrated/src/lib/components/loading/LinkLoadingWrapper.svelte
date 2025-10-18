@@ -5,7 +5,13 @@
     href,
     showIndicator = true,
     class: className = "",
-  } = $props();
+    children
+  } = $props<{
+    href: string;
+    showIndicator?: boolean;
+    class?: string;
+    children?: () => any;
+  }>();
 
   let isClicked = $state(false);
 
@@ -17,12 +23,6 @@
   }
 </script>
 
-<a {href} class="relative {className}" on:click={handleClick}>
-  <slot />
-
-  {#if showIndicator && isClicked}
-    <div class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-neutral-900/80 rounded-none z-10">
-      <!-- TODO: Add pulsing dots animation -->
-    </div>
-  {/if}
+<a {href} class="relative {className}" onclick={handleClick}>
+  {@render children?.()}
 </a>
