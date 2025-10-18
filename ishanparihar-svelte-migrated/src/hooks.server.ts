@@ -1,0 +1,93 @@
+import { auth } from '$lib/server/auth';
+import type { Handle } from '@sveltejs/kit';
+import { sequence } from '@sveltejs/kit/hooks';
+
+// Lucia auth hook
+const authHook: Handle = async ({ event, resolve }) => {
+  const sessionId = event.cookies.get(auth.sessionCookieName);
+  if (!sessionId) {
+    event.locals.auth = {
+      session: null,
+      user: null
+    };
+    return resolve(event);
+  }
+
+  const { session, user } = await auth.validateSession(sessionId);
+  if (session && session.fresh) {
+    const sessionCookie = auth.createSessionCookie(session.id);
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '.',
+      ...sessionCookie.attributes
+    });
+  }
+  if (!session) {
+    const sessionCookie = auth.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '.',
+      ...sessionCookie.attributes
+    });
+  }
+  event.locals.auth = { session, user };
+  return resolve(event);
+};
+
+// SEO metadata hook
+const seoHook: Handle = async ({ event, resolve }) => {
+  const response = await resolve(event);
+  
+  // Add SEO headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  
+  return response;
+};
+
+// Generate structured data for SEO
+export function generateStructuredData(type: string, data: any) {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': type,
+    ...data
+  };
+  
+  return JSON.stringify(structuredData);
+}
+
+// Generate meta tags
+export function generateMetaTags(pageData: {
+ title: string;
+  description: string;
+  image?: string;
+  url?: string;
+  type?: string;
+  author?: string;
+  keywords?: string;
+  locale?: string;
+}) {
+  const metaTags = [
+    { title: pageData.title },
+    { name: 'description', content: pageData.description },
+    { name: 'keywords', content: pageData.keywords || '' },
+    { name: 'author', content: pageData.author || '' },
+    { property: 'og:title', content: pageData.title },
+    { property: 'og:description', content: pageData.description },
+    { property: 'og:type', content: pageData.type || 'website' },
+    { property: 'og:image', content: pageData.image || '/default-og-image.jpg' },
+    { property: 'og:url', content: pageData.url || '' },
+    { property: 'og:locale', content: pageData.locale || 'en_US' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: pageData.title },
+    { name: 'twitter:description', content: pageData.description },
+    { name: 'twitter:image', content: pageData.image || '/default-og-image.jpg' }
+  ].filter(tag => tag.content); // Filter out tags with empty content
+  
+  return metaTags;
+}
+
+export const handle = sequence(authHook, seoHook);

@@ -15,7 +15,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
     "dotenv": "^17.2.1",
-    "gsap": "^3.13.0"
+    "gsap": "^3.13.0",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
     "jsdom": "^26.1.0"
