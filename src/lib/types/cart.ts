@@ -15,6 +15,17 @@ export interface ServiceCategory {
   slug: string;
 }
 
+export interface ProductService {
+  id: string;
+  title: string;
+  excerpt: string;
+  description: string;
+  base_price: number;
+  featured?: boolean;
+  category?: ServiceCategory;
+  pricing?: ServicePricing[];
+}
+
 export interface ServicePricing {
   id: string;
   type: string;

@@ -24,7 +24,7 @@
   
   $effect(() => {
     const unsubscribe = page.subscribe((p) => {
-      slug = p.params.slug;
+      slug = p.params.slug ?? '';
     });
     return unsubscribe;
   });

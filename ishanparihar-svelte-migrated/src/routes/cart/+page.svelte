@@ -3,7 +3,7 @@
   import CartItem from '$lib/components/cart/CartItem.svelte';
   import CartSummary from '$lib/components/cart/CartSummary.svelte';
   import EmptyCart from '$lib/components/cart/EmptyCart.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
 
   const { state } = cartStore;

@@ -2,7 +2,7 @@
   import ServicesHero from '$lib/components/services/ServicesHero.svelte';
   import ServicesGrid from '$lib/components/services/ServicesGrid.svelte';
   import ServicesFilters from '$lib/components/services/ServicesFilters.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   
   // Simulated services data - in real app, this would come from a +page.server.ts

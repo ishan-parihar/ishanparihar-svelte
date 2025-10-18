@@ -1,8 +1,21 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   
-  let blogData = $state({
+  interface BlogPost {
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: string;
+    category: string;
+    tags: string;
+    isPublished: boolean;
+    metaTitle: string;
+    metaDescription: string;
+    featuredImage: string;
+  }
+  
+  let blogData = $state<BlogPost>({
     title: '',
     slug: '',
     excerpt: '',
@@ -16,22 +29,28 @@
   });
 
   let loading = $state(false);
-  let error = $state(null);
+  let error = $state<string | null>(null);
 
-  const handleFieldChange = (field, value) => {
-    blogData[field] = value;
+  const handleFieldChange = (field: keyof BlogPost, value: string | boolean) => {
+    blogData = {
+      ...blogData,
+      [field]: value
+    };
     
     // Auto-generate slug from title
     if (field === 'title' && !blogData.slug) {
-      blogData.slug = blogData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
+      blogData = {
+        ...blogData,
+        slug: blogData.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+      };
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: Event) => {
     e.preventDefault();
     loading = true;
     error = null;
@@ -61,12 +80,12 @@
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex items-center justify-between mb-6">
-    <button 
-      on:click={() => goto('/admin/blog')}
-      class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
-    >
-      &larr; Back to Blog Management
-    </button>
+     <button 
+       onclick={() => goto('/admin/blog')}
+       class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
+     >
+       &larr; Back to Blog Management
+     </button>
   </div>
 
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
@@ -93,7 +112,7 @@
         </div>
       {/if}
 
-      <form on:submit={handleSubmit}>
+       <form onsubmit={handleSubmit}>
         <div class="grid grid-cols-1 gap-6">
           <!-- Title -->
           <div>
@@ -280,18 +299,18 @@
 
         <!-- Action Buttons -->
         <div class="mt-8 flex justify-end space-x-3">
-          <Button 
-            type="button" 
-            variant="outline" 
-            on:click={handleCancel}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={loading}
-          >
+           <Button 
+             type="button" 
+             variant="outline" 
+             onclick={handleCancel}
+             disabled={loading}
+           >
+             Cancel
+           </Button>
+           <Button 
+             type="submit" 
+             disabled={loading}
+           >
             {#if loading}
               Creating...
             {:else}

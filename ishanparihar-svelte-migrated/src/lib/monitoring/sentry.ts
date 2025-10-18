@@ -8,10 +8,7 @@ if (PUBLIC_ENV.SENTRY_DSN) {
     environment: import.meta.env.MODE,
     integrations: [
       Sentry.browserTracingIntegration(),
-      Sentry.replayIntegration({
-        sessionSampleRate: 0.1,
-        errorSampleRate: 1.0
-      })
+      Sentry.replayIntegration()
     ]
   });
 }

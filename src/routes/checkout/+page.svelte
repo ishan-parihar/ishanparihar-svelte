@@ -133,15 +133,15 @@
     }
  }
   
- // Calculate totals
- $: subtotal = cartStore.state.items.reduce((sum, item) => {
-    const price = item.service.base_price || 0;
-    return sum + (price * item.quantity);
-  }, 0);
-  
-  $: tax = subtotal * 0.18;
-  $: total = subtotal + tax;
-  $: itemCount = cartStore.state.items.reduce((sum, item) => sum + item.quantity, 0);
+  // Calculate totals
+  let subtotal = $derived(cartStore.state.items.reduce((sum, item) => {
+     const price = item.service.base_price || 0;
+     return sum + (price * item.quantity);
+   }, 0));
+   
+  let tax = $derived(subtotal * 0.18);
+  let total = $derived(subtotal + tax);
+  let itemCount = $derived(cartStore.state.items.reduce((sum, item) => sum + item.quantity, 0));
 </script>
 
 <svelte:head>
@@ -212,10 +212,11 @@
                     />
                   </div>
                 </div>
-              </div>
-            
-            <!-- Shipping Address -->
-            <div class="mb-6">
+               </div>
+             </div>
+             
+             <!-- Shipping Address -->
+             <div class="mb-6">
               <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Shipping Address</h3>
               
               <div class="grid grid-cols-1 gap-4">
@@ -288,11 +289,11 @@
             </div>
             
             <!-- Place Order Button -->
-            <button
-              class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-              disabled={cartStore.state.isLoading}
-              on:click={handleCheckout}
-            >
+             <button
+               class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+               disabled={cartStore.state.isLoading}
+               onclick={handleCheckout}
+             >
               {#if cartStore.state.isLoading}
                 <div class="flex items-center justify-center">
                   <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

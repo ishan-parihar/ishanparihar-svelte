@@ -29,8 +29,9 @@ export interface CartItem {
 export interface CartState {
   items: CartItem[];
   subtotal: number;
+  tax: number;
   total: number;
- itemCount: number;
+  itemCount: number;
   isLoading: boolean;
   error: string | null;
 }

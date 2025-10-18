@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { cartStore } from '$lib/stores/cart';
+  import { createEventDispatcher } from 'svelte';
   
-  export let subtotal: number = 0;
-  export let tax: number = 0;
-  export let total: number = 0;
-  export let itemCount: number = 0;
-  export let isLoading: boolean = false;
-  export let error: string | null = null;
+  let { subtotal = 0, tax = 0, total = 0, itemCount = 0, isLoading = false, error = null } = $props<{ 
+    subtotal?: number; 
+    tax?: number; 
+    total?: number; 
+    itemCount?: number; 
+    isLoading?: boolean; 
+    error?: string | null;
+  }>();
   
   const dispatch = createEventDispatcher();
   
@@ -35,18 +37,19 @@
       <span>₹{tax.toLocaleString()}</span>
     </div>
     
-    <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
-      <div class="flex justify-between text-lg font-semibold text-gray-900 dark:text-white">
-        <span>Total</span>
-        <span>₹{total.toLocaleString()}</span>
-      </div>
-    </div>
-  
-  <button
-    class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-    disabled={isLoading || total === 0}
-    on:click={handleCheckout}
-  >
+     <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
+       <div class="flex justify-between text-lg font-semibold text-gray-900 dark:text-white">
+         <span>Total</span>
+         <span>₹{total.toLocaleString()}</span>
+       </div>
+     </div>
+   </div>
+   
+     <button
+       class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+       disabled={isLoading || total === 0}
+       onclick={handleCheckout}
+     >
     {#if isLoading}
       <div class="flex items-center justify-center">
         <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>

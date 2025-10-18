@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   import { cartStore } from '$lib/stores/cart';
   import type { CartItem as CartItemType } from '$lib/types/cart';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
 
   let { item }: { item: CartItemType } = $props();
   let loadingId = $state<string | null>(null);

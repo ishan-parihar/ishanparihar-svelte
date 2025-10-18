@@ -1,7 +1,7 @@
 <script>
   import { cartStore } from '$lib/stores/cart';
   import CartSummary from '$lib/components/cart/CartSummary.svelte';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
 

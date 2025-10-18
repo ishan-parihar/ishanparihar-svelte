@@ -4,7 +4,7 @@
   import type { ProductService, ServiceCategory } from '$lib/types/supabase';
   import { createBrowserClient } from '@supabase/ssr';
   import { env } from '$env/dynamic/public';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { cartStore } from '$lib/stores/cart';
   import { goto } from '$app/navigation';
 

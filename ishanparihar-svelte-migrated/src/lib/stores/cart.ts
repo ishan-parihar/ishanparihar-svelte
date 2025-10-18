@@ -7,6 +7,7 @@ function createCartStore() {
  let state = $state<CartState>({
     items: [],
     subtotal: 0,
+    tax: 0,
     total: 0,
     itemCount: 0,
     isLoading: false,

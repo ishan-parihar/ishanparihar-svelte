@@ -1,9 +1,9 @@
 <script>
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
-  import { Textarea } from '$lib/components/ui/Textarea.svelte';
-  import { Select } from '$lib/components/ui/Select.svelte';
-  import { Switch } from '$lib/components/ui/Switch.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import Textarea from '$lib/components/ui/Textarea.svelte';
+  import Select from '$lib/components/ui/Select.svelte';
+  import Switch from '$lib/components/ui/Switch.svelte';
   import { onMount } from 'svelte';
 
   let settings = $state({

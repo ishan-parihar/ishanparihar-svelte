@@ -1,19 +1,45 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let comments = $state([]);
+  interface Comment {
+    id: string;
+    content: string;
+    author: string;
+    email: string;
+    postTitle: string;
+    status: 'approved' | 'pending' | 'rejected';
+    type: string;
+    createdAt: string;
+    updatedAt: string;
+    isSpam: boolean;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    status: string;
+    type: string;
+    search: string;
+  }
+  
+  let comments = $state<Comment[]>([]);
   let loading = $state(true);
-  let error = $state(null);
-  let pagination = $state({
+  let error = $state<string | null>(null);
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     status: 'all',
     type: 'all',
     search: ''
@@ -102,18 +128,18 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadComments();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadComments();
   };
 
-  const approveComment = async (commentId) => {
+  const approveComment = async (commentId: string) => {
     loading = true;
     try {
       // Simulate API call to approve comment
@@ -132,7 +158,7 @@
     }
   };
 
-  const rejectComment = async (commentId) => {
+  const rejectComment = async (commentId: string) => {
     loading = true;
     try {
       // Simulate API call to reject comment
@@ -151,7 +177,7 @@
     }
   };
 
-  const deleteComment = async (commentId) => {
+  const deleteComment = async (commentId: string) => {
     if (confirm('Are you sure you want to delete this comment?')) {
       loading = true;
       try {
@@ -171,7 +197,7 @@
     }
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'approved': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -180,7 +206,7 @@
     }
   };
 
-  const getSpamClass = (isSpam) => {
+  const getSpamClass = (isSpam: boolean) => {
     return isSpam ? 'bg-red-50 text-red-700' : 'bg-gray-50 text-gray-700';
   };
 </script>
@@ -251,11 +277,11 @@
       </div>
     </div>
     
-    <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
-        Apply Filters
-      </Button>
-    </div>
+     <div class="flex justify-end mt-4">
+       <Button onclick={() => handleFilterChange(filters)}>
+         Apply Filters
+       </Button>
+     </div>
   </div>
 
   {#if loading}
@@ -312,28 +338,28 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {#if comment.status === 'pending'}
-                    <button
-                      type="button"
-                      class="text-green-600 hover:text-green-900 mr-3"
-                      on:click={() => approveComment(comment.id)}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      type="button"
-                      class="text-red-600 hover:text-red-900 mr-3"
-                      on:click={() => rejectComment(comment.id)}
-                    >
-                      Reject
-                    </button>
+                     <button
+                       type="button"
+                       class="text-green-600 hover:text-green-900 mr-3"
+                       onclick={() => approveComment(comment.id)}
+                     >
+                       Approve
+                     </button>
+                     <button
+                       type="button"
+                       class="text-red-600 hover:text-red-900 mr-3"
+                       onclick={() => rejectComment(comment.id)}
+                     >
+                       Reject
+                     </button>
                   {/if}
-                  <button
-                    type="button"
-                    class="text-red-600 hover:text-red-900"
-                    on:click={() => deleteComment(comment.id)}
-                  >
-                    Delete
-                  </button>
+                   <button
+                     type="button"
+                     class="text-red-600 hover:text-red-900"
+                     onclick={() => deleteComment(comment.id)}
+                   >
+                     Delete
+                   </button>
                 </td>
               </tr>
             {/each}
@@ -350,20 +376,20 @@
         <span class="font-medium">{pagination.total}</span> results
       </div>
       <div class="flex space-x-2">
-        <button
-          disabled={pagination.page <= 1}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
-        >
-          Previous
-        </button>
-        <button
-          disabled={pagination.page >= pagination.totalPages}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
-        >
-          Next
-        </button>
+         <button
+           disabled={pagination.page <= 1}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page - 1)}
+         >
+           Previous
+         </button>
+         <button
+           disabled={pagination.page >= pagination.totalPages}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page + 1)}
+         >
+           Next
+         </button>
       </div>
     </div>
   {/if}

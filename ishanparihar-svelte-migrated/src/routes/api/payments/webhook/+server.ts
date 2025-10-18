@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/private';
+import { PRIVATE_ENV } from '$lib/env';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -14,7 +14,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Verify webhook signature using secret
     const crypto = await import('crypto');
     const expectedSignature = crypto
-      .createHmac('sha256', env.PRIVATE_RAZORPAY_WEBHOOK_SECRET)
+      .createHmac('sha256', PRIVATE_ENV.RAZORPAY_WEBHOOK_SECRET)
       .update(body)
       .digest('hex');
     

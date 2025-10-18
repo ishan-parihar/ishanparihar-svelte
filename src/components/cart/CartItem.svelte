@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { cartStore } from '$lib/stores/cart';
+  import { createEventDispatcher } from 'svelte';
+  import type { CartItem } from '../../types/cart';
   
-  export let item: any;
-  
+  let { item } = $props<{ item: any }>();
   const dispatch = createEventDispatcher();
   
- let quantity = $state(item.quantity);
+  let quantity = $state(item.quantity);
   
   function handleQuantityChange() {
     dispatch('update', quantity);
@@ -50,10 +50,10 @@
           
           <!-- Quantity Controls -->
           <div class="flex items-center">
-            <button
-              class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600"
-              on:click={decrementQuantity}
-            >
+             <button
+               class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600"
+               onclick={decrementQuantity}
+             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
               </svg>
@@ -61,19 +61,19 @@
             
             <span class="mx-2 text-gray-700 dark:text-gray-300">{quantity}</span>
             
-            <button
-              class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600"
-              on:click={incrementQuantity}
-            >
+             <button
+               class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600"
+               onclick={incrementQuantity}
+             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </button>
             
-            <button
-              class="ml-4 text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400"
-              on:click={handleRemove}
-            >
+             <button
+               class="ml-4 text-red-600 hover:text-red-800 dark:text-red-500 dark:hover:text-red-400"
+               onclick={handleRemove}
+             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>

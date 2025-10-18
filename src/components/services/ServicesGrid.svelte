@@ -1,14 +1,18 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import { goto } from '$app/navigation';
+  import type { ProductService } from '../../types/cart';
   
-  export let services: any[] = [];
-  export let loading: boolean = false;
-  export let pagination: any = {
+  let { services = [], loading = false, pagination = {
     page: 1,
     limit: 12,
     total: 0,
     totalPages: 0
-  };
+  } } = $props<{ 
+    services?: ProductService[]; 
+    loading?: boolean; 
+    pagination?: any;
+  }>();
   
   const dispatch = createEventDispatcher();
   
@@ -53,10 +57,10 @@
               {/if}
             </div>
             
-            <button
-              class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
-              on:click={() => handleServiceClick(service)}
-            >
+             <button
+               class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
+               onclick={() => handleServiceClick(service)}
+             >
               View Details
             </button>
           </div>
@@ -74,11 +78,11 @@
         </div>
         
         <div class="flex space-x-2">
-          <button
-            class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
-            disabled={pagination.page <= 1}
-            on:click={() => handlePageChange(pagination.page - 1)}
-          >
+         <button
+           class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+           disabled={pagination.page <= 1}
+           onclick={() => handlePageChange(pagination.page - 1)}
+         >
             Previous
           </button>
           
@@ -88,14 +92,14 @@
               pageNum === pagination.totalPages || 
               (pageNum >= pagination.page - 1 && pageNum <= pagination.page + 1)
             )}
-              <button
-                class={`px-4 py-2 text-sm font-medium rounded-md ${
-                  pageNum === pagination.page
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                }`}
-                on:click={() => handlePageChange(pageNum)}
-              >
+               <button
+                 class={`px-4 py-2 text-sm font-medium rounded-md ${
+                   pageNum === pagination.page
+                     ? 'bg-blue-600 text-white'
+                     : 'text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                 }`}
+                 onclick={() => handlePageChange(pageNum)}
+               >
                 {pageNum}
               </button>
             {/if}
@@ -107,11 +111,11 @@
             {/if}
           {/each}
           
-          <button
-            class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
-            disabled={pagination.page >= pagination.totalPages}
-            on:click={() => handlePageChange(pagination.page + 1)}
-          >
+           <button
+             class="px-4 py-2 text-sm font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+             disabled={pagination.page >= pagination.totalPages}
+             onclick={() => handlePageChange(pagination.page + 1)}
+           >
             Next
           </button>
         </div>

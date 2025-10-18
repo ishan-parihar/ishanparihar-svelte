@@ -4,9 +4,8 @@ import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
-    // Authenticate user
-    const session = await locals.getSession();
-    if (!session) {
+    // Authenticate user using Lucia pattern
+    if (!locals.auth?.user || !locals.auth?.session) {
       return json({ error: 'Unauthorized' }, { status: 401 });
     }
 

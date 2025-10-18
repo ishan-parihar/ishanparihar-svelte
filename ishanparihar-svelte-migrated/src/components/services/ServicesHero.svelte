@@ -1,5 +1,5 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
 </script>
 
 <div class="bg-gradient-to-r from-blue-500 to-purple-600 text-white py-16">

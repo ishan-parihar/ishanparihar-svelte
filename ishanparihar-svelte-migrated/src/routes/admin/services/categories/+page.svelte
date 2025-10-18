@@ -1,7 +1,7 @@
 <script>
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
-  import { Textarea } from '$lib/components/ui/Textarea.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+  import Textarea from '$lib/components/ui/Textarea.svelte';
   import { onMount } from 'svelte';
   
   let categories = $state([]);
@@ -232,49 +232,75 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="Enter category name"
-            bind:value={editingCategory ? editingValues.name : newCategory.name}
-            on:input={(e) => editingCategory ? null : handleNameChange(e.target.value)}
-            required
-          />
+           <Input
+             id="name"
+             type="text"
+             placeholder="Enter category name"
+             value={editingCategory ? editingValues.name : newCategory.name}
+             on:input={(e) => {
+               if (editingCategory) {
+                 editingValues.name = e.target.value;
+               } else {
+                 handleNameChange(e.target.value);
+               }
+             }}
+             required
+           />
         </div>
 
         <div>
           <label for="slug" class="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-          <Input
-            id="slug"
-            type="text"
-            placeholder="category-slug"
-            bind:value={editingCategory ? editingValues.slug : newCategory.slug}
-            required
-          />
+           <Input
+             id="slug"
+             type="text"
+             placeholder="category-slug"
+             value={editingCategory ? editingValues.slug : newCategory.slug}
+             on:input={(e) => {
+               if (editingCategory) {
+                 editingValues.slug = e.target.value;
+               } else {
+                 newCategory.slug = e.target.value;
+               }
+             }}
+             required
+           />
         </div>
 
-        <div class="md:col-span-2">
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <Textarea
-            id="description"
-            placeholder="Brief description of the category"
-            rows="3"
-            bind:value={editingCategory ? editingValues.description : newCategory.description}
-          />
-        </div>
+         <div class="md:col-span-2">
+           <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+           <Textarea
+             id="description"
+             placeholder="Brief description of the category"
+             rows="3"
+             value={editingCategory ? editingValues.description : newCategory.description}
+             on:input={(e) => {
+               if (editingCategory) {
+                 editingValues.description = e.target.value;
+               } else {
+                 newCategory.description = e.target.value;
+               }
+             }}
+           />
+         </div>
 
-        <div class="flex items-center">
-          <input
-            id="active"
-            type="checkbox"
-            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            checked={editingCategory ? editingValues.active : newCategory.active}
-            on:change={() => editingCategory ? editingValues.active = !editingValues.active : newCategory.active = !newCategory.active}
-          />
-          <label for="active" class="ml-2 block text-sm text-gray-900">
-            Active Category
-          </label>
-        </div>
+         <div class="flex items-center">
+           <input
+             id="active"
+             type="checkbox"
+             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+             checked={editingCategory ? editingValues.active : newCategory.active}
+             on:change={() => {
+               if (editingCategory) {
+                 editingValues.active = !editingValues.active;
+               } else {
+                 newCategory.active = !newCategory.active;
+               }
+             }}
+           />
+           <label for="active" class="ml-2 block text-sm text-gray-900">
+             Active Category
+           </label>
+         </div>
       </div>
 
       <div class="mt-6 flex justify-end space-x-3">

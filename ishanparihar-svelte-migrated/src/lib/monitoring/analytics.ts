@@ -2,7 +2,8 @@ import { PUBLIC_ENV } from '$lib/env';
 
 declare global {
   interface Window {
-    gtag: (command: string, ...args: any[]) => void;
+    gtag: any;
+    dataLayer: any[];
   }
 }
 

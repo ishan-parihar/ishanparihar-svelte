@@ -4,16 +4,16 @@
   import { cartStore, cartCalculations } from '$lib/stores/cart';
   import { apiClient } from '$lib/api/client';
   
-  // Define components that will be imported later
-  let CartItem;
-  let CartSummary;
-  let EmptyCart;
+   // Define components that will be imported later
+   let CartItem = $state();
+   let CartSummary = $state();
+   let EmptyCart = $state();
   
   // Dynamically import components
   onMount(async () => {
-    const { default: CartItemComp } = await import('$components/cart/CartItem.svelte');
-    const { default: CartSummaryComp } = await import('$components/cart/CartSummary.svelte');
-    const { default: EmptyCartComp } = await import('$components/cart/EmptyCart.svelte');
+     const { default: CartItemComp } = await import('$lib/components/cart/CartItem.svelte');
+     const { default: CartSummaryComp } = await import('$lib/components/cart/CartSummary.svelte');
+     const { default: EmptyCartComp } = await import('$lib/components/cart/EmptyCart.svelte');
     
     CartItem = CartItemComp;
     CartSummary = CartSummaryComp;
@@ -66,33 +66,31 @@
   
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {#if cartStore.state.items.length === 0}
-      {#if EmptyCart}
-        <svelte:component 
-          this={EmptyCart} 
-          on:continueShopping={handleContinueShopping} 
-        />
-      {/if}
+       {#if EmptyCart}
+         <EmptyCart 
+           on:continueShopping={handleContinueShopping} 
+         />
+       {/if}
     {:else}
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Cart Items -->
         <div class="lg:col-span-2 space-y-4">
           {#each cartStore.state.items as item (item.service.id)}
-            {#if CartItem}
-              <svelte:component 
-                this={CartItem}
-                item={item}
-                on:update={(e) => handleItemUpdate(item.service.id, e.detail)}
-                on:remove={() => handleItemRemove(item.service.id)}
-              />
-            {/if}
+             {#if CartItem}
+               <CartItem
+                 {item}
+                 on:update={(e) => handleItemUpdate(item.service.id, e.detail)}
+                 on:remove={() => handleItemRemove(item.service.id)}
+               />
+             {/if}
           {/each}
           
           <!-- Continue Shopping -->
           <div class="mt-6">
-            <button 
-              on:click={handleContinueShopping}
-              class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-            >
+             <button 
+               onclick={handleContinueShopping}
+               class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+             >
               ← Continue Shopping
             </button>
           </div>
@@ -100,18 +98,17 @@
         
         <!-- Cart Summary -->
         <div class="lg:col-span-1">
-          {#if CartSummary}
-            <svelte:component 
-              this={CartSummary}
-              subtotal={cartCalculations().subtotal}
-              tax={cartCalculations().tax}
-              total={cartCalculations().total}
-              itemCount={cartCalculations().itemCount}
-              isLoading={cartStore.state.isLoading}
-              error={cartStore.state.error}
-              on:checkout={handleCheckout}
-            />
-          {/if}
+           {#if CartSummary}
+             <CartSummary
+               subtotal={cartCalculations().subtotal}
+               tax={cartCalculations().tax}
+               total={cartCalculations().total}
+               itemCount={cartCalculations().itemCount}
+               isLoading={cartStore.state.isLoading}
+               error={cartStore.state.error}
+               on:checkout={handleCheckout}
+             />
+           {/if}
         </div>
       </div>
     {/if}

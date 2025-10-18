@@ -10,7 +10,7 @@
   let error = $state(null);
   
   onMount(async () => {
-    const urlParams = new URLSearchParams($page.url.search);
+     const urlParams = new URLSearchParams(page.url.search);
     orderId = urlParams.get('order_id') || '';
     
     if (orderId) {
@@ -99,16 +99,16 @@
     <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">What's next?</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <button
-          class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300"
-          on:click={handleContinueShopping}
-        >
+         <button
+           class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300"
+           onclick={handleContinueShopping}
+         >
           Continue Shopping
         </button>
-        <button
-          class="border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-medium py-3 px-4 rounded-md transition-colors duration-300"
-          on:click={handleViewOrder}
-        >
+         <button
+           class="border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 font-medium py-3 px-4 rounded-md transition-colors duration-300"
+           onclick={handleViewOrder}
+         >
           View Order Details
         </button>
       </div>

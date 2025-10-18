@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
   import { cartStore } from '$lib/stores/cart';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { browser } from '$app/environment';
 
   let { onCheckout }: { onCheckout: () => void } = $props();
@@ -47,15 +47,15 @@
   <h2 class="text-lg font-medium text-gray-900 mb-4">Order Summary</h2>
   
   <div class="space-y-2">
-    <div class="flex justify-between">
-      <span>Subtotal</span>
-      <span class="font-medium">₹{$cartStore.state.subtotal.toFixed(2)}</span>
-    </div>
+     <div class="flex justify-between">
+       <span>Subtotal</span>
+       <span class="font-medium">₹{cartStore.state.subtotal.toFixed(2)}</span>
+     </div>
     
-    <div class="flex justify-between">
-      <span>Tax (18%)</span>
-      <span class="font-medium">₹{($cartStore.state.subtotal * 0.18).toFixed(2)}</span>
-    </div>
+     <div class="flex justify-between">
+       <span>Tax (18%)</span>
+       <span class="font-medium">₹{(cartStore.state.subtotal * 0.18).toFixed(2)}</span>
+     </div>
     
     <div class="flex justify-between">
       <span>Shipping</span>
@@ -63,10 +63,10 @@
     </div>
     
     <div class="border-t border-gray-200 pt-2 mt-2">
-      <div class="flex justify-between text-lg font-medium">
-        <span>Total</span>
-        <span>₹{$cartStore.state.total.toFixed(2)}</span>
-      </div>
+       <div class="flex justify-between text-lg font-medium">
+         <span>Total</span>
+         <span>₹{cartStore.state.total.toFixed(2)}</span>
+       </div>
     </div>
   </div>
   
@@ -105,13 +105,13 @@
   <Button 
     class="w-full mt-6 py-3 text-base" 
     on:click={checkout}
-    disabled={$cartStore.state.items.length === 0 || $cartStore.state.isLoading}
+     disabled={cartStore.state.items.length === 0 || cartStore.state.isLoading}
   >
-    {#if $cartStore.state.isLoading}
-      Processing...
-    {:else}
-      Proceed to Checkout
-    {/if}
+     {#if cartStore.state.isLoading}
+       Processing...
+     {:else}
+       Proceed to Checkout
+     {/if}
   </Button>
   
   <p class="mt-4 text-center text-sm text-gray-500">

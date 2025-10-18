@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
+  import { createEventDispatcher } from 'svelte';
   
   const dispatch = createEventDispatcher();
   
@@ -19,10 +19,10 @@
   </p>
   
   <div class="mt-6">
-    <button
-      class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-300"
-      on:click={handleContinueShopping}
-    >
+     <button
+       class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-300"
+       onclick={handleContinueShopping}
+     >
       Browse Services
     </button>
   </div>

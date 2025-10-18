@@ -1,11 +1,11 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  let orders = $state([]);
+  let orders = $state<any[]>([]);
   let loading = $state(true);
-  let error = $state(null);
+  let error = $state<string | null>(null);
 
   onMount(async () => {
     try {
@@ -54,11 +54,11 @@
     }
   });
 
-  const viewOrder = (orderId) => {
+  const viewOrder = (orderId: string) => {
     goto(`/account/orders/${orderId}`);
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'completed': return 'bg-green-100 text-green-800';
       case 'processing': return 'bg-blue-100 text-blue-800';
@@ -101,11 +101,11 @@
         </svg>
         <h3 class="mt-2 text-lg font-medium text-gray-900">No orders yet</h3>
         <p class="mt-1 text-gray-500">You haven't placed any orders yet.</p>
-        <div class="mt-6">
-          <Button on:click={() => goto('/services')}>
-            Browse Services
-          </Button>
-        </div>
+         <div class="mt-6">
+           <Button onclick={() => goto('/services')}>
+             Browse Services
+           </Button>
+         </div>
       </div>
     {:else}
       <div class="bg-white shadow overflow-hidden sm:rounded-md">
@@ -115,11 +115,11 @@
               <div class="px-4 py-4 sm:px-6">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
-                    <p class="text-lg font-medium text-blue-600 truncate">
-                      <button on:click={() => viewOrder(order.id)} class="hover:underline">
-                        {order.order_number}
-                      </button>
-                    </p>
+                     <p class="text-lg font-medium text-blue-600 truncate">
+                       <button onclick={() => viewOrder(order.id)} class="hover:underline">
+                         {order.order_number}
+                       </button>
+                     </p>
                     <div class="ml-2">
                       <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClass(order.status)}`}>
                         {order.status}
@@ -141,11 +141,11 @@
                       {/each}
                     </p>
                   </div>
-                  <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                    <Button variant="outline" size="sm" on:click={() => viewOrder(order.id)}>
-                      View Details
-                    </Button>
-                  </div>
+                   <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
+                     <Button variant="outline" size="sm" onclick={() => viewOrder(order.id)}>
+                       View Details
+                     </Button>
+                   </div>
                 </div>
               </div>
             </li>

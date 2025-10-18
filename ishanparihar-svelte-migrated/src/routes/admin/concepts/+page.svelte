@@ -1,19 +1,47 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let concepts = $state([]);
+  interface Concept {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    type: string;
+    status: string;
+    difficulty: string;
+    createdAt: string;
+    updatedAt: string;
+    views: number;
+    likes: number;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    search: string;
+    category: string;
+    status: string;
+    type: string;
+  }
+  
+  let concepts = $state<Concept[]>([]);
   let loading = $state(true);
-  let error = $state(null);
-  let pagination = $state({
+  let error = $state<string | null>(null);
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     search: '',
     category: 'all',
     status: 'all',
@@ -108,18 +136,18 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadConcepts();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadConcepts();
   };
 
-  const editConcept = (conceptId) => {
+  const editConcept = (conceptId: string) => {
     goto(`/admin/concepts/edit/${conceptId}`);
   };
 
@@ -127,7 +155,7 @@
     goto('/admin/concepts/new');
   };
 
-  const toggleConceptStatus = async (conceptId) => {
+  const toggleConceptStatus = async (conceptId: string) => {
     loading = true;
     try {
       // Simulate API call to update concept status
@@ -146,7 +174,7 @@
     }
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'published': return 'bg-green-100 text-green-800';
       case 'draft': return 'bg-yellow-100 text-yellow-800';
@@ -155,7 +183,7 @@
     }
   };
 
-  const getTypeClass = (type) => {
+  const getTypeClass = (type: string) => {
     switch (type) {
       case 'concept': return 'bg-blue-100 text-blue-800';
       case 'assessment': return 'bg-purple-100 text-purple-800';
@@ -163,7 +191,7 @@
     }
   };
 
-  const getDifficultyClass = (difficulty) => {
+  const getDifficultyClass = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner': return 'bg-green-100 text-green-800';
       case 'intermediate': return 'bg-yellow-100 text-yellow-800';
@@ -182,9 +210,9 @@
       </p>
     </div>
     
-    <Button on:click={createNewConcept}>
-      Create New Item
-    </Button>
+     <Button onclick={createNewConcept}>
+       Create New Item
+     </Button>
   </div>
 
   {#if error}
@@ -259,11 +287,11 @@
       </div>
     </div>
     
-    <div class="flex justify-end mt-4">
-      <Button on:click={() => handleFilterChange(filters)}>
-        Apply Filters
-      </Button>
-    </div>
+     <div class="flex justify-end mt-4">
+       <Button onclick={() => handleFilterChange(filters)}>
+         Apply Filters
+       </Button>
+     </div>
   </div>
 
   {#if loading}
@@ -328,27 +356,27 @@
                   {concept.views}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    type="button"
-                    class="text-blue-600 hover:text-blue-900 mr-3"
-                    on:click={() => editConcept(concept.id)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    class="text-green-600 hover:text-green-900 mr-3"
-                    on:click={() => toggleConceptStatus(concept.id)}
-                  >
-                    {concept.status === 'published' ? 'Unpublish' : 'Publish'}
-                  </button>
-                  <button
-                    type="button"
-                    class="text-red-600 hover:text-red-900"
-                    on:click={() => console.log('Delete concept:', concept.id)}
-                  >
-                    Delete
-                  </button>
+                   <button
+                     type="button"
+                     class="text-blue-600 hover:text-blue-900 mr-3"
+                     onclick={() => editConcept(concept.id)}
+                   >
+                     Edit
+                   </button>
+                   <button
+                     type="button"
+                     class="text-green-600 hover:text-green-900 mr-3"
+                     onclick={() => toggleConceptStatus(concept.id)}
+                   >
+                     {concept.status === 'published' ? 'Unpublish' : 'Publish'}
+                   </button>
+                   <button
+                     type="button"
+                     class="text-red-600 hover:text-red-900"
+                     onclick={() => console.log('Delete concept:', concept.id)}
+                   >
+                     Delete
+                   </button>
                 </td>
               </tr>
             {/each}
@@ -365,20 +393,20 @@
         <span class="font-medium">{pagination.total}</span> results
       </div>
       <div class="flex space-x-2">
-        <button
-          disabled={pagination.page <= 1}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page - 1)}
-        >
-          Previous
-        </button>
-        <button
-          disabled={pagination.page >= pagination.totalPages}
-          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
-          on:click={() => handlePageChange(pagination.page + 1)}
-        >
-          Next
-        </button>
+         <button
+           disabled={pagination.page <= 1}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page - 1)}
+         >
+           Previous
+         </button>
+         <button
+           disabled={pagination.page >= pagination.totalPages}
+           class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+           onclick={() => handlePageChange(pagination.page + 1)}
+         >
+           Next
+         </button>
       </div>
     </div>
   {/if}

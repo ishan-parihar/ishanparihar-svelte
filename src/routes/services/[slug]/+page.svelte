@@ -20,7 +20,7 @@
   onMount(() => {
     // In a real implementation, we would fetch the service details based on the slug
     // For now, we'll use mock data
-    const slug = $page.params.slug;
+     const slug = page.params.slug;
     console.log('Service slug:', slug);
   });
   
@@ -71,16 +71,16 @@
                 bind:value={quantity}
               />
             </div>
-            <button
-              class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300"
-              on:click={handleAddToCart}
-            >
+             <button
+               class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-300"
+               onclick={handleAddToCart}
+             >
               Add to Cart
             </button>
-            <button
-              class="mt-2 w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-4 rounded-md transition-colors duration-300"
-              on:click={() => goto('/services')}
-            >
+             <button
+               class="mt-2 w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-4 rounded-md transition-colors duration-300"
+               onclick={() => goto('/services')}
+             >
               Back to Services
             </button>
           </div>

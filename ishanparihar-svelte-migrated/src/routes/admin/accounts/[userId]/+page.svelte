@@ -6,26 +6,78 @@
   import type { UserForTable } from '$lib/types/user';
   
   let userId = $state('');
-  
+
   $effect(() => {
     const unsubscribe = page.subscribe((p) => {
-      userId = p.params.userId;
+      userId = p.params.userId ?? '';
     });
     return unsubscribe;
   });
 
   let loading = $state(false);
   let error = $state<string | null>(null);
+  let user = $state<UserForTable | null>(null);
   let isEditing = $state(false);
-  let editData = $state<UserForTable>({ ...user });
+  let editData = $state<UserForTable>({ 
+    id: '',
+    email: '',
+    name: '',
+    role: 'user',
+    status: 'active',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    email_verified: false
+  });
 
-  onMount(() => {
+  onMount(async () => {
     // In real app, this would fetch user data from server
-    editData = { ...user };
+    if (userId) {
+      try {
+        // Simulate API call to fetch user data
+        loading = true;
+        await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network call
+        
+        // Mock user data - in a real app, this would come from an API
+        const mockUser: UserForTable = {
+          id: userId,
+          email: 'test@example.com',
+          name: 'John Doe',
+          fullName: 'John Doe',
+          role: 'user',
+          status: 'active',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          registrationDate: new Date().toISOString(),
+          last_login: new Date().toISOString(),
+          lastLogin: new Date().toISOString(),
+          picture: '',
+          email_verified: true,
+          phone: '+1234567890',
+          address: '123 Main St, City, State',
+          orders: 5,
+          totalSpent: 2500,
+          bio: 'Software developer',
+          marketing_emails: true,
+          notification_preferences: {
+            email: true,
+            sms: false,
+            push: true
+          }
+        };
+        
+        user = mockUser;
+        editData = { ...mockUser };
+      } catch (err) {
+        error = 'Failed to load user data';
+        console.error('Error loading user:', err);
+      } finally {
+        loading = false;
+      }
+    }
   });
 
   const toggleEdit = () => {
-    if (isEditing) {
+    if (isEditing && user) {
       // Cancel edit
       editData = { ...user };
     }
@@ -33,6 +85,8 @@
   };
 
   const saveUser = async () => {
+    if (!user) return;
+    
     loading = true;
     error = null;
     
@@ -52,6 +106,8 @@
   };
 
   const updateUserStatus = async (newStatus: string) => {
+    if (!user) return;
+    
     loading = true;
     error = null;
     
@@ -70,6 +126,8 @@
   };
 
   const changeUserRole = async (newRole: string) => {
+    if (!user) return;
+    
     loading = true;
     error = null;
     
@@ -133,10 +191,10 @@
   {/if}
 
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-       <h3 class="text-lg leading-6 font-medium text-gray-900">User Information</h3>
-       <p class="mt-1 max-w-2xl text-sm text-gray-500">Details and status for user {user.name || user.fullName}</p>
-    </div>
+     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">User Information</h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">{user ? `Details and status for user ${user.name || user.fullName}` : 'Loading user...'}</p>
+     </div>
     
     <div class="px-4 py-5 sm:p-6">
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -149,9 +207,9 @@
                bind:value={editData.name}
                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
              />
-           {:else}
-             <p class="mt-1 text-sm text-gray-900">{user.name || user.fullName}</p>
-           {/if}
+            {:else}
+              <p class="mt-1 text-sm text-gray-900">{user?.name || user?.fullName || ''}</p>
+            {/if}
         </div>
         
         <div class="sm:col-span-1">
@@ -163,9 +221,9 @@
               bind:value={editData.email}
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          {:else}
-            <p class="mt-1 text-sm text-gray-900">{user.email}</p>
-          {/if}
+           {:else}
+             <p class="mt-1 text-sm text-gray-900">{user?.email || ''}</p>
+           {/if}
         </div>
         
         <div class="sm:col-span-1">
@@ -177,9 +235,9 @@
               bind:value={editData.phone}
               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          {:else}
-            <p class="mt-1 text-sm text-gray-900">{user.phone}</p>
-          {/if}
+           {:else}
+             <p class="mt-1 text-sm text-gray-900">{user?.phone || ''}</p>
+           {/if}
         </div>
         
         <div class="sm:col-span-1">
@@ -193,9 +251,9 @@
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-          {:else}
-            <p class="mt-1 text-sm text-gray-900 capitalize">{user.role}</p>
-          {/if}
+           {:else}
+             <p class="mt-1 text-sm text-gray-900 capitalize">{user?.role || ''}</p>
+           {/if}
         </div>
         
         <div class="sm:col-span-2">
@@ -206,9 +264,9 @@
                bind:value={editData.address}
                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
              />
-           {:else}
-             <p class="mt-1 text-sm text-gray-900">{user.address}</p>
-           {/if}
+            {:else}
+              <p class="mt-1 text-sm text-gray-900">{user?.address || ''}</p>
+            {/if}
         </div>
       </div>
     </div>
@@ -219,72 +277,72 @@
         <div>
           <h4 class="text-sm font-medium text-gray-900 mb-2">Account Status</h4>
           <div class="flex items-center space-x-2">
-            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              user.status === 'active' ? 'bg-green-100 text-green-800' : 
-              user.status === 'suspended' ? 'bg-red-100 text-red-800' : 
-              'bg-yellow-100 text-yellow-800'
-            }`}>
-              {user.status}
-            </span>
+             <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+               user?.status === 'active' ? 'bg-green-100 text-green-800' : 
+               user?.status === 'suspended' ? 'bg-red-100 text-red-800' : 
+               'bg-yellow-100 text-yellow-800'
+             }`}>
+               {user?.status || ''}
+             </span>
             
-            {#if !isEditing}
-              <div class="flex space-x-2">
-                {#if user.status === 'active'}
-                   <Button 
-                     variant="outline" 
-                     size="sm" 
-                     onclick={() => updateUserStatus('suspended')}
-                     disabled={loading}
-                   >
-                     Suspend
-                   </Button>
-                {:else}
-                   <Button 
-                     variant="outline" 
-                     size="sm" 
-                     onclick={() => updateUserStatus('active')}
-                     disabled={loading}
-                   >
-                     Activate
-                   </Button>
-                {/if}
-              </div>
-            {/if}
+             {#if !isEditing}
+               <div class="flex space-x-2">
+                 {#if user?.status === 'active'}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onclick={() => updateUserStatus('suspended')}
+                      disabled={loading}
+                    >
+                      Suspend
+                    </Button>
+                 {:else}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onclick={() => updateUserStatus('active')}
+                      disabled={loading}
+                    >
+                      Activate
+                    </Button>
+                 {/if}
+               </div>
+             {/if}
           </div>
         </div>
         
         <div>
           <h4 class="text-sm font-medium text-gray-900 mb-2">User Role</h4>
           <div class="flex items-center space-x-2">
-            <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
-            }`}>
-              {user.role}
-            </span>
+             <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+               user?.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+             }`}>
+               {user?.role || ''}
+             </span>
             
-            {#if !isEditing}
-              <div class="flex space-x-2">
-                {#if user.role === 'admin'}
-                   <Button 
-                     variant="outline" 
-                     size="sm" 
-                     onclick={() => changeUserRole('user')}
-                     disabled={loading}
-                   >
-                     Demote to User
-                   </Button>
-                {:else}
-                   <Button 
-                     variant="outline" 
-                     size="sm" 
-                     onclick={() => changeUserRole('admin')}
-                     disabled={loading}
-                   >
-                     Promote to Admin
-                   </Button>
-                {/if}
-              </div>
-            {/if}
+             {#if !isEditing}
+               <div class="flex space-x-2">
+                 {#if user?.role === 'admin'}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onclick={() => changeUserRole('user')}
+                      disabled={loading}
+                    >
+                      Demote to User
+                    </Button>
+                 {:else}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onclick={() => changeUserRole('admin')}
+                      disabled={loading}
+                    >
+                      Promote to Admin
+                    </Button>
+                 {/if}
+               </div>
+             {/if}
           </div>
         </div>
       </div>
@@ -294,18 +352,18 @@
     <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
       <h4 class="text-lg font-medium text-gray-900 mb-4">Account Statistics</h4>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div class="bg-gray-50 p-4 rounded-md">
-          <p class="text-sm font-medium text-gray-500">Total Orders</p>
-          <p class="text-2xl font-bold text-gray-900">{user.orders}</p>
-        </div>
-        <div class="bg-gray-50 p-4 rounded-md">
-          <p class="text-sm font-medium text-gray-500">Total Spent</p>
-          <p class="text-2xl font-bold text-gray-900">₹{user.totalSpent?.toLocaleString()}</p>
-        </div>
          <div class="bg-gray-50 p-4 rounded-md">
-           <p class="text-sm font-medium text-gray-500">Registration Date</p>
-           <p class="text-2xl font-bold text-gray-900">{new Date(user.registrationDate || user.created_at || '').toLocaleDateString()}</p>
+           <p class="text-sm font-medium text-gray-500">Total Orders</p>
+           <p class="text-2xl font-bold text-gray-900">{user?.orders || 0}</p>
          </div>
+         <div class="bg-gray-50 p-4 rounded-md">
+           <p class="text-sm font-medium text-gray-500">Total Spent</p>
+           <p class="text-2xl font-bold text-gray-900">₹{user?.totalSpent?.toLocaleString() || '0'}</p>
+         </div>
+          <div class="bg-gray-50 p-4 rounded-md">
+            <p class="text-sm font-medium text-gray-500">Registration Date</p>
+            <p class="text-2xl font-bold text-gray-900">{user ? new Date(user.registrationDate || user.created_at || '').toLocaleDateString() : ''}</p>
+          </div>
       </div>
     </div>
     
@@ -328,7 +386,7 @@
                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                   <div>
                    <p class="text-sm text-gray-500">Last login</p>
-                   <p class="text-sm text-gray-900">{new Date(user.last_login || user.lastLogin || '').toLocaleString()}</p>
+                   <p class="text-sm text-gray-900">{user ? new Date(user.last_login || user.lastLogin || '').toLocaleString() : ''}</p>
                   </div>
                 </div>
               </div>
@@ -346,8 +404,8 @@
                 </div>
                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                   <div>
-                     <p class="text-sm text-gray-500">Account created</p>
-                     <p class="text-sm text-gray-900">{new Date(user.registrationDate || user.created_at || '').toLocaleDateString()}</p>
+                      <p class="text-sm text-gray-500">Account created</p>
+                      <p class="text-sm text-gray-900">{user ? new Date(user.registrationDate || user.created_at || '').toLocaleDateString() : ''}</p>
                   </div>
                 </div>
               </div>

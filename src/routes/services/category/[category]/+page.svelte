@@ -5,15 +5,15 @@
   import { apiClient } from '$lib/api/client';
   
   // Define components that will be imported later
-  let ServicesGrid;
-  let ServicesFilters;
-  let ServicesHero;
+  let ServicesGrid = $state();
+  let ServicesFilters = $state();
+  let ServicesHero = $state();
   
   // Dynamically import components
   onMount(async () => {
-    const { default: ServicesGridComp } = await import('$components/services/ServicesGrid.svelte');
-    const { default: ServicesFiltersComp } = await import('$components/services/ServicesFilters.svelte');
-    const { default: ServicesHeroComp } = await import('$components/services/ServicesHero.svelte');
+     const { default: ServicesGridComp } = await import('$lib/components/services/ServicesGrid.svelte');
+     const { default: ServicesFiltersComp } = await import('$lib/components/services/ServicesFilters.svelte');
+     const { default: ServicesHeroComp } = await import('$lib/components/services/ServicesHero.svelte');
     
     ServicesGrid = ServicesGridComp;
     ServicesFilters = ServicesFiltersComp;
@@ -30,14 +30,14 @@
     totalPages: 0
   });
   
-  let filters = $state({
-    category: $page.params.category || '',
-    serviceType: '',
-    featured: false,
-    search: '',
-    minPrice: null,
-    maxPrice: null
-  });
+   let filters = $state({
+     category: page.params.category || '',
+     serviceType: '',
+     featured: false,
+     search: '',
+     minPrice: null,
+     maxPrice: null
+   });
   
   // Load services and categories
  onMount(async () => {
@@ -96,33 +96,31 @@
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-  <!-- Hero Section -->
-  {#if ServicesHero}
-    <svelte:component this={ServicesHero} />
-  {/if}
+   <!-- Hero Section -->
+   {#if ServicesHero}
+     <ServicesHero />
+   {/if}
   
   <!-- Main Content -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Filters -->
-    {#if ServicesFilters}
-      <svelte:component 
-        this={ServicesFilters}
-        {filters}
-        {categories}
-        on:change={(e) => handleFilterChange(e.detail)}
-      />
-    {/if}
+     {#if ServicesFilters}
+       <ServicesFilters
+         {filters}
+         {categories}
+         on:change={(e) => handleFilterChange(e.detail)}
+       />
+     {/if}
     
     <!-- Services Grid -->
-    {#if ServicesGrid}
-      <svelte:component 
-        this={ServicesGrid}
-        {services}
-        {loading}
-        {pagination}
-        on:pageChange={(e) => handlePageChange(e.detail)}
-      />
-    {/if}
+     {#if ServicesGrid}
+       <ServicesGrid
+         {services}
+         {loading}
+         {pagination}
+         on:pageChange={(e) => handlePageChange(e.detail)}
+       />
+     {/if}
     
     <!-- No Results -->
     {#if !loading && services.length === 0}

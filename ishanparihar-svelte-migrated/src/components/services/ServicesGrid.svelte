@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
   import type { Service } from '$lib/types/cart';
-  import { Button } from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/Button.svelte';
   import { cartStore } from '$lib/stores/cart';
 
   let { services }: { services: Service[] } = $props();
