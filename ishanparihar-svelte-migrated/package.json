@@ -18,6 +18,7 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.56.1",
+		"@sentry/types": "^10.20.0",
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/adapter-vercel": "^6.0.0",
@@ -33,6 +34,7 @@
 		"autoprefixer": "^10.4.21",
 		"jsdom": "^27.0.0",
 		"mdsvex": "^0.12.6",
+		"msw": "^2.11.5",
 		"postcss": "^8.5.6",
 		"svelte": "^5.39.5",
 		"svelte-check": "^4.3.2",
@@ -44,6 +46,7 @@
 	"dependencies": {
 		"@lucia-auth/adapter-postgresql": "^3.1.2",
 		"@node-rs/argon2": "^2.0.2",
+		"@sentry/sveltekit": "^10.20.0",
 		"@supabase/ssr": "^0.7.0",
 		"@supabase/supabase-js": "^2.75.0",
 		"@tanstack/svelte-table": "^8.21.3",

@@ -5,9 +5,8 @@ import Button from './Button.svelte';
 describe('Button Component', () => {
 	it('renders with default variant', () => {
 		const { getByRole } = render(Button, {
-			props: {},
-			slots: {
-				default: 'Test Button'
+			props: {
+				children: 'Test Button'
 			}
 		});
 
@@ -22,9 +21,9 @@ describe('Button Component', () => {
 
 		variants.forEach(variant => {
 			const { getByRole } = render(Button, {
-				props: { variant },
-				slots: {
-					default: `${variant} Button`
+				props: { 
+					variant,
+					children: `${variant} Button`
 				}
 			});
 
@@ -45,10 +44,8 @@ describe('Button Component', () => {
 		const handleClick = vi.fn();
 		const { getByRole } = render(Button, {
 			props: {
-				onclick: handleClick
-			},
-			slots: {
-				default: 'Click Me'
+				onclick: handleClick,
+				children: 'Click Me'
 			}
 		});
 
@@ -61,10 +58,8 @@ describe('Button Component', () => {
 	it('can be disabled', () => {
 		const { getByRole } = render(Button, {
 			props: {
-				disabled: true
-			},
-			slots: {
-				default: 'Disabled Button'
+				disabled: true,
+				children: 'Disabled Button'
 			}
 		});
 
@@ -78,9 +73,9 @@ describe('Button Component', () => {
 
 		sizes.forEach(size => {
 			const { getByRole } = render(Button, {
-				props: { size },
-				slots: {
-					default: `${size} Button`
+				props: { 
+					size,
+					children: `${size} Button`
 				}
 			});
 
