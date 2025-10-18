@@ -1,20 +1,53 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
-  import { Input } from '$lib/components/ui/Input.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
   import { onMount } from 'svelte';
   
-  let images = $state([]);
+  interface Image {
+    id: string;
+    name: string;
+    url: string;
+    thumbnail?: string;
+    size: string;
+    type: string;
+    category: string;
+    tags: string[];
+    uploadedAt: string;
+    uploadedBy: string;
+    dimensions: string;
+    altText: string;
+  }
+
+  interface Filters {
+    search: string;
+    category: string;
+    type: string;
+  }
+  
+  let images = $state<Image[]>([]);
   let loading = $state(true);
-  let error = $state(null);
+  let error = $state<string | null>(null);
   let isUploading = $state(false);
   let uploadProgress = $state(0);
-  let selectedImage = $state(null);
-  let viewMode = $state('grid'); // 'grid' or 'list'
-  let filters = $state({
+  let selectedImage = $state<Image | null>(null);
+  let viewMode = $state<'grid' | 'list'>('grid'); // 'grid' or 'list'
+  let filters = $state<Filters>({
     search: '',
     category: 'all',
     type: 'all'
   });
+
+  let filteredImages = $derived<Image[]>(images.filter(img => {
+    const matchesSearch = !filters.search || 
+      img.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+      img.altText.toLowerCase().includes(filters.search.toLowerCase()) ||
+      img.tags.some((tag: string) => tag.toLowerCase().includes(filters.search.toLowerCase()));
+    
+    const matchesCategory = filters.category === 'all' || img.category === filters.category;
+    const matchesType = filters.type === 'all' || img.type.includes(filters.type);
+    
+    return matchesSearch && matchesCategory && matchesType;
+  }));
 
   onMount(async () => {
     await loadImages();
@@ -106,8 +139,8 @@
     }
   }
 
-  const handleFileUpload = async (event) => {
-    const files = event.target.files;
+  const handleFileUpload = async (event: Event) => {
+    const files = (event.target as HTMLInputElement).files;
     if (files && files.length > 0) {
       const file = files[0];
       isUploading = true;
@@ -144,7 +177,7 @@
     }
   };
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
   };
 
@@ -173,17 +206,7 @@
     viewMode = mode;
   };
 
-  $: filteredImages = images.filter(img => {
-    const matchesSearch = !filters.search || 
-      img.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      img.altText.toLowerCase().includes(filters.search.toLowerCase()) ||
-      img.tags.some(tag => tag.toLowerCase().includes(filters.search.toLowerCase()));
-    
-    const matchesCategory = filters.category === 'all' || img.category === filters.category;
-    const matchesType = filters.type === 'all' || img.type.includes(filters.type);
-    
-    return matchesSearch && matchesCategory && matchesType;
-  });
+
 </script>
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

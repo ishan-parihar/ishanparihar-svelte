@@ -1,19 +1,45 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
   
-  let projects = $state([]);
+  interface Project {
+    id: string;
+    title: string;
+    excerpt: string;
+    category: string;
+    status: 'published' | 'draft' | 'archived';
+    featured: boolean;
+    createdAt: string;
+    updatedAt: string;
+    views: number;
+    likes: number;
+  }
+  
+  interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  }
+  
+  interface Filters {
+    search: string;
+    status: string;
+    category: string;
+  }
+  
+  let projects = $state<Project[]>([]);
   let loading = $state(true);
-  let error = $state(null);
-  let pagination = $state({
+  let error = $state<string | null>(null);
+  let pagination = $state<Pagination>({
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0
   });
   
-  let filters = $state({
+  let filters = $state<Filters>({
     search: '',
     status: 'all',
     category: 'all'
@@ -78,18 +104,18 @@
     }
   }
 
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<Filters>) => {
     filters = { ...filters, ...newFilters };
     pagination.page = 1; // Reset to first page
     loadProjects();
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     pagination.page = newPage;
     loadProjects();
   };
 
-  const editProject = (projectId) => {
+  const editProject = (projectId: string) => {
     goto(`/admin/projects/edit/${projectId}`);
   };
 
@@ -97,16 +123,19 @@
     goto('/admin/projects/new');
   };
 
-  const toggleProjectStatus = async (projectId) => {
+  const toggleProjectStatus = async (projectId: string) => {
     loading = true;
     try {
       // Simulate API call to update project status
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // In real app, this would make an API call
-      const project = projects.find(p => p.id === projectId);
-      if (project) {
-        project.status = project.status === 'published' ? 'draft' : 'published';
+      const projectIndex = projects.findIndex(p => p.id === projectId);
+      if (projectIndex !== -1) {
+        projects[projectIndex] = {
+          ...projects[projectIndex],
+          status: projects[projectIndex].status === 'published' ? 'draft' : 'published'
+        };
       }
     } catch (err) {
       error = 'Failed to update project status';
@@ -116,7 +145,7 @@
     }
   };
 
-  const getStatusClass = (status) => {
+  const getStatusClass = (status: string) => {
     switch (status) {
       case 'published': return 'bg-green-100 text-green-800';
       case 'draft': return 'bg-yellow-100 text-yellow-800';

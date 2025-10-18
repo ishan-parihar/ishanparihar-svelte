@@ -1,15 +1,35 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
   
-  let slug = $bindable('');
+  interface BlogPost {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    content: string;
+    category: string;
+    tags: string;
+    isPublished: boolean;
+    metaTitle: string;
+    metaDescription: string;
+    featuredImage: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+  
+  let slug = $state('');
+  
   $effect(() => {
-    slug = page.params.slug;
+    const unsubscribe = page.subscribe((p) => {
+      slug = p.params.slug;
+    });
+    return unsubscribe;
   });
 
-  let blogData = $state({
+  let blogData = $state<BlogPost>({
     id: '1',
     title: 'Getting Started with Svelte 5',
     slug: 'getting-started-with-svelte-5',
@@ -26,7 +46,7 @@
   });
 
   let loading = $state(false);
-  let error = $state(null);
+  let error = $state<string | null>(null);
   let isSaving = $state(false);
   let isPreview = $state(false);
 
@@ -35,20 +55,26 @@
     console.log('Loading blog post with slug:', slug);
   });
 
-  const handleFieldChange = (field, value) => {
-    blogData[field] = value;
+  const handleFieldChange = (field: keyof BlogPost, value: string | boolean) => {
+    blogData = {
+      ...blogData,
+      [field]: value
+    };
     
     // Auto-generate slug from title if editing title and slug is empty
     if (field === 'title' && !blogData.slug) {
-      blogData.slug = blogData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
+      blogData = {
+        ...blogData,
+        slug: blogData.title
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+      };
     }
   };
 
-  const handleSave = async (e) => {
+  const handleSave = async (e: Event) => {
     e.preventDefault();
     isSaving = true;
     error = null;
@@ -102,38 +128,38 @@
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex items-center justify-between mb-6">
-    <button 
-      on:click={() => goto('/admin/blog')}
-      class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
-    >
-      &larr; Back to Blog Management
-    </button>
+     <button 
+       onclick={() => goto('/admin/blog')}
+       class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
+     >
+       &larr; Back to Blog Management
+     </button>
     
     <div class="flex space-x-3">
-      <Button 
-        variant="outline" 
-        on:click={handlePreview}
-        disabled={isSaving}
-      >
-        {isPreview ? 'Edit' : 'Preview'}
-      </Button>
-      <Button 
-        variant="outline" 
-        on:click={handleCancel}
-        disabled={isSaving}
-      >
-        Cancel
-      </Button>
-      <Button 
-        on:click={handleSave}
-        disabled={isSaving}
-      >
-        {#if isSaving}
-          Saving...
-        {:else}
-          Save Changes
-        {/if}
-      </Button>
+       <Button 
+         variant="outline" 
+         onclick={handlePreview}
+         disabled={isSaving}
+       >
+         {isPreview ? 'Edit' : 'Preview'}
+       </Button>
+       <Button 
+         variant="outline" 
+         onclick={handleCancel}
+         disabled={isSaving}
+       >
+         Cancel
+       </Button>
+       <Button 
+         onclick={handleSave}
+         disabled={isSaving}
+       >
+         {#if isSaving}
+           Saving...
+         {:else}
+           Save Changes
+         {/if}
+       </Button>
     </div>
   </div>
 
@@ -161,7 +187,7 @@
         </div>
       {/if}
 
-      <form on:submit={handleSave}>
+       <form onsubmit={handleSave}>
         <div class="grid grid-cols-1 gap-6">
           <!-- Title -->
           <div>
@@ -366,27 +392,27 @@
 
         <!-- Action Buttons -->
         <div class="mt-8 flex justify-between">
-          <Button 
-            variant="destructive" 
-            on:click={handleDelete}
-            disabled={isSaving}
-          >
-            Delete Post
-          </Button>
-          
-          <div class="flex space-x-3">
-            <Button 
-              type="button" 
-              variant="outline" 
-              on:click={handleCancel}
-              disabled={isSaving}
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={isSaving}
-            >
+           <Button 
+             variant="destructive" 
+             onclick={handleDelete}
+             disabled={isSaving}
+           >
+             Delete Post
+           </Button>
+           
+           <div class="flex space-x-3">
+             <Button 
+               type="button" 
+               variant="outline" 
+               onclick={handleCancel}
+               disabled={isSaving}
+             >
+               Cancel
+             </Button>
+             <Button 
+               type="submit" 
+               disabled={isSaving}
+             >
               {#if isSaving}
                 Saving...
               {:else}

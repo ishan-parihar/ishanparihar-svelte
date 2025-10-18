@@ -1,16 +1,16 @@
-import { env as publicEnv } from '$env/dynamic/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 
 // Public environment variables
 export const PUBLIC_ENV = {
-  SUPABASE_URL: publicEnv('PUBLIC_SUPABASE_URL', ''),
-  SUPABASE_ANON_KEY: publicEnv('PUBLIC_SUPABASE_ANON_KEY', ''),
+  SUPABASE_URL: PUBLIC_SUPABASE_URL || '',
+  SUPABASE_ANON_KEY: PUBLIC_SUPABASE_ANON_KEY || '',
   
-  NEXTAUTH_SECRET: publicEnv('NEXTAUTH_SECRET', ''),
-  SENTRY_DSN: publicEnv('SENTRY_DSN', ''),
-  ANALYTICS_ID: publicEnv('ANALYTICS_ID', ''),
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || '',
+  SENTRY_DSN: process.env.SENTRY_DSN || '',
+  ANALYTICS_ID: process.env.ANALYTICS_ID || '',
   
-  RAZORPAY_KEY_ID: publicEnv('RAZORPAY_KEY_ID', ''),
-  RAZORPAY_KEY_SECRET: publicEnv('RAZORPAY_KEY_SECRET', ''),
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || '',
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || '',
 };
 
 // Private environment variables
@@ -26,6 +26,7 @@ export const PRIVATE_ENV = {
   
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || '',
   RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || '',
+  RAZORPAY_WEBHOOK_SECRET: process.env.RAZORPAY_WEBHOOK_SECRET || '',
 };
 
 // Validation

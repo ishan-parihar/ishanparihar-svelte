@@ -1,32 +1,23 @@
-<script>
-  import { Button } from '$lib/components/ui/Button.svelte';
+<script lang="ts">
+  import Button from '$lib/components/ui/Button.svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import type { UserForTable } from '$lib/types/user';
   
-  let userId = $bindable('');
+  let userId = $state('');
+  
   $effect(() => {
-    userId = page.params.userId;
-  });
-
-  let user = $state({
-    id: '1',
-    fullName: 'John Doe',
-    email: 'john@example.com',
-    role: 'admin',
-    status: 'active',
-    registrationDate: '2023-01-15T10:30:00Z',
-    lastLogin: '2023-05-20T14:45:00Z',
-    phone: '+1234567890',
-    address: '123 Main St, City, State 12345',
-    orders: 12,
-    totalSpent: 15000
+    const unsubscribe = page.subscribe((p) => {
+      userId = p.params.userId;
+    });
+    return unsubscribe;
   });
 
   let loading = $state(false);
-  let error = $state(null);
+  let error = $state<string | null>(null);
   let isEditing = $state(false);
-  let editData = $state({ ...user });
+  let editData = $state<UserForTable>({ ...user });
 
   onMount(() => {
     // In real app, this would fetch user data from server
@@ -60,7 +51,7 @@
     }
   };
 
-  const updateUserStatus = async (newStatus) => {
+  const updateUserStatus = async (newStatus: string) => {
     loading = true;
     error = null;
     
@@ -78,7 +69,7 @@
     }
   };
 
-  const changeUserRole = async (newRole) => {
+  const changeUserRole = async (newRole: string) => {
     loading = true;
     error = null;
     
@@ -99,29 +90,29 @@
 
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   <div class="flex items-center justify-between mb-6">
-    <button 
-      on:click={() => goto('/admin/accounts')}
-      class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
-    >
-      &larr; Back to Accounts
-    </button>
+     <button 
+       onclick={() => goto('/admin/accounts')}
+       class="text-blue-600 hover:text-blue-500 font-medium flex items-center"
+     >
+       &larr; Back to Accounts
+     </button>
     
     <div class="flex space-x-3">
       {#if isEditing}
-        <Button variant="outline" on:click={toggleEdit} disabled={loading}>
-          Cancel
-        </Button>
-        <Button on:click={saveUser} disabled={loading}>
-          {#if loading}
-            Saving...
-          {:else}
-            Save Changes
-          {/if}
-        </Button>
+         <Button variant="outline" onclick={toggleEdit} disabled={loading}>
+           Cancel
+         </Button>
+         <Button onclick={saveUser} disabled={loading}>
+           {#if loading}
+             Saving...
+           {:else}
+             Save Changes
+           {/if}
+         </Button>
       {:else}
-        <Button on:click={toggleEdit}>
-          Edit Profile
-        </Button>
+         <Button onclick={toggleEdit}>
+           Edit Profile
+         </Button>
       {/if}
     </div>
   </div>
@@ -143,24 +134,24 @@
 
   <div class="bg-white shadow overflow-hidden sm:rounded-lg">
     <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-      <h3 class="text-lg leading-6 font-medium text-gray-900">User Information</h3>
-      <p class="mt-1 max-w-2xl text-sm text-gray-500">Details and status for user {user.fullName}</p>
+       <h3 class="text-lg leading-6 font-medium text-gray-900">User Information</h3>
+       <p class="mt-1 max-w-2xl text-sm text-gray-500">Details and status for user {user.name || user.fullName}</p>
     </div>
     
     <div class="px-4 py-5 sm:p-6">
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div class="sm:col-span-1">
           <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          {#if isEditing}
-            <input
-              id="fullName"
-              type="text"
-              bind:value={editData.fullName}
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          {:else}
-            <p class="mt-1 text-sm text-gray-900">{user.fullName}</p>
-          {/if}
+           {#if isEditing}
+             <input
+               id="fullName"
+               type="text"
+               bind:value={editData.name}
+               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+             />
+           {:else}
+             <p class="mt-1 text-sm text-gray-900">{user.name || user.fullName}</p>
+           {/if}
         </div>
         
         <div class="sm:col-span-1">
@@ -209,16 +200,15 @@
         
         <div class="sm:col-span-2">
           <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-          {#if isEditing}
-            <textarea
-              id="address"
-              bind:value={editData.address}
-              rows="3"
-              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            ></textarea>
-          {:else}
-            <p class="mt-1 text-sm text-gray-900">{user.address}</p>
-          {/if}
+           {#if isEditing}
+             <input
+               id="address"
+               bind:value={editData.address}
+               class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+             />
+           {:else}
+             <p class="mt-1 text-sm text-gray-900">{user.address}</p>
+           {/if}
         </div>
       </div>
     </div>
@@ -240,23 +230,23 @@
             {#if !isEditing}
               <div class="flex space-x-2">
                 {#if user.status === 'active'}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    on:click={() => updateUserStatus('suspended')}
-                    disabled={loading}
-                  >
-                    Suspend
-                  </Button>
+                   <Button 
+                     variant="outline" 
+                     size="sm" 
+                     onclick={() => updateUserStatus('suspended')}
+                     disabled={loading}
+                   >
+                     Suspend
+                   </Button>
                 {:else}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    on:click={() => updateUserStatus('active')}
-                    disabled={loading}
-                  >
-                    Activate
-                  </Button>
+                   <Button 
+                     variant="outline" 
+                     size="sm" 
+                     onclick={() => updateUserStatus('active')}
+                     disabled={loading}
+                   >
+                     Activate
+                   </Button>
                 {/if}
               </div>
             {/if}
@@ -275,23 +265,23 @@
             {#if !isEditing}
               <div class="flex space-x-2">
                 {#if user.role === 'admin'}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    on:click={() => changeUserRole('user')}
-                    disabled={loading}
-                  >
-                    Demote to User
-                  </Button>
+                   <Button 
+                     variant="outline" 
+                     size="sm" 
+                     onclick={() => changeUserRole('user')}
+                     disabled={loading}
+                   >
+                     Demote to User
+                   </Button>
                 {:else}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    on:click={() => changeUserRole('admin')}
-                    disabled={loading}
-                  >
-                    Promote to Admin
-                  </Button>
+                   <Button 
+                     variant="outline" 
+                     size="sm" 
+                     onclick={() => changeUserRole('admin')}
+                     disabled={loading}
+                   >
+                     Promote to Admin
+                   </Button>
                 {/if}
               </div>
             {/if}
@@ -312,10 +302,10 @@
           <p class="text-sm font-medium text-gray-500">Total Spent</p>
           <p class="text-2xl font-bold text-gray-900">₹{user.totalSpent?.toLocaleString()}</p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-md">
-          <p class="text-sm font-medium text-gray-500">Registration Date</p>
-          <p class="text-2xl font-bold text-gray-900">{new Date(user.registrationDate).toLocaleDateString()}</p>
-        </div>
+         <div class="bg-gray-50 p-4 rounded-md">
+           <p class="text-sm font-medium text-gray-500">Registration Date</p>
+           <p class="text-2xl font-bold text-gray-900">{new Date(user.registrationDate || user.created_at || '').toLocaleDateString()}</p>
+         </div>
       </div>
     </div>
     
@@ -337,8 +327,8 @@
                 </div>
                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                   <div>
-                    <p class="text-sm text-gray-500">Last login</p>
-                    <p class="text-sm text-gray-900">{new Date(user.lastLogin).toLocaleString()}</p>
+                   <p class="text-sm text-gray-500">Last login</p>
+                   <p class="text-sm text-gray-900">{new Date(user.last_login || user.lastLogin || '').toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -356,8 +346,8 @@
                 </div>
                 <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                   <div>
-                    <p class="text-sm text-gray-500">Account created</p>
-                    <p class="text-sm text-gray-900">{new Date(user.registrationDate).toLocaleDateString()}</p>
+                     <p class="text-sm text-gray-500">Account created</p>
+                     <p class="text-sm text-gray-900">{new Date(user.registrationDate || user.created_at || '').toLocaleDateString()}</p>
                   </div>
                 </div>
               </div>

@@ -1,21 +1,23 @@
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
-import { env } from '$env/dynamic/public';
+import { PUBLIC_ENV } from '$lib/env';
 
-/** @type {import('./$types').RequestHandler} */
-export const GET = async ({ params, locals }) => {
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async ({ params, locals }) => {
   try {
-    const session = await locals.getSession();
-    if (!session) {
+    // Use Lucia auth pattern
+    if (!locals.auth?.user || !locals.auth?.session) {
       return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const supabase = createServerClient(
-      env.PUBLIC_SUPABASE_URL,
-      env.PUBLIC_SUPABASE_ANON_KEY,
+      PUBLIC_ENV.SUPABASE_URL,
+      PUBLIC_ENV.SUPABASE_ANON_KEY,
       {
         cookies: {
-          getAll: () => locals.cookies.getAll(),
+          getAll: () => [],
+          setAll: () => {},
         },
       }
     );
@@ -28,7 +30,7 @@ export const GET = async ({ params, locals }) => {
         order_items (*)
       `)
       .eq('id', params.orderId)
-      .eq('user_id', session.user.id)
+      .eq('user_id', locals.auth.user.id)
       .single();
 
     if (error) {
@@ -47,7 +49,7 @@ export const GET = async ({ params, locals }) => {
       updated_at: order.updated_at,
       shipping_address: order.shipping_address,
       billing_address: order.billing_address,
-      items: order.order_items?.map(item => ({
+      items: order.order_items?.map((item: any) => ({
         id: item.id,
         service_id: item.service_id,
         service_title: item.service_title,
@@ -64,20 +66,20 @@ export const GET = async ({ params, locals }) => {
   }
 };
 
-/** @type {import('./$types').RequestHandler} */
-export const PATCH = async ({ params, request, locals }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
   try {
-    const session = await locals.getSession();
-    if (!session) {
+    // Use Lucia auth pattern
+    if (!locals.auth?.user || !locals.auth?.session) {
       return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const supabase = createServerClient(
-      env.PUBLIC_SUPABASE_URL,
-      env.PUBLIC_SUPABASE_ANON_KEY,
+      PUBLIC_ENV.SUPABASE_URL,
+      PUBLIC_ENV.SUPABASE_ANON_KEY,
       {
         cookies: {
-          getAll: () => locals.cookies.getAll(),
+          getAll: () => [],
+          setAll: () => {},
         },
       }
     );
@@ -91,7 +93,7 @@ export const PATCH = async ({ params, request, locals }) => {
       .eq('id', params.orderId)
       .single();
 
-    if (fetchError || !order || order.user_id !== session.user.id) {
+    if (fetchError || !order || order.user_id !== locals.auth.user.id) {
       return json({ error: 'Order not found' }, { status: 404 });
     }
 
@@ -102,7 +104,7 @@ export const PATCH = async ({ params, request, locals }) => {
       .from('orders')
       .update({ status })
       .eq('id', params.orderId)
-      .eq('user_id', session.user.id);
+      .eq('user_id', locals.auth.user.id);
 
     if (updateError) {
       console.error('Error updating order:', updateError);

@@ -35,13 +35,27 @@ export interface UserForTable {
   id: string;
   email: string;
   name: string;
+  fullName?: string; // For backward compatibility
   role: string;
   status: string;
   created_at: string;
   updated_at: string;
+  registrationDate?: string;
   last_login?: string;
+  lastLogin?: string; // For backward compatibility
   picture?: string;
   suspended?: boolean;
   is_spam_flagged?: boolean;
   email_verified: boolean;
+  phone?: string;
+  address?: string;
+  orders?: number;
+  totalSpent?: number;
+  bio?: string;
+  marketing_emails?: boolean;
+  notification_preferences?: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
 }
